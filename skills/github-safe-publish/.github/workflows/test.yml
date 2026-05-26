@@ -1,0 +1,38 @@
+name: Tests
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.10", "3.12"]
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests
+        run: |
+          COUNT=$(python -m pytest tests/ --collect-only -q 2>/dev/null | tail -1 | grep -oE '[0-9]+' | head -1)
+          echo "Collected $COUNT tests (minimum: 230)"
+          if [ "$COUNT" -lt 230 ]; then
+            echo "ERROR: Test count $COUNT below minimum 230. Tests may have been accidentally removed."
+            exit 1
+          fi
+          python -m pytest tests/ -v --tb=short --cov=tests --cov-report=term-missing --cov-fail-under=95

@@ -1,0 +1,28 @@
+{
+  "name": "ruyi-skills",
+  "description": "Claude Code skill 合集——化繁为简，如意随心",
+  "version": "0.1.1",
+  "owner": {
+    "name": "zwyin"
+  },
+  "plugins": [
+    {
+      "name": "ruyi-skills",
+      "description": "Claude Code skill 合集——化繁为简，如意随心",
+      "source": "./",
+      "category": "productivity",
+      "tags": [
+        "claude-code",
+        "skills",
+        "productivity",
+        "github",
+        "publishing",
+        "walkthrough"
+      ],
+      "skills": [
+        "./skills/github-safe-publish/skills/github-safe-publish",
+        "./skills/project-walkthrough/skills/project-walkthrough"
+      ]
+    }
+  ]
+}

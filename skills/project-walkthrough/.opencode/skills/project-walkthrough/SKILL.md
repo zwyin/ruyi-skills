@@ -1,0 +1,841 @@
+---
+name: project-walkthrough
+description: Generate a structured walkthrough of any project — software codebase, research report, or document collection. Analyzes input, recommends scope, confirms with user, then generates markdown docs + interactive HTML. Use when user wants to study, document, or share analysis of any project.
+license: MIT
+compatibility: opencode
+argument-hint: "[path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm]"
+---
+# Project Walkthrough Generator
+
+Generate a structured walkthrough of any project — software codebase, research report, or document collection. Adapts output scope to input size and content type.
+
+> **Version 1.6.0** — Shown at Phase 0 startup. Use `--version` to print version and exit.
+
+## User Input Tools
+
+When this skill prompts the user, follow this tool-selection rule (priority order):
+
+1. **Prefer built-in user-input tools** — e.g., `AskUserQuestion`, `request_user_input`, `clarify`, `ask_user`, or equivalent.
+2. **Fallback**: if no such tool exists, emit a numbered plain-text message and ask the user to reply with the chosen number/answer for each question.
+3. **Batching**: if the tool supports multiple questions per call, combine all applicable questions into a single call; if only single-question, ask them one at a time.
+
+## Usage
+
+```
+/project-walkthrough [path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm] [--version]
+```
+
+**Argument parsing:** Parse `$ARGUMENTS` using `--flag` convention:
+
+1. Split `$ARGUMENTS` by whitespace into tokens; empty-string tokens are discarded; paths with spaces are not supported
+2. Tokens starting with `--` are flags:
+   - `--depth <value>` — sets depth (`brief`, `medium`, `deep`, `all`)
+   - `--audience <value>` — sets audience (`general`, `dev`)
+   - `--lang <value>` — sets output language (`zh`, `zh-pure`, `en`, `bilingual`)
+   - `--no-confirm` — skip confirmation gate, use recommended defaults
+   - `--version` — print version and exit (standalone, no value consumed)
+   - Only space-separated `--flag value` syntax is supported (not `--flag=value`)
+   - Flags are case-sensitive (`--Depth` is not `--depth`)
+   - A flag always consumes exactly the next token as its value, regardless of what that token contains
+   - If a flag is the last token (no value follows), ignore it and use the default
+   - If the same flag appears multiple times, the **last** occurrence wins
+   - Unknown `--` flags are ignored along with their immediately following token
+   - `--no-confirm` is a standalone flag (no value consumed)
+   - `--version` is a standalone flag (no value consumed); when present, print `project-walkthrough v1.6.1` and exit immediately
+   - If a recognized flag receives an invalid value (not in the allowed set), discard the value and use the default
+3. The first non-flag token that is not consumed as a flag value is the `path`
+4. Additional non-flag tokens are ignored
+5. Flags can appear before or after the path
+6. Defaults: path → current working directory, depth → `brief`, audience → `general`, lang → `zh`, confirm → `true`
+7. If `--version` is present, print `project-walkthrough v1.6.1` and stop — ignore all other flags and path
+
+**Parameters:**
+- `path` (positional, optional) — Project directory. Defaults to current working directory.
+- `--depth` (optional) — One of: `brief`, `medium`, `deep`, `all`. Defaults to `brief`.
+- `--audience` (optional) — One of: `general`, `dev`. Defaults to `general`.
+- `--lang` (optional) — One of: `zh`, `zh-pure`, `en`, `bilingual`. Defaults to `zh`.
+- `--no-confirm` (optional) — Skip Phase 0 confirmation gate.
+- `--version` (optional) — Print version (`project-walkthrough v1.6.1`) and exit.
+
+Invalid or missing flag values fall back to defaults. If a flag is repeated, the last occurrence wins.
+
+**Examples:**
+```
+/project-walkthrough                                              # Brief + general + zh (CWD)
+/project-walkthrough /path/to/project                             # Brief + general + zh
+/project-walkthrough /path/to/project --depth medium              # Medium + general + zh
+/project-walkthrough /path/to/project --depth deep --audience dev # Deep + dev + zh
+/project-walkthrough --depth deep                                 # Deep + general + zh (CWD)
+/project-walkthrough --audience dev                               # Brief + dev + zh (CWD)
+/project-walkthrough --depth all --audience dev                   # All depths + dev + zh (CWD)
+/project-walkthrough ./deep --depth brief                         # Path "./deep", brief + general + zh
+/project-walkthrough /path/to/project --lang en                   # Brief + general + en
+/project-walkthrough --depth deep --lang en                       # Deep + general + en (CWD)
+/project-walkthrough --depth deep --no-confirm                    # Deep + skip confirmation
+/project-walkthrough /path/to/project --lang zh-pure              # Brief + general + zh-pure
+/project-walkthrough /path/to/project --lang bilingual            # Brief + general + bilingual
+/project-walkthrough --version                                    # Print version and exit
+```
+
+## Audience Modes
+
+### `general` (default)
+
+For anyone — technical or not. Every technical concept gets a **类比理解** card that explains it using everyday analogies. Code blocks get a plain-language summary above them. The goal: a non-technical stakeholder can read the deep walkthrough and understand the architecture.
+
+What changes:
+- Every technical term gets an analogy on first appearance (e.g. "Prompt 注入 ≈ 钓鱼邮件，但骗的是 AI 不是人")
+- Code blocks get a "这段代码在做什么" plain-language summary before the code
+- Tables use plain column headers (not jargon)
+- Quiz explanations are conversational
+- Architecture diagrams get a one-sentence caption
+
+### `dev`
+
+For software engineers. Technical terms used directly, code blocks analyzed line by line, no analogy overhead. Best for contributors and architects evaluating the approach.
+
+## Language Modes
+
+### `zh` (default)
+
+Chinese body text + English technical terms inline. The most readable format for Chinese-speaking users, regardless of the source project's language.
+
+What this means:
+- Chapter text, explanations, analysis, and quiz questions written in Chinese
+- Technical terms (middleware, hook, schema, plugin) kept in English, with Chinese annotation on first appearance
+- Code comments in examples match the source code's language (not translated)
+- Architecture diagram labels in Chinese; technical identifiers (file names, function names) in English
+- `// Simplified from: path:lines` citations remain in English
+- 类比理解 cards (general audience) in Chinese
+- Code block summaries (general audience) in Chinese
+
+### `zh-pure`
+
+Pure Chinese output. All content translated, including technical terms. Best for audiences with no English background.
+
+What this means:
+- All text in Chinese, including technical terms translated where possible
+- Terms with no accepted Chinese translation kept in English (e.g., Kubernetes, OAuth)
+- Code comments translated to Chinese
+- Architecture diagram labels in Chinese; identifiers kept in English (cannot translate code names)
+- `// Simplified from:` citations kept in English (machine-readable format)
+- 类比理解 cards in Chinese with translated terms
+
+### `en`
+
+Pure English output. Follows the source project's language for maximum accuracy. Best for sharing with international audiences.
+
+What this means:
+- All text in English
+- Technical terms used directly
+- No Chinese annotations
+- Standard English technical writing style
+
+### `bilingual`
+
+Chinese-English side-by-side. Each section presents Chinese first, then English. Best for language learners or bilingual teams.
+
+What this means:
+- Each major section: Chinese paragraph first, then English translation
+- Technical terms kept in English in both versions
+- Code blocks shown once (shared between both language sections)
+- Quiz questions in both languages
+- 类比理解 cards in Chinese only (English readers don't need analogies for technical terms)
+- Navigation and metadata in both languages
+
+## EXTEND.md Paths
+
+Load user preferences before starting analysis. Like baoyu-skills' EXTEND.md pattern.
+
+| Priority | Path | Scope |
+|----------|------|-------|
+| 1 | `.project-walkthrough/EXTEND.md` | Project |
+| 2 | `$HOME/.project-walkthrough/EXTEND.md` | User home |
+
+| Result | Action |
+|--------|--------|
+| Found | Read, parse, display summary → continue |
+| Found but invalid YAML | Display error showing parse failure, offer to re-run first-time setup, proceed with defaults until resolved |
+| Not found | Run first-time setup (see below) → save EXTEND.md → continue |
+
+**When EXTEND.md found** → output summary:
+
+```
+Loaded preferences from [path]
+├─ Scope: [scope or "auto-select"]
+├─ Depth: [depth or "auto-select"]
+├─ Language: [language]
+├─ Manifest: [strictness or "auto"]
+└─ Confirm: [true/false]
+```
+
+**When EXTEND.md not found** → First-time setup with AskUserQuestion:
+
+1. Default scope? — auto (Recommended) / full / focused / overview
+2. Default depth? — auto (Recommended) / detailed / standard / summary
+3. Language? — zh (Recommended) / zh-pure / en / bilingual
+4. Save location? — Project / User home
+
+Schema: `references/preferences-schema.md`
+
+## Depth ↔ Scope Mapping
+
+The `--depth` CLI flag sets defaults for two internal parameters: **scope** (how many chapters) and **per-chapter depth** (how detailed each chapter is). The confirmation gate adjusts recommendations based on content analysis but uses these defaults as starting points.
+
+| `--depth` flag | Scope | Per-chapter depth | Chapter count guide |
+|----------------|-------|-------------------|---------------------|
+| `brief` | `overview` | `standard` | 5-8 thematic chapters |
+| `medium` | `focused` | `detailed` | 10-15 key chapters |
+| `deep` | `full` | `detailed` | No hard limit, adapts to input |
+| `all` | All three levels sequentially | Varies by level | Varies by level |
+
+The confirmation gate (Phase 0.3) adjusts its "Recommended" option based on the `--depth` hint. If `--depth brief` is passed, Q1 highlights "Overview"; if `--depth deep`, Q1 highlights "Full walkthrough".
+
+## Depth Levels
+
+Depth levels now serve as **hints** for the scope recommendation, not hard limits. The confirmation gate (Phase 0) presents the actual recommended scope based on content analysis. Users can override at confirmation.
+
+### Brief (~30 min to produce)
+
+High-level overview for quick understanding. Scope hint: `overview`.
+
+Recommended chapters: 5-8 (software) or consolidate to thematic groups (documents).
+
+Chapters:
+1. Project overview (what, why, tech stack)
+2. Architecture summary (components + data flow)
+3. Key technical highlights (3-5 innovations)
+4. Core workflow walkthrough
+5. Comparison with alternatives (if applicable)
+6. Summary + recommended next steps
+7. (Optional) bonus chapter unique to project type
+
+Quiz: 5-7 questions.
+
+**For:** Quick orientation, executive summary, deciding whether to invest more time.
+
+### Medium (~60 min to produce)
+
+Deeper analysis with code examples and design rationale. Scope hint: `focused`.
+
+Recommended chapters: 10-15 (software) or select key chapters (documents).
+
+Everything in Brief, plus:
+- Source code walkthrough with key file excerpts
+- Design patterns and "why this way, not that way" sections
+- Detailed component interaction diagrams
+- Implementation details for each major subsystem
+- Testing and CI/CD strategy
+- Developer workflow
+
+Quiz: 10-12 questions with explanations.
+
+**For:** Engineers onboarding to the project, architects evaluating the approach.
+
+### Deep (~120 min to produce)
+
+Comprehensive analysis suitable for a course or reference guide. Scope hint: `full`.
+
+Recommended chapters: **No hard upper limit**. Determined by input size. For documents, defaults to 1:1 chapter preservation.
+
+Everything in Medium, plus:
+- Line-by-line analysis of core algorithms
+- Complete security model documentation (if applicable)
+- Performance characteristics and benchmarks
+- Error handling and edge cases
+- Configuration system deep dive
+- Design evolution (why decisions changed over time)
+- "Build your own X" reimplementation guide
+- Cross-cutting concerns (logging, observability)
+
+Quiz: 15-20 questions with explanations.
+
+**For:** Contributors, security auditors, developers building similar systems.
+
+### `all`
+
+Generate all three depth levels sequentially. Starts with brief, then medium, then deep. Each level produces its own set of markdown files and HTML. Medium and deep can reuse exploration results from brief.
+
+**Verification for `all` mode:** When reusing claims from an earlier level, re-verify any that were tagged `[UNVERIFIED]` during exploration. Do not assume brief-level verification is sufficient for deep-level claims.
+
+## Output Structure
+
+```
+project_study_<project-name>/
+├── analysis.md                          ← Content analysis (Phase 0)
+├── docs/
+│   ├── 01-overview.md              ← Brief level (flat, no subdirectory)
+│   ├── 02-*.md
+│   ├── ...
+│   ├── sources-manifest.json       ← Brief level manifest
+│   ├── medium/                     ← Medium level
+│   │   ├── 01-overview.md
+│   │   ├── 02-*.md
+│   │   ├── ...
+│   │   └── sources-manifest.json   ← Medium level manifest
+│   └── deep/                       ← Deep level
+│       ├── 01-overview.md
+│       ├── 02-*.md
+│       ├── ...
+│       └── sources-manifest.json   ← Deep level manifest
+└── interactive/
+    ├── walkthrough-<project>-brief-YYYYMMDD-HHmmss.html      ← Brief
+    ├── verify-result.json                                     ← Auto-generated verification evidence
+    ├── walkthrough-<project>-medium-YYYYMMDD-HHmmss.html     ← Medium
+    ├── walkthrough-<project>-deep-YYYYMMDD-HHmmss.html       ← Deep
+```
+
+**Naming conventions:**
+- Brief docs go in `docs/` (flat, no subdirectory)
+- Medium docs go in `docs/medium/`
+- Deep docs go in `docs/deep/`
+- Each file: `NN-kebab-case-title.md` (zero-padded number, descriptive name)
+- Each file ends with a navigation link to the next file
+- HTML filenames include: project slug, depth level, and datetime stamp (`YYYYMMDD-HHmmss`) to prevent overwriting previous outputs
+
+**Backup rule:** If `walkthrough-*.html` already exists, rename with `-backup-YYYYMMDD-HHmmss` suffix before creating new files.
+
+## Process
+
+### Phase 0: Analyze & Confirm (~5% of time)
+
+**Purpose:** Analyze input content, determine scope, get user confirmation before generating. Like baoyu-comic's Step 1.2 + Step 2.
+
+**Skip condition:** `--no-confirm` flag or EXTEND.md `confirm_scope: false`.
+
+**Startup:** Print `Project Walkthrough v1.6.1` before any analysis. This lets users confirm which version they're running.
+
+#### Phase 0.1: Load Preferences
+
+Check EXTEND.md (see `## EXTEND.md Paths` above). Load defaults if found, run first-time setup if not.
+
+#### Phase 0.2: Analyze Content → `analysis.md`
+
+Follow the framework in `references/analysis-framework.md`. In summary:
+
+1. **Detect content type** — Check signals: source code files, package manifests, markdown chapters, code/text ratio
+2. **Measure input scope** — File/chapter count, total lines, directory depth
+3. **Analyze content structure** — Data types present (statistics, case studies, code blocks, quotes)
+4. **Assess technical density** — Low / medium / high
+5. **Generate recommendations** — Scope, chapter count, depth per chapter, manifest strictness
+
+Save results to `analysis.md` in output directory with YAML front matter + analysis body.
+
+#### Phase 0.3: Confirmation Gate (AskUserQuestion)
+
+Present analysis results and get user confirmation. This is the interactive scope selection, like baoyu-comic's Step 2.
+
+**Scope mismatch warning:** If the `--depth` hint produces a scope that discards more than 50% of input chapters (e.g., `--depth brief` on a 30-chapter document → 5-8 thematic chapters), display a warning in the analysis summary: "Warning: overview scope will consolidate [N] chapters into 5-8 thematic groups. Consider 'focused' to preserve top chapters." This ensures the user makes an informed decision.
+
+**Recommended option:** Pre-select the "Recommended" option based on the `--depth` hint (see Depth ↔ Scope Mapping table). If `--depth brief`, highlight "Overview"; if `--depth deep`, highlight "Full walkthrough".
+
+**Display to user:**
+```
+Content Analysis:
+├─ Type: [software-project / document-report / mixed]
+├─ Scope: [N files/chapters, X lines]
+├─ Content: [statistics, case studies, code, etc.]
+└─ Recommended: [scope] scope, [N] chapters, [depth] depth
+```
+
+**Questions:**
+
+**Q1: Walkthrough Scope**
+```
+header: "Scope"
+question: "What scope of walkthrough?"
+options:
+  - label: "Full walkthrough (Recommended)"
+    description: "[N] chapters, each with detailed analysis"
+  - label: "Focused walkthrough"
+    description: "Select [M] key chapters, summarize rest"
+  - label: "Overview"
+    description: "Consolidate to [K] thematic chapters"
+  - label: "Custom"
+    description: "Specify your own chapter structure"
+```
+
+**Q2: Depth Per Chapter**
+```
+header: "Depth"
+question: "How detailed should each chapter be?"
+options:
+  - label: "Detailed (Recommended)"
+    description: "Full analysis + data + examples + quiz + cross-references"
+  - label: "Standard"
+    description: "Key points + important data + selected examples"
+  - label: "Summary"
+    description: "Core findings only, 2-5 sentences per chapter"
+```
+
+**Q3: Output Format**
+```
+header: "Format"
+question: "What output formats?"
+options:
+  - label: "HTML + Markdown (Recommended)"
+    description: "Interactive HTML with quiz + markdown source files"
+  - label: "Markdown only"
+    description: "Markdown files only, no HTML"
+  - label: "HTML only"
+    description: "Single interactive HTML file"
+```
+
+**Q4: Review Outline?**
+```
+header: "Review"
+question: "Review chapter outline before generation?"
+options:
+  - label: "Yes, let me review (Recommended)"
+    description: "Show planned chapters before generating content"
+  - label: "No, generate directly"
+    description: "Skip outline review, start generating immediately"
+```
+
+**Q5: Output Language**
+```
+header: "Language"
+question: "What output language?"
+options:
+  - label: "中文为主，专有名词保留英文 (Recommended)"
+    description: "Chinese body + English terms (middleware, hook, schema) with first-appearance annotations"
+  - label: "纯中文，术语尽量翻译"
+    description: "All Chinese, translate technical terms where possible"
+  - label: "Pure English"
+    description: "All English, standard technical writing style"
+  - label: "中英对照"
+    description: "Side-by-side: Chinese paragraph followed by English translation"
+```
+
+**Pre-selected default:** The `--lang` CLI flag pre-selects the matching option. If `--lang zh`, highlight "中文为主"; if `--lang en`, highlight "Pure English". User can override at confirmation.
+
+**After confirmation:** Store scope config + language choice for use in Phase 1-5. Update `analysis.md` with user selections.
+
+### Phase 1: Explore (~15% of time)
+
+Follow the protocol in `../../docs/exploration-protocol.md`. Adapt exploration depth to confirmed scope:
+
+- **Full scope**: read all source files / chapters
+- **Focused scope**: read key source files / chapters + skim rest
+- **Overview scope**: read core files only
+
+In summary:
+
+1. **Identify project type** — AI tool / Library / Web app / CLI tool / Document / Report (see exploration-protocol Step 1)
+2. **Read core files** — README, ARCHITECTURE, CLAUDE.md/GEMINI.md, package.json, config files, or document chapters
+3. **Read key source files** — Main entry points, core modules, configuration, or key document sections
+4. **Extract innovations** — 3-5 unique design decisions, techniques, or key findings
+5. **Map architecture** — Components, data flow, dependencies, or document structure
+
+**Critical:** Do NOT skip this phase. The quality of the entire walkthrough depends on thorough exploration.
+
+### Phase 2: Plan (~10% of time)
+
+Use the **confirmed scope config** from Phase 0 to plan chapters. Chapter count is determined by scope, not fixed presets.
+
+1. **Select chapter template** from `../../docs/chapter-templates.md` based on content type (software project vs document/report)
+2. **Determine chapter count** from scope config — full: preserve all input chapters/sections; focused: select key ones; overview: consolidate to themes
+3. **Adapt template** to the specific project — rename, reorder, add project-specific chapters
+4. **Map each chapter to source files** — which files/chapters provide the content for each output chapter
+5. **Plan cross-references** — which chapters reference which others
+
+**For documents/reports:** Default to 1:1 chapter mapping (each input chapter becomes one output chapter). Only consolidate when user selected focused or overview scope.
+
+**If outline review confirmed in Phase 0:** Present planned chapter list to user for approval before Phase 3.
+
+### Phase 3: Generate Markdown (~40% of time)
+
+**Manifest strictness** is determined by scope config from Phase 0:
+- `required` (default for software projects): follow full verification flow below
+- `optional` (default for documents with some code): verify code examples only, skip prose claims
+- `skip` (summary mode or pure prose documents): no manifest, focus on content accuracy
+
+**CRITICAL ORDERING RULE: Verify before write.** Content generation is split into two gated sub-phases. You may NOT write chapter content until you have verified the claims for that chapter and recorded them in the manifest. The manifest is a **write permit**, not an audit log. (Skip manifest entirely when strictness is `skip`.)
+
+#### Phase 3A: Verify & Build Manifest (per chapter)
+
+For each chapter, BEFORE writing any content:
+
+1. **List planned claims** — What code examples will you show? What directory structures? What API signatures? What version numbers? What architecture statements?
+2. **Read the source files** — For each planned claim, read the ACTUAL source file. Not from memory, not from README. Read the file.
+3. **Verify each claim against source:**
+   - Code block: Read the actual source file, find the EXACT lines, copy verbatim. If you simplify, note what changed. If the function/method you want to cite does NOT exist in the file, STOP — do not write it. Find what actually exists.
+   - Directory structure: `ls` the actual directory. Every path you plan to list must exist. Do not infer from naming conventions.
+   - API signature: Read the actual function definition (not call sites, not tests). Check parameters, return types, generics. If the function is generic-heavy, simplify but note the simplification.
+   - Version number: Read from `package.json` / `Cargo.toml` / `pyproject.toml`. Copy the exact value. Never from README.
+   - Enum/variant lists: When listing enum values, feature flags, or config options, read the actual enum/const definition. Do not list from memory. Missing items are acceptable; wrong items are not.
+   - Count claims: Do NOT count manually. Run a command and record the output in the manifest's verification_note:
+     ```
+     grep -c "^export " src/types.ts     # count exports
+     ls src/modules/ | wc -l              # count directory entries
+     wc -l src/schemas.ts                 # count lines
+     ```
+     For files > 2,000 lines, use ranges ("40+") or vague language ("dozens of").
+   - Architecture claim: Find the source file that supports this claim. Record the file and line range. If the claim is "X calls Y" or "X is used by Z", verify the actual import/call, not just that both files exist.
+   - Architecture diagrams: Run `python ../../scripts/import_graph.py <source_dir>` to extract the ACTUAL import dependency graph. Draw diagrams from the script output, NOT from directory structure. The script detects parallel siblings (modules sharing a dependency without importing each other).
+   - Dependency: Find the actual import statement in source. Record it.
+   - Priority/ordering chains: When describing fallback chains (e.g., "config priority: CLI > env > file"), read the actual code that implements this chain. Do not assume the order.
+   - Source citation accuracy: Always use `// Simplified from: path:lines`. Do NOT use `// Source:`.
+   - Line ranges: Verify by running `wc -l <source_file>` before finalizing. End line must be <= file's total lines.
+4. **Create manifest entries** for verified claims. Each entry records: source file, line range, verification status.
+5. **Drop unverifiable claims.** If you cannot verify a claim, you CANNOT include it in the walkthrough. No exceptions. Replace it with a verified claim, or use plain language without specifics.
+
+**Output of Phase 3A:** A `sources-manifest.json` with all verified claims populated. `doc_file` and `doc_line` will be filled in Phase 3B.
+
+**Manifest schema:** See `../../docs/sources-manifest-schema.md` for human-readable docs, or `../../docs/sources-manifest.schema.json` for the machine-readable JSON Schema. Each entry has:
+- `id` — unique identifier (claim-001, claim-002, ...)
+- `type` — one of: `code_example`, `directory_structure`, `api_signature`, `version_number`, `architecture_claim`, `dependency_claim`, `config_claim`, `feature_claim`, `performance_claim`
+- `source_file` + `source_lines` — exact file path and line range in the source project
+- `claim_summary` — one-sentence description of what's claimed
+- `verified` — must be `true` at this stage (unverified claims go in `unverified` array and are excluded from content)
+- `verification_note` — how you verified (e.g., "exact match", "simplified for clarity")
+
+**Minimum coverage per chapter:**
+- Every code block you plan to write → `code_example` entry with source file + lines
+- Every directory tree → `directory_structure` entry verified by `ls`
+- Every function signature → `api_signature` entry verified by reading the definition
+- Every version number → `version_number` entry verified from config file
+- Every "module X does Y" → `architecture_claim` entry with supporting source
+
+#### Phase 3B: Write Chapter Content (per chapter)
+
+For each chapter, using ONLY claims verified in Phase 3A:
+
+1. **Write the chapter** — one file per chapter, numbered sequentially
+2. **Every code block must cite its manifest entry** — add a comment above each code block using `// Simplified from: path:lines`. Do NOT use `// Source:` at all. All code in walkthroughs is simplified to some degree (indentation changed, comments omitted, context removed). `Simplified from:` is always honest. `Source:` requires character-for-character verification which is error-prone and has caused the most issues in testing.
+3. **Apply audience mode:**
+   - `general`: add 类比理解 cards, plain-language code summaries
+   - `dev`: direct technical analysis
+4. **Navigation links** at the bottom of each file
+5. **Update manifest** — fill in `doc_file` and `doc_line` for each claim as you write
+
+**Hard rule:** If a claim is NOT in the manifest with `verified: true`, you CANNOT write it in the chapter. This is the structural enforcement. No "I'll verify later." No "I'm pretty sure." If it's not verified, it doesn't get written.
+
+#### Quiz chapter format
+
+The last numbered chapter in each depth level MUST include a quiz section. The quiz follows this exact format:
+
+```markdown
+## Quiz
+
+**Q1:** Question text here?
+- A. First option
+- B. Second option
+- C. Third option
+- D. Fourth option
+
+**Answer: B**
+
+**Explanation:** Explanation of why B is correct and others are wrong.
+
+---
+
+**Q2:** Next question?
+- A. ...
+- B. ...
+- C. ...
+- D. ...
+
+**Answer: A**
+
+**Explanation:** ...
+```
+
+Rules:
+- Questions use `**Q<N>:**` bold prefix (not headings)
+- Options are unordered list items with `A.` / `B.` / `C.` / `D.` prefix
+- Answer line: `**Answer: <LETTER>**` on its own paragraph
+- Explanation: `**Explanation:** <text>` on its own paragraph
+- Questions separated by `---` horizontal rules
+- For bilingual mode: question text and explanation contain both languages sequentially
+  (Chinese paragraph, then English paragraph, both before the options)
+
+Question counts by depth: Brief 5-7, Medium 10-12, Deep 15-20.
+
+#### Phase 3C: Validate Coverage
+
+After all chapters are written:
+
+1. **Read back each chapter** — scan for code blocks, directory trees, version numbers, API signatures
+2. **Cross-check against manifest** — every factual statement must have a manifest entry
+3. **Fill any gaps** — if you wrote something without a manifest entry, go verify it now and add the entry
+4. **Line range audit** — For every claim with `source_lines`, re-read the source file and confirm:
+   - The end line number is <= the file's total line count (no off-by-one errors)
+   - The range covers the code you described (not too narrow, not exceeding file bounds)
+   - When in doubt, use a smaller range
+5. **Run verification script** — `python ../../scripts/verify_sources.py <manifest> --source-dir <source>` must pass
+
+#### If `all` depth
+
+Generate all three depth levels sequentially: brief → medium → deep. Medium and deep must re-verify any claims reused from earlier levels — do not assume brief-level verification is sufficient.
+
+#### Accuracy Rules
+
+All accuracy rules are enforced through Phase 3A's verification steps above. The key principles:
+
+1. **No invented code** — every code example from actual source, cited with `// Simplified from:`
+2. **Verify before stating** — read the actual file, not README, not memory
+3. **Admit uncertainty** — if you can't verify, use plain language, not plausible descriptions
+4. **Architecture diagrams are source-grounded** — every arrow traced to actual import/call
+5. **Drop unverifiable claims** — if Phase 3A can't verify it, it doesn't get written
+
+For the detailed verification procedure for each claim type (code blocks, directories, API signatures, versions, architecture), see Phase 3A step 3 above.
+
+### Phase 4: Generate HTML (~30% of time)
+
+1. One self-contained HTML file per depth level
+2. Follow the structure in `../../docs/html-reference.md`
+
+**CRITICAL — Converter-first generation (all depths):**
+
+3. Run the converter tool as the primary HTML generation method:
+   ```
+   python scripts/md_to_html.py <docs_dir> <output.html> \
+     --title "Project Name" --accent "#hex" --lang <lang> --quiz-chapter <N>
+   ```
+   - `docs_dir`: directory with markdown chapters
+     - Brief: `docs/`  |  Medium: `docs/medium/`  |  Deep: `docs/deep/`
+   - `--lang <lang>`: one of zh, zh-pure, en, bilingual (matches Phase 0 choice)
+   - `--quiz-chapter <N>`: 1-based index of the chapter containing quiz questions.
+     The converter extracts the `## Quiz` section from that chapter and renders it
+     as an interactive quiz. The quiz section is removed from the chapter's regular
+     content to avoid duplication. If no chapter contains a quiz, omit this flag.
+   - The script reads ALL .md files, converts every element to styled HTML
+   - Output is self-contained interactive HTML with sidebar nav, dark/light toggle,
+     mobile responsive, print-friendly, interactive quiz section
+   - Content parity: every element from the markdown is preserved
+
+4. Verify the output:
+   ```
+   python scripts/md_to_html.py --verify <output.html> --source-dir <docs_dir>
+   ```
+   - Checks: section count = file count, per-section content, file size >= 80% of markdown,
+     no broken .md links, nav items match sections, quiz section present (if --quiz-chapter used)
+   - If verification FAILS → see Phase 5 error recovery loop
+
+5. NO manual fallback. Python is a hard requirement for HTML generation.
+   If Python is unavailable, report the error and skip HTML generation
+   (markdown output is still complete and usable).
+
+**Depth-specific content strategy (applied in Phase 3, not Phase 4):**
+
+- **Brief and Medium:** Phase 3 markdown is already curated (key takeaways, summaries).
+  The converter preserves this curation exactly.
+- **Deep:** Phase 3 markdown is full content. The converter preserves everything (zero trimming).
+
+Phase 4 does NOT modify content — it converts what Phase 3 produced.
+
+### Phase 5: Verify & Deliver (~5% of time)
+
+**This phase is a hard delivery gate. No output reaches the user without passing all checks.**
+
+#### Step 1: Automated structural verification (MANDATORY)
+
+The converter **automatically** runs verification after generating HTML and writes `verify-result.json` alongside the output file. This file is the authoritative evidence of quality — do NOT deliver without it.
+
+**verify-result.json contains:**
+- `passed`: true/false — overall pass status
+- `section_count` / `expected_sections`: actual vs expected chapter count
+- `html_size` / `markdown_size` / `ratio_pct`: content density metrics
+- `sidebar_nav_count`: navigation item count
+- `errors`: list of specific failure messages (empty if passed)
+- `timestamp`: UTC timestamp of verification
+
+**If `verify-result.json` does NOT exist next to the HTML file, verification was NOT run.** Re-run the converter to generate it.
+
+To manually re-verify (e.g., after fixing issues):
+```
+python scripts/md_to_html.py --verify <output.html> --source-dir <docs_dir>
+```
+
+The verification checks:
+1. **Section count** = number of .md files in source dir
+2. **Per-section content**: each chapter div has at least one heading (h1-h4) AND one content element (p/pre/table/ul/ol/blockquote/details)
+3. **File size ratio**: HTML >= 80% of total markdown size
+4. **No broken .md links**: zero `href="*.md"` in HTML
+5. **Navigation integrity**: sidebar item count = chapter count
+6. **Quiz present**: quiz section exists if `--quiz-chapter` was used
+
+#### Step 2: Automated content verification
+
+Run these additional programmatic checks:
+```bash
+# No .md href links (belt-and-suspenders with verify check #4)
+grep -c 'href="[^"]*\.md"' <output.html>  # must be 0
+
+# Count code blocks — should match manifest code_example count
+grep -c '<pre><code>' <output.html>
+
+# File count in docs/ matches expectations
+ls <docs_dir>/*.md | wc -l
+```
+
+Cross-check against sources-manifest.json:
+- Every code block in HTML has a corresponding code_example entry in manifest
+- Every manifest entry's source file exists and line range is valid
+- Spot-check 3+ entries for content accuracy
+
+#### Step 3: Error recovery loop (max 3 retries)
+
+If --verify fails, read the SPECIFIC error output and take the corresponding action:
+
+| Error message pattern | Action |
+|----------------------|--------|
+| "Section count X != expected Y" | Check if all .md files were generated in Phase 3. Re-generate missing ones. |
+| "Chapter N is empty" | Re-read the corresponding .md file. If it has content, this is a converter bug — report to user. If empty, re-generate that chapter in Phase 3. |
+| "HTML size Xb is Y% of markdown" | Compare HTML sections to markdown files to identify which chapters lost content. Re-examine those .md files for unsupported markdown syntax. |
+| "Found N broken .md links" | Re-run converter (safety net should strip these). If residual, manually remove. |
+| "Sidebar nav X < chapter count Y" | Re-run converter. If persistent, check for malformed chapter HTML that breaks the regex. |
+
+After each fix attempt, re-run --verify from Step 1.
+
+If 3 retries exhausted:
+- STOP. Do NOT deliver HTML.
+- Report ALL specific error messages to the user with diagnostic details.
+- Deliver markdown output (always complete and usable).
+- Provide the exact converter command for the user to run manually.
+
+#### Step 4: Delivery gate (FINAL CHECKPOINT)
+
+Do NOT claim completion or deliver HTML until ALL of these pass:
+
+**Automated checks (programmatic):**
+- [ ] `verify-result.json` exists alongside HTML file
+- [ ] `verify-result.json` contains `"passed": true`
+- [ ] `grep -c 'href="[^"]*\.md"' <html>` returns 0
+- [ ] sources-manifest.json exists for each depth level
+- [ ] Every code block has a code_example entry in manifest
+
+**Model-verified checks (LLM reads output):**
+- [ ] Spot-check 2-3 chapters for content completeness (not just headings)
+- [ ] No placeholder or TODO content remaining
+- [ ] Quiz answers are correct (if quiz exists)
+
+**Report to user (read values from verify-result.json):**
+```
+Walkthrough Generation Complete
+================================
+Output: <output_directory>
+├─ Markdown: <N> chapters in docs/
+├─ HTML: walkthrough-<project>-<depth>-<timestamp>.html
+├─ Manifest: sources-manifest.json (<M> verified claims)
+├─ Verification: verify-result.json
+└─ Verified at: <timestamp from verify-result.json>
+
+Quality metrics (from verify-result.json):
+├─ Sections: <section_count> (expected: <expected_sections>)
+├─ HTML size: <html_size>Kb (markdown: <markdown_size>Kb, ratio: <ratio_pct>%)
+├─ Nav items: <sidebar_nav_count>
+├─ Code blocks: <C> (manifest entries: <M>)
+├─ Quiz: <Q> questions
+└─ Status: PASSED ✓
+```
+
+**IMPORTANT:** The quality metrics above MUST be read from `verify-result.json`, not fabricated. If the file does not exist, report "Verification: NOT RUN" — do not claim PASSED.
+
+If any gate failed:
+```
+Walkthrough Generation PARTIALLY COMPLETE
+==========================================
+Markdown output: COMPLETE (<N> chapters)
+HTML output: FAILED — <specific error messages>
+
+The markdown files in docs/ are complete and usable.
+To generate HTML manually:
+  python scripts/md_to_html.py <docs_dir> output.html --title "..." --lang zh
+```
+
+## Documentation Standards
+
+See `../../docs/documentation-standards.md` for:
+- Language conventions (Chinese/English/technical terms)
+- Chapter structure requirements
+- Source citation format (`// Simplified from: path:lines`)
+- Audience-specific formatting (general: analogy cards + code summaries; dev: inline analysis)
+
+## Checklist
+
+### Phase 0: Analysis & Confirmation
+- [ ] EXTEND.md loaded or first-time setup completed
+- [ ] Content type detected (software-project / document-report / mixed)
+- [ ] Input scope measured (file/chapter count, total lines)
+- [ ] Content structure analyzed (data types, technical density)
+- [ ] Scope recommendation generated
+- [ ] Confirmation gate presented to user (unless `--no-confirm`)
+- [ ] User selections recorded in analysis.md
+- [ ] analysis.md saved to output directory
+
+### Exploration
+- [ ] Identified project type (AI tool / Library / Web app / CLI tool)
+- [ ] Read README, ARCHITECTURE, CLAUDE.md (or equivalent)
+- [ ] Read package.json / config files for dependencies and scripts
+- [ ] Read main entry points and core modules
+- [ ] Extracted 3-5 unique innovations or design decisions
+- [ ] Mapped component architecture
+
+### Planning
+- [ ] Chapter template selected based on content type (software / document / report)
+- [ ] Chapter count determined by confirmed scope (not fixed presets)
+- [ ] Template adapted to project specifics
+- [ ] Each chapter mapped to source files or input chapters
+- [ ] (If review confirmed) Chapter outline presented to user for approval
+
+### Content
+- [ ] Markdown files generated at requested depth(s)
+- [ ] File naming follows NN-kebab-case-title.md convention
+- [ ] Each file has navigation links
+- [ ] Audience mode applied (general: analogies + summaries; dev: direct analysis)
+- [ ] Code examples are from actual source (not fabricated)
+- [ ] Every code block has a source file citation
+- [ ] Architecture diagrams included
+
+### Sources Manifest
+- [ ] `sources-manifest.json` exists for each generated depth level
+- [ ] Every code block has a `code_example` entry in the manifest
+- [ ] Every directory structure diagram has a `directory_structure` entry
+- [ ] Every version number has a `version_number` entry
+- [ ] Every API signature has an `api_signature` entry
+- [ ] Spot-checked 3+ manifest entries: source file exists, line range valid, content matches
+- [ ] `unverified` array is empty or every entry has a valid reason
+
+### Accuracy Verification
+- [ ] Spot-checked code examples against actual source — confirmed they exist and are accurate (brief: 3+, medium: 5+, deep: 8+ or 20% of blocks)
+- [ ] Verified directory structure claims by checking actual directory listing
+- [ ] Version numbers read from config files (package.json/Cargo.toml/pyproject.toml), not README
+- [ ] API signatures verified against actual function definitions
+- [ ] No fabricated file paths, module names, or function names
+- [ ] Performance/benchmark claims only stated when source evidence exists
+
+### HTML
+- [ ] Interactive HTML generated for each depth level
+- [ ] HTML filename includes project name, depth, and timestamp (e.g., `walkthrough-stanford-deep-20260519-143052.html`)
+- [ ] Existing HTML files backed up with `-backup-` suffix before overwriting
+- [ ] **Converter ran for ALL depths:** `python scripts/md_to_html.py <docs_dir> <output.html> --lang <lang> --quiz-chapter <N>` succeeded
+- [ ] **`--verify` passed:** `python scripts/md_to_html.py --verify <output.html> --source-dir <docs_dir>` exits 0
+- [ ] **No empty sections:** Each section/chapter div contains at least one heading and one paragraph/code/table
+- [ ] Dark/light toggle works and persists
+- [ ] Sidebar navigation matches chapters
+- [ ] Quiz questions have correct answers (if quiz exists)
+- [ ] Mobile responsive
+- [ ] File is self-contained (no external dependencies, works via `file://`)
+- [ ] **No broken `.md` links:** `grep -c 'href="[^"]*\.md"' <html>` returns 0
+
+### Final
+- [ ] All files written to correct output directory
+- [ ] No placeholder or TODO content remaining
+- [ ] Quiz answers verified for correctness
+- [ ] `analysis.md` exists with content type, scope, and user selections
+
+## References
+
+**Core Templates:**
+- [references/analysis-framework.md](references/analysis-framework.md) - Content analysis dimensions and output format
+- [references/scope-matrix.md](references/scope-matrix.md) - Content signal to scope/depth mapping
+- [references/preferences-schema.md](references/preferences-schema.md) - EXTEND.md schema
+
+**Documentation:**
+- `../../docs/exploration-protocol.md` - Step-by-step exploration guide
+- `../../docs/chapter-templates.md` - Chapter templates by project type
+- `../../docs/documentation-standards.md` - Language conventions and citation format
+- `../../docs/html-reference.md` - HTML generation requirements
+- `../../docs/sources-manifest-schema.md` - Sources manifest format

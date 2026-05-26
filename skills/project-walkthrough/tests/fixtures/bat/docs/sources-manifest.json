@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "source_project": {
+    "name": "bat",
+    "repo_url": "https://github.com/sharkdp/bat",
+    "commit_or_tag": "v0.26.1",
+    "local_path": "examples/_src_bat"
+  },
+  "generated_at": "2026-05-07T18:00:00Z",
+  "depth": "brief",
+  "audience": "general",
+  "claims": [
+    {
+      "id": "claim-001",
+      "type": "version_number",
+      "doc_file": "01-overview.md",
+      "doc_line": 3,
+      "claim_summary": "Walkthrough states version 0.25.x, actual is 0.26.1",
+      "source_file": "Cargo.toml",
+      "source_lines": [1, 10],
+      "verified": true,
+      "verification_note": "STALE: walkthrough says 0.25.x but Cargo.toml shows 0.26.1. Needs correction."
+    },
+    {
+      "id": "claim-002",
+      "type": "directory_structure",
+      "doc_file": "01-overview.md",
+      "doc_line": 28,
+      "claim_summary": "Project structure: src/bin/bat/main.rs, src/lib.rs, src/controller.rs, etc.",
+      "source_file": "src/",
+      "source_lines": null,
+      "verified": true,
+      "verification_note": "Verified: controller.rs, input.rs, printer.rs, output.rs, config.rs, assets/, syntax_mapping/ all exist in src/"
+    },
+    {
+      "id": "claim-003",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 49,
+      "claim_summary": "Uses syntect for syntax highlighting",
+      "source_file": "Cargo.toml",
+      "source_lines": [1, 80],
+      "verified": true,
+      "verification_note": "syntect listed as dependency in Cargo.toml"
+    },
+    {
+      "id": "claim-004",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 50,
+      "claim_summary": "Uses clap for CLI argument parsing",
+      "source_file": "Cargo.toml",
+      "source_lines": [1, 80],
+      "verified": true,
+      "verification_note": "clap listed as dependency in Cargo.toml"
+    },
+    {
+      "id": "claim-005",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 51,
+      "claim_summary": "Uses git2 for Git integration (optional feature)",
+      "source_file": "Cargo.toml",
+      "source_lines": [1, 80],
+      "verified": true,
+      "verification_note": "git2 listed as optional dependency with git feature flag"
+    },
+    {
+      "id": "claim-006",
+      "type": "architecture_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 57,
+      "claim_summary": "Architecture: Input → Config → Controller → Printer → Output pipeline",
+      "source_file": "src/controller.rs",
+      "source_lines": [1, 50],
+      "verified": true,
+      "verification_note": "controller.rs orchestrates the pipeline, confirmed struct/method naming"
+    },
+    {
+      "id": "claim-007",
+      "type": "code_example",
+      "doc_file": "03-syntax-highlighting.md",
+      "doc_line": 41,
+      "claim_summary": "Two syntax loading modes: built-in and cached",
+      "source_file": "src/assets.rs",
+      "source_lines": [1, 30],
+      "verified": true,
+      "verification_note": "Simplified: actual code uses SyntaxSet::load_defaults_newlines() and asset::get_syntax_set()"
+    },
+    {
+      "id": "claim-008",
+      "type": "architecture_claim",
+      "doc_file": "04-git-and-paging.md",
+      "doc_line": 5,
+      "claim_summary": "Uses git2 library (libgit2 Rust binding) for Git support",
+      "source_file": "src/diff.rs",
+      "source_lines": [1, 20],
+      "verified": true,
+      "verification_note": "diff.rs uses git2 crate for diff operations"
+    },
+    {
+      "id": "claim-009",
+      "type": "architecture_claim",
+      "doc_file": "04-git-and-paging.md",
+      "doc_line": 35,
+      "claim_summary": "paging.rs defines PagingMode enum (Always, QuitIfOneScreen, Never); output.rs implements paging logic",
+      "source_file": "src/paging.rs",
+      "source_lines": [1, 7],
+      "verified": true,
+      "verification_note": "paging.rs is a short 7-line file defining PagingMode enum. output.rs (268 lines) contains the actual paging logic."
+    },
+    {
+      "id": "claim-010",
+      "type": "feature_claim",
+      "doc_file": "05-innovation-summary.md",
+      "doc_line": 9,
+      "claim_summary": "Based on TextMate syntax (same as VS Code), supports 200+ languages",
+      "source_file": "src/assets.rs",
+      "source_lines": [1, 50],
+      "verified": true,
+      "verification_note": "syntect uses TextMate .tmLanguage format; 200+ languages from default syntax set (not verified exact count)"
+    }
+  ],
+  "unverified": []
+}

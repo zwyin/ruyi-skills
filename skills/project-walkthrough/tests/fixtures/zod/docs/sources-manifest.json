@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "source_project": {
+    "name": "zod",
+    "repo_url": "https://github.com/colinhacks/zod",
+    "commit_or_tag": "v4.4.3",
+    "local_path": "examples/_src_zod"
+  },
+  "generated_at": "2026-05-07T12:33:00Z",
+  "depth": "medium",
+  "audience": "dev",
+  "claims": [
+    {
+      "id": "claim-001",
+      "type": "version_number",
+      "doc_file": "01-overview.md",
+      "doc_line": 3,
+      "claim_summary": "Walkthrough states version 4.x, actual is 4.4.3",
+      "source_file": "packages/zod/package.json",
+      "source_lines": [3, 3],
+      "verified": true,
+      "verification_note": "packages/zod/package.json shows \"version\": \"4.4.3\" and versions.ts confirms major:4 minor:4 patch:3. Walkthrough says '4.x' which is correct as a range."
+    },
+    {
+      "id": "claim-002",
+      "type": "directory_structure",
+      "doc_file": "01-overview.md",
+      "doc_line": 30,
+      "claim_summary": "Project structure: packages/zod/src/v4/{core,classic,locales,mini}/, packages/zod/src/v3/, packages/bench/, packages/docs/, packages/integration/",
+      "source_file": "packages/zod/src/",
+      "source_lines": null,
+      "verified": true,
+      "verification_note": "Verified: v4/core/, v4/classic/, v4/locales/, v4/mini/, v3/, bench/, docs/, integration/ all exist under the expected paths."
+    },
+    {
+      "id": "claim-003",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 58,
+      "claim_summary": "Uses Vitest as testing framework",
+      "source_file": "package.json",
+      "source_lines": [49, 49],
+      "verified": true,
+      "verification_note": "Root package.json devDependencies includes \"vitest\": \"^4.1.5\"."
+    },
+    {
+      "id": "claim-004",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 58,
+      "claim_summary": "Uses Biome for lint + format",
+      "source_file": "package.json",
+      "source_lines": [19, 19],
+      "verified": true,
+      "verification_note": "Root package.json devDependencies includes \"@biomejs/biome\": \"^1.9.4\"."
+    },
+    {
+      "id": "claim-005",
+      "type": "architecture_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 59,
+      "claim_summary": "Core package has zero runtime dependencies",
+      "source_file": "packages/zod/package.json",
+      "source_lines": [1, 135],
+      "verified": true,
+      "verification_note": "packages/zod/package.json has no 'dependencies' or 'devDependencies' field. All dependencies are in the root package.json as devDependencies. Confirmed zero runtime deps."
+    },
+    {
+      "id": "claim-006",
+      "type": "architecture_claim",
+      "doc_file": "02-type-system.md",
+      "doc_line": 25,
+      "claim_summary": "$ZodType base class defined in v4/core/core.ts with _zod property containing def and traits",
+      "source_file": "packages/zod/src/v4/core/core.ts",
+      "source_lines": [1, 50],
+      "verified": true,
+      "verification_note": "core.ts defines $constructor with _zod property containing def, constr, and traits. The walkthrough's simplified interface (showing _zid, _def, parse, safeParse, optional, nullable) is a conceptual illustration, not literal code. Actual implementation uses _zod.def and _zod.traits."
+    },
+    {
+      "id": "claim-007",
+      "type": "code_example",
+      "doc_file": "03-validation-engine.md",
+      "doc_line": 10,
+      "claim_summary": "Classic parse.ts provides parse, safeParse, parseAsync, safeParseAsync functions",
+      "source_file": "packages/zod/src/v4/classic/parse.ts",
+      "source_lines": [8, 33],
+      "verified": true,
+      "verification_note": "classic/parse.ts exports parse (line 8), parseAsync (line 15), safeParse (line 22), safeParseAsync (line 29). The walkthrough signatures are simplified; actual signatures use core.$ZodType and additional params."
+    },
+    {
+      "id": "claim-008",
+      "type": "code_example",
+      "doc_file": "03-validation-engine.md",
+      "doc_line": 46,
+      "claim_summary": "$ZodIssue interface has code, message, path, expected, received fields",
+      "source_file": "packages/zod/src/v4/core/errors.ts",
+      "source_lines": [10, 48],
+      "verified": true,
+      "verification_note": "errors.ts defines $ZodIssueBase with code, input, path, message fields. $ZodIssueInvalidType adds expected field. 'received' is not a direct field but implied via input. Simplified for clarity."
+    },
+    {
+      "id": "claim-009",
+      "type": "directory_structure",
+      "doc_file": "03-validation-engine.md",
+      "doc_line": 77,
+      "claim_summary": "v4/locales/ contains en.ts, zh-CN.ts, ja.ts locale files",
+      "source_file": "packages/zod/src/v4/locales/",
+      "source_lines": null,
+      "verified": true,
+      "verification_note": "Confirmed: en.ts, zh-CN.ts, ja.ts all exist in v4/locales/. There are 50+ locale files total (ar, az, be, bg, ca, cs, da, de, el, en, eo, es, fa, fi, fr, fr-CA, he, hr, hu, hy, id, is, it, ja, ka, kh, km, ko, lt, mk, ms, nl, no, ota, pl, ps, pt, ro, ru, sl, sv, ta, th, tr, ua, uk, ur, uz, vi, yo, zh-CN, zh-TW)."
+    },
+    {
+      "id": "claim-010",
+      "type": "directory_structure",
+      "doc_file": "05-micro-bundle.md",
+      "doc_line": 42,
+      "claim_summary": "Classic layer files: string.ts, number.ts, boolean.ts, object.ts, array.ts, union.ts, record.ts, tuple.ts, enum.ts, native-enum.ts, effects.ts, coerce.ts, brand.ts, parse.ts, error.ts, external.ts",
+      "source_file": "packages/zod/src/v4/classic/",
+      "source_lines": null,
+      "verified": false,
+      "verification_note": "INCORRECT: The walkthrough lists individual type files (string.ts, number.ts, etc.) but the actual v4/classic/ directory has a different structure: checks.ts, coerce.ts, compat.ts, errors.ts, external.ts, from-json-schema.ts, index.ts, iso.ts, parse.ts, schemas.ts. Types are consolidated into schemas.ts and checks.ts, not split into individual files. The walkthrough's file listing does not match the actual code."
+    },
+    {
+      "id": "claim-011",
+      "type": "code_example",
+      "doc_file": "05-micro-bundle.md",
+      "doc_line": 28,
+      "claim_summary": "Core layer exports $ZodType, $constructor, $ZodError, $ZodIssue, parse, safeParse from v4/core/",
+      "source_file": "packages/zod/src/v4/core/index.ts",
+      "source_lines": [1, 16],
+      "verified": true,
+      "verification_note": "v4/core/index.ts re-exports from core.js, parse.js, errors.js, schemas.js. Simplified but accurate."
+    },
+    {
+      "id": "claim-012",
+      "type": "architecture_claim",
+      "doc_file": "03-validation-engine.md",
+      "doc_line": 87,
+      "claim_summary": "Zod uses lazy method binding (getters) for optional/nullable etc. to reduce instance creation overhead",
+      "source_file": "packages/zod/src/v4/classic/schemas.ts",
+      "source_lines": [10, 51],
+      "verified": true,
+      "verification_note": "schemas.ts lines 10-18 document the lazy-bind mechanism: builder methods live as non-enumerable getters on prototypes, allocated on first access and cached as own properties. The walkthrough's description of lazy binding is accurate."
+    },
+    {
+      "id": "claim-013",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 56,
+      "claim_summary": "Uses esbuild/rollup for build/bundling",
+      "source_file": "package.json",
+      "source_lines": [28, 40],
+      "verified": true,
+      "verification_note": "Root package.json devDependencies includes \"esbuild\": \"^0.25.5\" and \"rollup\": \"^4.60.2\". Also includes \"rolldown\": \"1.0.0-beta.18\" and \"tsdown\": \"^0.21.10\" as build tools."
+    },
+    {
+      "id": "claim-014",
+      "type": "feature_claim",
+      "doc_file": "04-schema-types.md",
+      "doc_line": 98,
+      "claim_summary": "v4 has built-in JSON Schema conversion via z.toJsonSchema() and z.fromJsonSchema()",
+      "source_file": "packages/zod/src/v4/classic/external.ts",
+      "source_lines": [33, 34],
+      "verified": true,
+      "verification_note": "external.ts exports toJSONSchema from json-schema-processors.js and fromJSONSchema from from-json-schema.ts. Confirmed both directions of conversion exist."
+    }
+  ],
+  "unverified": []
+}

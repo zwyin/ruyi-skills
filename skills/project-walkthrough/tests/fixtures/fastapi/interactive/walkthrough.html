@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastAPI Walkthrough</title>
+<style>
+:root{--bg:#fff;--text:#1a1a2e;--sidebar-bg:#f0f0f5;--sidebar-text:#333;--sidebar-hover:#e0e0ea;--sidebar-active:#d0d0e0;--card-bg:#f8f8fc;--card-border:#e0e0e8;--accent:#059669;--link:#059669;--code-bg:#f4f4f8;--quote-bg:#f8f8ff;--quote-border:#05966988}
+[data-theme="dark"]{--bg:#1a1a2e;--text:#e0e0ea;--sidebar-bg:#16213e;--sidebar-text:#c0c0d0;--sidebar-hover:#1a2744;--sidebar-active:#1e2d4a;--card-bg:#1e2744;--card-border:#2a3555;--accent:#059669cc;--link:#059669cc;--code-bg:#162030;--quote-bg:#1a1a30;--quote-border:#05966988}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--sidebar-bg);color:var(--sidebar-text);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;border-right:1px solid var(--card-border);z-index:100}
+.sidebar h2{font-size:14px;padding:8px 20px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.sidebar a{display:block;padding:8px 20px;text-decoration:none;color:var(--sidebar-text);font-size:13px;border-left:3px solid transparent}
+.sidebar a:hover{background:var(--sidebar-hover);border-left-color:var(--accent)}
+.sidebar a.active{background:var(--sidebar-active);border-left-color:var(--accent);font-weight:600}
+.main{margin-left:280px;padding:40px 60px;max-width:860px;width:100%}
+h1{font-size:28px;margin-bottom:16px;color:var(--accent)}h2{font-size:22px;margin:32px 0 12px;color:var(--accent)}h3{font-size:18px;margin:24px 0 8px}h4{font-size:16px;margin:20px 0 8px;opacity:0.9}
+p{margin-bottom:12px}blockquote{border-left:4px solid var(--quote-border);background:var(--quote-bg);padding:12px 20px;margin:16px 0;font-style:italic}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}th,td{border:1px solid var(--card-border);padding:8px 12px;text-align:left}th{background:var(--card-bg);font-weight:600}
+pre{background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:16px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.5}
+code{font-family:'SF Mono',Monaco,'Cascadia Code',monospace}pre code{background:none;border:none;padding:0}p code,li code{background:var(--code-bg);padding:2px 6px;border-radius:3px;font-size:0.9em}
+ul,ol{margin:12px 0 12px 24px}li{margin-bottom:6px}hr{border:none;border-top:1px solid var(--card-border);margin:24px 0}
+details{margin:12px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:12px 16px}summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:14px}
+.nav-links{display:flex;justify-content:space-between;margin:40px 0 20px;padding-top:20px;border-top:1px solid var(--card-border)}.nav-links a{color:var(--link);text-decoration:none}
+.topbar{display:none;position:fixed;top:0;left:0;right:0;height:50px;background:var(--sidebar-bg);border-bottom:1px solid var(--card-border);z-index:200;padding:0 16px;align-items:center;justify-content:space-between}.topbar button{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer}
+.theme-toggle{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.chapter{display:none}.chapter.active{display:block}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:60px 20px 40px}.topbar{display:flex}}
+@media print{.sidebar,.topbar,.theme-toggle{display:none!important}.main{margin-left:0;padding:20px}.chapter{display:block!important;page-break-after:always}}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">&#9790;</button>
+<div class="topbar"><button onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button><span>FastAPI Walkthrough</span><span></span></div>
+<nav class="sidebar" id="sidebar"><h2>章节</h2><a href="#" onclick="showChapter(0);return false;">01 FastAPI 项目走读 — 总览</a>
+<a href="#" onclick="showChapter(1);return false;">02 路由系统与参数提取</a>
+<a href="#" onclick="showChapter(2);return false;">03 依赖注入系统</a>
+<a href="#" onclick="showChapter(3);return false;">04 OpenAPI 自动生成</a>
+<a href="#" onclick="showChapter(4);return false;">05 中间件与安全</a>
+<a href="#" onclick="showChapter(5);return false;">06 创新总结与行业影响</a></nav>
+<main class="main" id="main"><div class="chapter" id="ch0"><h1>FastAPI 项目走读 — 总览</h1>
+<blockquote><p>版本: 0.115.x | 作者: Sebastián Ramírez | 协议: MIT<br>源码: https://github.com/fastapi/fastapi<br>走读日期: 2026-05-07</p></blockquote>
+<h2>一句话概括</h2>
+<p>FastAPI 是一个基于 Python 类型提示的高性能 Web 框架——类型标注就是 API 定义，自动生成文档、校验、序列化。</p>
+<h2>核心问题</h2>
+<p>传统 Web 框架需要手写三遍：路由代码 + 数据校验 + API 文档。类型标注已经提供了足够的信息，为什么不能自动化？</p>
+<h2>解决方案</h2>
+<pre><code>@app.get(&quot;/users/{user_id}&quot;)
+async def read_user(user_id: int, q: str | None = None) -&gt; User:
+    ...</code></pre>
+<p>这一个函数定义同时产出：</p>
+<ul><li>路由匹配（<code>/users/{user_id}</code>）</li><li>参数校验（<code>user_id</code> 必须是 int）</li><li>自动文档（Swagger UI / ReDoc）</li><li>响应序列化（返回 <code>User</code> 模型）</li></ul>
+<h2>项目结构</h2>
+<pre><code>fastapi/
+├── fastapi/                    # 核心源码
+│   ├── applications.py        # FastAPI 主类（继承 Starlette）
+│   ├── routing.py             # 路由注册、参数提取
+│   ├── dependencies/          # 依赖注入系统
+│   ├── openapi/               # OpenAPI schema 生成
+│   ├── middleware/            # 中间件（CORS, GZIP 等）
+│   ├── security/              # 安全工具（OAuth2, JWT）
+│   ├── encoders.py            # JSON 序列化
+│   └── exceptions.py          # HTTP 异常
+├── docs/                      # 文档站（大量 Markdown）
+├── tests/                     # 测试套件
+└──pyproject.toml              # 项目配置</code></pre>
+<h2>技术栈</h2>
+<table><thead><tr><th>技术</th><th>用途</th></tr></thead><tbody><tr><td><strong>Python 3.10+</strong></td><td>核心语言，重度使用 type hints</td></tr><tr><td><strong>Starlette</strong></td><td>ASGI 基础层（请求/响应/中间件）</td></tr><tr><td><strong>Pydantic</strong></td><td>数据校验 + 序列化</td></tr><tr><td><strong>uvicorn</strong></td><td>ASGI 服务器</td></tr><tr><td><strong>httpx</strong></td><td>测试 HTTP 客户端</td></tr><tr><td><strong>anyio</strong></td><td>异步兼容层</td></tr></tbody></table>
+<h2>架构概览</h2>
+<pre><code>HTTP 请求
+  ↓
+[ASGI Server (uvicorn)]
+  ↓
+[Starlette 中间件栈] — CORS, GZIP, HTTPSRedirect...
+  ↓
+[FastAPI 路由匹配] — URL pattern → endpoint
+  ↓
+[依赖注入系统] — 解析参数、校验类型、注入依赖
+  ↓
+[Endpoint 函数] — 用户写的业务逻辑
+  ↓
+[响应序列化] — Pydantic model → JSON
+  ↓
+HTTP 响应 + 自动 OpenAPI 文档</code></pre>
+<hr>
+<div class="nav-links"><span></span><a href="#" onclick="showChapter(1);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch1"><h1>路由系统与参数提取</h1>
+<blockquote><p>FastAPI 的核心：类型标注驱动的路由注册和自动参数解析。</p></blockquote>
+<h2>路由注册</h2>
+<p><code>applications.py</code> 中的 <code>FastAPI</code> 类继承自 Starlette，在此基础上增加了参数自动提取：</p>
+<pre><code># fastapi/applications.py — 核心装饰器
+class FastAPI(Starlette):
+    def get(self, path: str, **kwargs):
+        return self.router.add_api_route(path, **kwargs)</code></pre>
+<p><code>routing.py</code> 的 <code>APIRouter</code> 负责实际的注册逻辑：</p>
+<pre><code># fastapi/routing.py
+class APIRouter:
+    def add_api_route(self, path, endpoint, ...):
+        # 1. 解析函数签名，提取参数
+        # 2. 根据类型标注决定参数来源 (path/query/body/header)
+        # 3. 注册路由到 Starlette</code></pre>
+<h2>参数来源自动推断</h2>
+<p>FastAPI 根据参数的默认值和类型自动判断参数来源：</p>
+<table><thead><tr><th>参数形式</th><th>来源</th><th>示例</th></tr></thead><tbody><tr><td><code>{param}</code> 在路径中</td><td>Path</td><td><code>user_id: int</code></td></tr><tr><td>有默认值</td><td>Query</td><td><code>q: str = None</code></td></tr><tr><td>类型是 Pydantic Model</td><td>Body</td><td><code>item: Item</code></td></tr><tr><td><code>Header()</code> 包装</td><td>Header</td><td><code>user_agent: str = Header()</code></td></tr><tr><td><code>Cookie()</code> 包装</td><td>Cookie</td><td><code>session: str = Cookie()</code></td></tr><tr><td><code>Depends()</code> 包装</td><td>依赖注入</td><td><code>db: Session = Depends(get_db)</code></td></tr></tbody></table>
+<h2>请求体校验</h2>
+<p>当参数类型是 Pydantic Model 时，FastAPI 自动：</p>
+<ol><li>读取请求体 JSON</li><li>用 Pydantic 校验每个字段</li><li>校验失败返回 422 + 详细错误信息</li><li>校验成功传入 typed 对象</li></ol>
+<pre><code>class Item(BaseModel):
+    name: str
+    price: float = Field(gt=0)
+    tags: list[str] = []
+
+@app.post(&quot;/items/&quot;)
+async def create_item(item: Item):  # 自动从 body 解析 + 校验
+    return item</code></pre>
+<h2>响应模型</h2>
+<p>返回类型标注控制响应序列化和文档生成：</p>
+<pre><code>@app.get(&quot;/users/{user_id}&quot;, response_model=UserResponse)
+async def read_user(user_id: int) -&gt; UserResponse:
+    return user  # 自动序列化，过滤多余字段</code></pre>
+<p><code>response_model</code> 同时影响：</p>
+<ul><li>OpenAPI schema 中的响应定义</li><li>实际响应的数据过滤（只返回 model 中定义的字段）</li><li>响应状态码</li></ul>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(0);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(2);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch2"><h1>依赖注入系统</h1>
+<blockquote><p>FastAPI 最强大的设计模式——声明式依赖解析，支持嵌套和异步。</p></blockquote>
+<h2>核心概念</h2>
+<p><code>Depends()</code> 让你声明 endpoint 需要什么，框架自动解析和注入：</p>
+<pre><code>async def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get(&quot;/users/&quot;)
+async def list_users(db: Session = Depends(get_db)):
+    return db.query(User).all()</code></pre>
+<h2>解析流程</h2>
+<pre><code>Endpoint 函数签名
+  ↓
+[分析每个参数]
+  ↓
+遇到 Depends(fn)
+  ↓
+执行 fn，获取返回值
+  ↓
+如果 fn 本身也有 Depends 参数 → 递归解析
+  ↓
+所有依赖解析完毕 → 执行 endpoint
+  ↓
+[清理阶段] yield 依赖的 finally 块执行</code></pre>
+<h2>嵌套依赖</h2>
+<p>依赖可以依赖其他依赖，形成 DAG：</p>
+<pre><code>def get_token(header: str = Header()):
+    # 解析 token
+    return token
+
+def get_current_user(token: str = Depends(get_token), db = Depends(get_db)):
+    # 用 token 查用户
+    return user
+
+@app.get(&quot;/me&quot;)
+async def me(user: User = Depends(get_current_user)):
+    return user</code></pre>
+<p>FastAPI 自动按拓扑顺序解析：<code>get_token</code> → <code>get_db</code> → <code>get_current_user</code> → <code>me</code>。</p>
+<h2>全局依赖</h2>
+<p>可以在路由器和应用级别声明依赖，每个请求都会执行：</p>
+<pre><code>app = FastAPI(dependencies=[Depends(verify_api_key)])
+router = APIRouter(dependencies=[Depends(check_permissions)])</code></pre>
+<h2>依赖缓存</h2>
+<p>同一请求内，同一依赖只执行一次（结果缓存）。这是性能优化——不会重复查数据库或重复验证 token。</p>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(1);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(3);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch3"><h1>OpenAPI 自动生成</h1>
+<blockquote><p>代码即文档——从类型标注自动产出 Swagger UI + ReDoc + OpenAPI JSON。</p></blockquote>
+<h2>生成流程</h2>
+<pre><code>FastAPI 启动
+  ↓
+遍历所有注册的 route
+  ↓
+对每个 endpoint:
+  ├─ 分析函数签名 → 提取参数定义
+  ├─ 分析 Pydantic model → 生成 JSON Schema
+  ├─ 分析响应类型 → 生成响应 schema
+  └─ 读取默认值/Field 描述 → 填充元数据
+  ↓
+合并为 OpenAPI 3.x spec (JSON)
+  ↓
+/swagger/docs     → Swagger UI
+/redoc            → ReDoc
+/openapi.json     → 原始 JSON</code></pre>
+<h2>核心模块</h2>
+<p><code>openapi/utils.py</code> 中的 <code>get_openapi</code> 函数负责整个生成过程：</p>
+<pre><code># 简化逻辑
+def get_openapi(title, version, routes):
+    openapi_schema = {
+        &quot;openapi&quot;: &quot;3.1.0&quot;,
+        &quot;info&quot;: {&quot;title&quot;: title, &quot;version&quot;: version},
+        &quot;paths&quot;: {},
+        &quot;components&quot;: {&quot;schemas&quot;: {}}
+    }
+    for route in routes:
+        # 从 endpoint 函数签名提取参数
+        # 从 Pydantic model 生成 schema
+        # 添加到 paths 和 components
+    return openapi_schema</code></pre>
+<h2>Pydantic → JSON Schema 转换</h2>
+<p>每个 Pydantic Model 自动转换为 JSON Schema：</p>
+<pre><code>class Item(BaseModel):
+    name: str = Field(description=&quot;物品名称&quot;)
+    price: float = Field(gt=0, description=&quot;价格&quot;)
+
+# 自动生成:
+# {
+#   &quot;type&quot;: &quot;object&quot;,
+#   &quot;properties&quot;: {
+#     &quot;name&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;物品名称&quot;},
+#     &quot;price&quot;: {&quot;type&quot;: &quot;number&quot;, &quot;exclusiveMinimum&quot;: 0, &quot;description&quot;: &quot;价格&quot;}
+#   },
+#   &quot;required&quot;: [&quot;name&quot;, &quot;price&quot;]
+# }</code></pre>
+<h2>自定义 OpenAPI</h2>
+<p>可以完全覆盖默认生成：</p>
+<pre><code>def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(...)
+    # 自定义修改
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi</code></pre>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(2);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(4);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch4"><h1>中间件与安全</h1>
+<blockquote><p>FastAPI 继承 Starlette 的中间件栈 + 自带安全工具。</p></blockquote>
+<h2>内置中间件</h2>
+<pre><code>fastapi/middleware/
+├── cors.py            # 跨域资源共享
+├── gzip.py            # GZIP 压缩
+├── httpsredirect.py   # HTTP → HTTPS 重定向
+├── trustedhost.py     # 信任主机头
+└── wsgi.py            # WSGI 应用挂载</code></pre>
+<p>中间件是洋葱模型，请求从外到内，响应从内到外：</p>
+<pre><code>[CORS 中间件] → [GZIP 中间件] → [路由] → [endpoint]
+     ←              ←            ←</code></pre>
+<h3>CORS 配置</h3>
+<pre><code>app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[&quot;*&quot;],
+    allow_methods=[&quot;*&quot;],
+    allow_headers=[&quot;*&quot;],
+)</code></pre>
+<h2>安全模块</h2>
+<p><code>fastapi/security/</code> 提供了常见的认证方案：</p>
+<table><thead><tr><th>模块</th><th>用途</th></tr></thead><tbody><tr><td><code>oauth2.py</code></td><td>OAuth2 密码流、授权码流</td></tr><tr><td><code>http.py</code></td><td>HTTP Basic/Digest 认证</td></tr><tr><td><code>api_key.py</code></td><td>API Key (header/query/cookie)</td></tr><tr><td><code>jwt.py</code></td><td>JWT Bearer token</td></tr></tbody></table>
+<p>这些安全工具返回 <code>Depends()</code> 兼容的依赖，直接注入 endpoint：</p>
+<pre><code>from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=&quot;token&quot;)
+
+@app.get(&quot;/me&quot;)
+async def me(token: str = Depends(oauth2_scheme)):
+    # token 自动从 Authorization header 提取
+    return decode_token(token)</code></pre>
+<h2>异常处理</h2>
+<p>FastAPI 统一了 HTTP 异常和请求校验错误：</p>
+<pre><code># 主动抛出
+raise HTTPException(status_code=404, detail=&quot;Item not found&quot;)
+
+# Pydantic 校验失败自动返回 422:
+{
+    &quot;detail&quot;: [
+        {
+            &quot;loc&quot;: [&quot;body&quot;, &quot;price&quot;],
+            &quot;msg&quot;: &quot;ensure this value is greater than 0&quot;,
+            &quot;type&quot;: &quot;value_error.number.not_gt&quot;
+        }
+    ]
+}</code></pre>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(3);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(5);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch5"><h1>创新总结与行业影响</h1>
+<blockquote><p>FastAPI 重新定义了 Python Web 框架的开发体验——类型标注即 API。</p></blockquote>
+<h2>五大创新</h2>
+<h3>1. 类型标注驱动的 API 开发</h3>
+<p>Python 的 type hints 不只是注解，而是框架的配置语言：</p>
+<pre><code>async def read_user(user_id: int, q: str | None = None) -&gt; User:</code></pre>
+<p>这一行定义了路由、参数来源、校验规则、响应类型、API 文档——传统框架需要 5 处配置。</p>
+<h3>2. 自动 OpenAPI 文档</h3>
+<p>零维护成本的交互式 API 文档。代码改了，文档自动跟着改。消除了&quot;文档和代码不一致&quot;的经典问题。</p>
+<h3>3. 声明式依赖注入</h3>
+<p><code>Depends()</code> 实现了声明式 IoC——endpoint 只声明需要什么，框架负责解析、注入、清理。支持嵌套、异步、生成器（yield + finally 清理）。</p>
+<h3>4. Pydantic 深度集成</h3>
+<p>请求体校验、响应序列化、JSON Schema 生成全部委托给 Pydantic。FastAPI 专注路由和依赖注入，不做重复的校验逻辑。</p>
+<h3>5. 异步优先的 ASGI 设计</h3>
+<p>基于 Starlette 的 ASGI 架构，原生支持 async/await。同一套代码可以跑同步和异步，不需要额外配置。</p>
+<h2>竞品对比</h2>
+<table><thead><tr><th>维度</th><th>FastAPI</th><th>Flask</th><th>Django</th><th>Starlette</th></tr></thead><tbody><tr><td>异步支持</td><td>原生</td><td>需扩展</td><td>部分支持</td><td>原生</td></tr><tr><td>自动文档</td><td>内置</td><td>需扩展</td><td>需扩展</td><td>无</td></tr><tr><td>类型校验</td><td>Pydantic</td><td>手动</td><td>手动</td><td>无</td></tr><tr><td>依赖注入</td><td>内置</td><td>无</td><td>无</td><td>无</td></tr><tr><td>性能</td><td>极高</td><td>中等</td><td>中等</td><td>极高</td></tr><tr><td>学习曲线</td><td>低</td><td>低</td><td>中</td><td>中</td></tr></tbody></table>
+<h2>适用场景</h2>
+<p>最适合：API 服务、微服务、实时应用（WebSocket）、数据科学服务端。 不太适合：服务端渲染 HTML、CMS、需要 Django admin 的项目。</p>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(4);return false;">&larr; 上一章</a><span></span></div></div>
+
+</main>
+<script>
+function toggleTheme(){var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'&#9788;':'&#9790;'}
+(function(){var s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'&#9788;':'&#9790;'})();
+function showChapter(i){document.querySelectorAll('.chapter').forEach(function(c){c.classList.remove('active')});document.querySelectorAll('.sidebar a').forEach(function(a){a.classList.remove('active')});if(document.querySelectorAll('.chapter')[i])document.querySelectorAll('.chapter')[i].classList.add('active');if(document.querySelectorAll('.sidebar a')[i])document.querySelectorAll('.sidebar a')[i].classList.add('active');window.scrollTo(0,0);document.getElementById('sidebar').classList.remove('open')}
+showChapter(0);
+</script>
+</body></html>

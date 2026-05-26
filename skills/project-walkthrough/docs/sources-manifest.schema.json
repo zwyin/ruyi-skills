@@ -1,0 +1,159 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SourcesManifest",
+  "description": "Maps walkthrough claims to source project locations for accuracy verification",
+  "type": "object",
+  "required": ["schema_version", "source_project", "generated_at", "claims"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "source_project": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "repo_url": {
+          "type": "string",
+          "description": "Git repository URL"
+        },
+        "commit_or_tag": {
+          "type": "string",
+          "description": "Git commit hash or tag used as source"
+        },
+        "local_path": {
+          "type": "string",
+          "description": "Local path to source project for verification"
+        }
+      }
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the walkthrough was generated"
+    },
+    "depth": {
+      "type": "string",
+      "enum": ["brief", "medium", "deep"],
+      "description": "Walkthrough depth level"
+    },
+    "audience": {
+      "type": "string",
+      "enum": ["general", "dev"],
+      "description": "Target audience mode"
+    },
+    "lang": {
+      "type": "string",
+      "enum": ["zh", "zh-pure", "en", "bilingual"],
+      "description": "Output language mode"
+    },
+    "claims": {
+      "type": "array",
+      "description": "Verified claims with source references",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "source_file", "claim_summary", "verified"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^claim-\\d{3,}$",
+            "description": "Unique identifier: claim-NNN"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "code_example",
+              "directory_structure",
+              "api_signature",
+              "version_number",
+              "architecture_claim",
+              "dependency_claim",
+              "config_claim",
+              "feature_claim",
+              "performance_claim"
+            ],
+            "description": "Category of the claim"
+          },
+          "doc_file": {
+            "type": "string",
+            "description": "Walkthrough markdown filename (e.g., 01-overview.md)"
+          },
+          "doc_line": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Line number in the markdown file where the claim appears (1-based)"
+          },
+          "claim_summary": {
+            "type": "string",
+            "description": "One-sentence summary of what is claimed"
+          },
+          "source_file": {
+            "type": "string",
+            "description": "Path in the source project (e.g., src/core/engine.rs)"
+          },
+          "source_lines": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Line range [start, end] in source file (1-based, inclusive), or null for directory-level claims"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Whether this claim was verified against the source"
+          },
+          "verification_note": {
+            "type": "string",
+            "description": "How verified: 'exact match', 'simplified for clarity', etc."
+          }
+        }
+      }
+    },
+    "unverified": {
+      "type": "array",
+      "description": "Claims that could not be verified (should be rare)",
+      "items": {
+        "type": "object",
+        "required": ["id", "doc_file", "doc_line", "claim_summary", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^claim-\\d{3,}$"
+          },
+          "doc_file": {
+            "type": "string"
+          },
+          "doc_line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "claim_summary": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why unverified: 'file too large', 'access denied', etc."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "source_project": {
+    "name": "fastapi",
+    "repo_url": "https://github.com/fastapi/fastapi",
+    "commit_or_tag": "0.136.1",
+    "local_path": "examples/_src_fastapi"
+  },
+  "generated_at": "2026-05-07T12:33:00Z",
+  "depth": "medium",
+  "audience": "dev",
+  "claims": [
+    {
+      "id": "claim-001",
+      "type": "version_number",
+      "doc_file": "01-overview.md",
+      "doc_line": 3,
+      "claim_summary": "Walkthrough states version 0.115.x, actual is 0.136.1",
+      "source_file": "fastapi/__init__.py",
+      "source_lines": [3, 3],
+      "verified": true,
+      "verification_note": "STALE: walkthrough says 0.115.x but __init__.py shows __version__ = '0.136.1'. Needs correction."
+    },
+    {
+      "id": "claim-002",
+      "type": "directory_structure",
+      "doc_file": "01-overview.md",
+      "doc_line": 30,
+      "claim_summary": "Project structure: fastapi/ with applications.py, routing.py, dependencies/, openapi/, middleware/, security/, encoders.py, exceptions.py",
+      "source_file": "fastapi/",
+      "source_lines": null,
+      "verified": true,
+      "verification_note": "Verified: applications.py, routing.py, dependencies/, openapi/, middleware/, security/, encoders.py, exceptions.py all exist in fastapi/."
+    },
+    {
+      "id": "claim-003",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 52,
+      "claim_summary": "Depends on Starlette as ASGI base layer",
+      "source_file": "pyproject.toml",
+      "source_lines": [45, 45],
+      "verified": true,
+      "verification_note": "pyproject.toml dependencies lists \"starlette>=0.46.0\"."
+    },
+    {
+      "id": "claim-004",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 53,
+      "claim_summary": "Depends on Pydantic for data validation and serialization",
+      "source_file": "pyproject.toml",
+      "source_lines": [46, 46],
+      "verified": true,
+      "verification_note": "pyproject.toml dependencies lists \"pydantic>=2.9.0\"."
+    },
+    {
+      "id": "claim-005",
+      "type": "architecture_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 34,
+      "claim_summary": "FastAPI class in applications.py inherits from Starlette",
+      "source_file": "fastapi/applications.py",
+      "source_lines": [41, 41],
+      "verified": true,
+      "verification_note": "applications.py line 41: class FastAPI(Starlette) confirms inheritance from Starlette."
+    },
+    {
+      "id": "claim-006",
+      "type": "code_example",
+      "doc_file": "02-routing-and-params.md",
+      "doc_line": 10,
+      "claim_summary": "FastAPI.get() method delegates to self.router.add_api_route()",
+      "source_file": "fastapi/applications.py",
+      "source_lines": [1563, 1570],
+      "verified": true,
+      "verification_note": "Simplified: The actual get() method at line 1563 takes many parameters (path, response_model, etc.) and is a decorator. The walkthrough shows a simplified version. The actual delegation goes through a more complex path via routing.py."
+    },
+    {
+      "id": "claim-007",
+      "type": "api_signature",
+      "doc_file": "02-routing-and-params.md",
+      "doc_line": 19,
+      "claim_summary": "APIRouter class in routing.py handles route registration with parameter extraction",
+      "source_file": "fastapi/routing.py",
+      "source_lines": [1005, 1005],
+      "verified": true,
+      "verification_note": "routing.py line 1005 defines 'class APIRouter(routing.Router)'. It extends Starlette's routing.Router with FastAPI-specific parameter extraction and validation."
+    },
+    {
+      "id": "claim-008",
+      "type": "code_example",
+      "doc_file": "04-openapi-generation.md",
+      "doc_line": 29,
+      "claim_summary": "get_openapi() in openapi/utils.py generates OpenAPI 3.1.0 spec from routes",
+      "source_file": "fastapi/openapi/utils.py",
+      "source_lines": [514, 542],
+      "verified": true,
+      "verification_note": "get_openapi() function at line 514 has openapi_version parameter defaulting to '3.1.0'. It builds the spec by iterating routes, extracting parameters from endpoint signatures, and generating JSON Schema from Pydantic models."
+    },
+    {
+      "id": "claim-009",
+      "type": "directory_structure",
+      "doc_file": "05-middleware.md",
+      "doc_line": 8,
+      "claim_summary": "Middleware directory contains cors.py, gzip.py, httpsredirect.py, trustedhost.py, wsgi.py",
+      "source_file": "fastapi/middleware/",
+      "source_lines": null,
+      "verified": true,
+      "verification_note": "Verified: fastapi/middleware/ contains __init__.py, asyncexitstack.py, cors.py, gzip.py, httpsredirect.py, trustedhost.py, wsgi.py. The walkthrough's listing matches."
+    },
+    {
+      "id": "claim-010",
+      "type": "directory_structure",
+      "doc_file": "05-middleware.md",
+      "doc_line": 39,
+      "claim_summary": "Security modules include oauth2.py, http.py, api_key.py, jwt.py",
+      "source_file": "fastapi/security/",
+      "source_lines": null,
+      "verified": false,
+      "verification_note": "INCORRECT: The walkthrough mentions jwt.py as a security module, but no jwt.py exists in fastapi/security/. The actual files are: __init__.py, api_key.py, base.py, http.py, oauth2.py, open_id_connect_url.py, utils.py. JWT functionality is handled via OAuth2PasswordBearer in oauth2.py, not a separate jwt.py module."
+    },
+    {
+      "id": "claim-011",
+      "type": "architecture_claim",
+      "doc_file": "03-dependency-injection.md",
+      "doc_line": 7,
+      "claim_summary": "Depends() provides declarative dependency injection with recursive resolution and caching",
+      "source_file": "fastapi/dependencies/utils.py",
+      "source_lines": [1, 60],
+      "verified": true,
+      "verification_note": "dependencies/utils.py implements get_dependant() and solve_dependencies() for dependency resolution. It handles nested dependencies via recursive analysis of function signatures. The caching behavior (same dependency executed once per request) is implemented in the solve_dependencies logic."
+    },
+    {
+      "id": "claim-012",
+      "type": "architecture_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 34,
+      "claim_summary": "HTTPException class extends StarletteHTTPException with status_code, detail, headers",
+      "source_file": "fastapi/exceptions.py",
+      "source_lines": [17, 83],
+      "verified": true,
+      "verification_note": "exceptions.py line 17: class HTTPException(StarletteHTTPException) with __init__ taking status_code, detail, headers parameters. Confirmed."
+    },
+    {
+      "id": "claim-013",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 56,
+      "claim_summary": "httpx used as test HTTP client",
+      "source_file": "pyproject.toml",
+      "source_lines": [63, 64],
+      "verified": true,
+      "verification_note": "pyproject.toml standard optional dependencies include \"httpx >=0.23.0,<1.0.0\" and tests dependency group also includes httpx."
+    },
+    {
+      "id": "claim-014",
+      "type": "dependency_claim",
+      "doc_file": "01-overview.md",
+      "doc_line": 56,
+      "claim_summary": "anyio used as async compatibility layer",
+      "source_file": "pyproject.toml",
+      "source_lines": [165, 165],
+      "verified": true,
+      "verification_note": "pyproject.toml tests dependency group includes \"anyio[trio] >=3.2.1,<5.0.0\"."
+    }
+  ],
+  "unverified": []
+}

@@ -1,0 +1,1 @@
+skills/project-walkthrough/SKILL.md

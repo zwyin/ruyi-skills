@@ -1,0 +1,13 @@
+{
+  "name": "project-walkthrough",
+  "description": "Generate structured technical walkthroughs of any software project at configurable depth and audience levels. Outputs markdown docs + interactive HTML.",
+  "version": "1.6.1",
+  "author": {
+    "name": "zwyin"
+  },
+  "homepage": "https://github.com/zwyin/project-walkthrough-skill",
+  "repository": "https://github.com/zwyin/project-walkthrough-skill",
+  "license": "MIT",
+  "keywords": ["walkthrough", "documentation", "code-analysis", "architecture", "learning"],
+  "skills": "./skills/"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "project-walkthrough-skill",
+  "description": "Structured technical walkthrough generator for any software project",
+  "version": "1.6.1",
+  "owner": {
+    "name": "zwyin"
+  },
+  "plugins": [
+    {
+      "name": "project-walkthrough",
+      "source": "./",
+      "description": "Generate structured technical walkthroughs of any software project. Multi-depth (brief/medium/deep), multi-audience (general/dev), multi-language (zh/en). Outputs markdown + interactive HTML.",
+      "category": "development",
+      "tags": ["walkthrough", "documentation", "code-analysis", "architecture", "learning"]
+    }
+  ]
+}

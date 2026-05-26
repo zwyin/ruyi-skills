@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zod Walkthrough</title>
+<style>
+:root{--bg:#fff;--text:#1a1a2e;--sidebar-bg:#f0f0f5;--sidebar-text:#333;--sidebar-hover:#e0e0ea;--sidebar-active:#d0d0e0;--card-bg:#f8f8fc;--card-border:#e0e0e8;--accent:#7c6aef;--link:#7c6aef;--code-bg:#f4f4f8;--quote-bg:#f8f8ff;--quote-border:#7c6aef88}
+[data-theme="dark"]{--bg:#1a1a2e;--text:#e0e0ea;--sidebar-bg:#16213e;--sidebar-text:#c0c0d0;--sidebar-hover:#1a2744;--sidebar-active:#1e2d4a;--card-bg:#1e2744;--card-border:#2a3555;--accent:#7c6aefcc;--link:#7c6aefcc;--code-bg:#162030;--quote-bg:#1a1a30;--quote-border:#7c6aef88}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--sidebar-bg);color:var(--sidebar-text);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;border-right:1px solid var(--card-border);z-index:100}
+.sidebar h2{font-size:14px;padding:8px 20px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.sidebar a{display:block;padding:8px 20px;text-decoration:none;color:var(--sidebar-text);font-size:13px;border-left:3px solid transparent}
+.sidebar a:hover{background:var(--sidebar-hover);border-left-color:var(--accent)}
+.sidebar a.active{background:var(--sidebar-active);border-left-color:var(--accent);font-weight:600}
+.main{margin-left:280px;padding:40px 60px;max-width:860px;width:100%}
+h1{font-size:28px;margin-bottom:16px;color:var(--accent)}h2{font-size:22px;margin:32px 0 12px;color:var(--accent)}h3{font-size:18px;margin:24px 0 8px}h4{font-size:16px;margin:20px 0 8px;opacity:0.9}
+p{margin-bottom:12px}blockquote{border-left:4px solid var(--quote-border);background:var(--quote-bg);padding:12px 20px;margin:16px 0;font-style:italic}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}th,td{border:1px solid var(--card-border);padding:8px 12px;text-align:left}th{background:var(--card-bg);font-weight:600}
+pre{background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:16px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.5}
+code{font-family:'SF Mono',Monaco,'Cascadia Code',monospace}pre code{background:none;border:none;padding:0}p code,li code{background:var(--code-bg);padding:2px 6px;border-radius:3px;font-size:0.9em}
+ul,ol{margin:12px 0 12px 24px}li{margin-bottom:6px}hr{border:none;border-top:1px solid var(--card-border);margin:24px 0}
+details{margin:12px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:12px 16px}summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:14px}
+.nav-links{display:flex;justify-content:space-between;margin:40px 0 20px;padding-top:20px;border-top:1px solid var(--card-border)}.nav-links a{color:var(--link);text-decoration:none}
+.topbar{display:none;position:fixed;top:0;left:0;right:0;height:50px;background:var(--sidebar-bg);border-bottom:1px solid var(--card-border);z-index:200;padding:0 16px;align-items:center;justify-content:space-between}.topbar button{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer}
+.theme-toggle{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.chapter{display:none}.chapter.active{display:block}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:60px 20px 40px}.topbar{display:flex}}
+@media print{.sidebar,.topbar,.theme-toggle{display:none!important}.main{margin-left:0;padding:20px}.chapter{display:block!important;page-break-after:always}}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">&#9790;</button>
+<div class="topbar"><button onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button><span>Zod Walkthrough</span><span></span></div>
+<nav class="sidebar" id="sidebar"><h2>章节</h2><a href="#" onclick="showChapter(0);return false;">01 Zod 项目走读 — 总览</a>
+<a href="#" onclick="showChapter(1);return false;">02 类型系统设计</a>
+<a href="#" onclick="showChapter(2);return false;">03 验证引擎</a>
+<a href="#" onclick="showChapter(3);return false;">04 Schema 类型体系</a>
+<a href="#" onclick="showChapter(4);return false;">05 微型 Bundle 架构</a>
+<a href="#" onclick="showChapter(5);return false;">06 创新总结与行业影响</a></nav>
+<main class="main" id="main"><div class="chapter" id="ch0"><h1>Zod 项目走读 — 总览</h1>
+<blockquote><p>版本: 4.x | 作者: Colin McDonnell | 协议: MIT<br>源码: https://github.com/colinhacks/zod<br>走读日期: 2026-05-07</p></blockquote>
+<h2>一句话概括</h2>
+<p>Zod 是一个 TypeScript 优先的 schema 验证库——定义 schema 既做运行时校验，又自动推断出编译时类型，一个定义两处生效。</p>
+<h2>核心问题</h2>
+<p>JavaScript/TypeScript 项目中，外部数据（API 响应、表单输入、配置文件）的类型安全怎么保证？TypeScript 只在编译时检查，运行时的 <code>any</code> 毫无防护。</p>
+<h2>解决方案</h2>
+<pre><code>z.object({ name: z.string(), age: z.number() })
+  ↓ 编译时
+type Person = { name: string; age: number }  ← 自动推断
+  ↓ 运行时
+schema.parse(input)  ← 校验 + 类型窄化</code></pre>
+<p>一个 schema 定义同时产出：</p>
+<ul><li>运行时验证逻辑（parse/safeParse）</li><li>编译时 TypeScript 类型（通过类型推断）</li></ul>
+<h2>项目结构</h2>
+<pre><code>zod/
+├── packages/
+│   ├── zod/                    # 主包
+│   │   ├── src/
+│   │   │   ├── v4/             # 当前版本
+│   │   │   │   ├── core/       # 核心引擎 + 类型系统
+│   │   │   │   ├── classic/    # 经典 API 层
+│   │   │   │   ├── locales/    # 国际化错误消息
+│   │   │   │   └── mini/       # 最小化 bundle
+│   │   │   └── v3/             # 旧版（兼容）
+│   │   └── package.json
+│   ├── bench/                  # 性能基准
+│   ├── docs/                   # 文档站
+│   └── integration/            # 集成测试
+├── pnpm-workspace.yaml
+└── package.json</code></pre>
+<h2>技术栈</h2>
+<table><thead><tr><th>技术</th><th>用途</th></tr></thead><tbody><tr><td><strong>TypeScript</strong></td><td>核心语言，ES modules</td></tr><tr><td><strong>pnpm</strong></td><td>monorepo 管理 + workspace</td></tr><tr><td><strong>esbuild / rollup</strong></td><td>构建打包</td></tr><tr><td><strong>Vitest</strong></td><td>测试框架</td></tr><tr><td><strong>Biome</strong></td><td>lint + format</td></tr><tr><td><strong>零外部依赖</strong></td><td>核心包无任何 runtime dependency</td></tr></tbody></table>
+<h2>核心工作流</h2>
+<pre><code>定义 Schema (z.object, z.string, ...)
+    ↓
+.parse(data)          → 成功返回 typed data / 失败抛 ZodError
+.safeParse(data)      → 返回 { success, data, error }
+.parseAsync(data)     → 异步版本（支持 async refine）
+    ↓
+类型推断: z.infer&lt;typeof schema&gt; 自动得到 TypeScript 类型</code></pre>
+<hr>
+<div class="nav-links"><span></span><a href="#" onclick="showChapter(1);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch1"><h1>类型系统设计</h1>
+<blockquote><p>Zod 最核心的创新：一套 schema 定义同时产出运行时验证和编译时类型。</p></blockquote>
+<h2>双层架构</h2>
+<pre><code>┌─────────────────────────────────────┐
+│         Classic API 层              │
+│  z.string() z.object() z.union()   │  ← 用户写的
+├─────────────────────────────────────┤
+│         Core 引擎                   │
+│  $ZodType, $constructor, parse()   │  ← 内部机制
+├─────────────────────────────────────┤
+│         TypeScript 类型推断          │
+│  z.infer&lt;T&gt;, z.output&lt;T&gt;           │  ← 编译时
+└─────────────────────────────────────┘</code></pre>
+<h2>Core 类型系统 (<code>v4/core/</code>)</h2>
+<p>核心是 <code>$ZodType</code> 基类，所有 schema 类型都继承自它：</p>
+<pre><code>// packages/zod/src/v4/core/core.ts
+// $ZodType 定义了所有 schema 共享的接口
+interface $ZodType {
+  _zid: string;           // 唯一 ID
+  _def: $ZodDef;          // schema 定义
+  parse(input): unknown;  // 同步解析
+  safeParse(input): SafeResult;
+  optional(): $ZodType;
+  nullable(): $ZodType;
+  // ...
+}</code></pre>
+<p><code>$constructor()</code> 工厂函数用于创建新的 schema 类型：</p>
+<pre><code>// 通过 $constructor 创建具体类型
+const ZodString = $constructor(&quot;$ZodString&quot;, (inst, def) =&gt; {
+  // 初始化逻辑
+  $ZodType.init(inst, def);
+  // 注册验证器
+});</code></pre>
+<h2>类型推断机制</h2>
+<p>Zod 利用 TypeScript 的条件类型和映射类型实现自动推断：</p>
+<pre><code>// z.infer 的简化实现原理
+type infer&lt;T extends $ZodType&gt; =
+  T extends $ZodString ? string :
+  T extends $ZodNumber ? number :
+  T extends $ZodObject&lt;infer Shape&gt; ? { [K in keyof Shape]: infer&lt;Shape[K]&gt; } :
+  // ... 递归处理所有类型
+  never;</code></pre>
+<p>用户写 <code>z.object({ name: z.string() })</code>，TypeScript 自动推断出 <code>{ name: string }</code>，无需手写接口。</p>
+<h2>输入/输出类型分离</h2>
+<p>v4 引入了 input/output 类型分离：</p>
+<pre><code>const schema = z.object({
+  name: z.string(),
+  age: z.coerce.number()  // 输入是 string，输出是 number
+});
+
+type Input  = z.input&lt;typeof schema&gt;;   // { name: string; age: string | number }
+type Output = z.output&lt;typeof schema&gt;;  // { name: string; age: number }</code></pre>
+<p>这解决了 coerce/transform 场景下输入输出类型不同的问题。</p>
+<h2>不可变 API</h2>
+<p>每个方法调用都返回新的 schema 实例，不修改原实例：</p>
+<pre><code>const base = z.string();
+const optional = base.optional(); // 新实例，base 不变
+const withDefault = optional.default(&quot;hello&quot;); // 又一个新实例</code></pre>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(0);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(2);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch2"><h1>验证引擎</h1>
+<blockquote><p>Zod 的验证流程：从用户调用 <code>.parse()</code> 到输出结果或错误的完整链路。</p></blockquote>
+<h2>验证入口</h2>
+<p>Classic API 层提供了几个入口函数：</p>
+<pre><code>// packages/zod/src/v4/classic/parse.ts
+
+// 严格模式：失败抛异常
+function parse&lt;T extends $ZodType&gt;(schema: T, data: unknown): infer&lt;T&gt;;
+
+// 安全模式：返回结果对象
+function safeParse&lt;T extends $ZodType&gt;(schema: T, data: unknown): SafeResult&lt;T&gt;;
+
+// 异步版本（支持 async refine/transform）
+function parseAsync&lt;T extends $ZodType&gt;(schema: T, data: unknown): Promise&lt;infer&lt;T&gt;&gt;;
+function safeParseAsync&lt;T extends $ZodType&gt;(schema: T, data: unknown): Promise&lt;SafeResult&lt;T&gt;&gt;;</code></pre>
+<h2>验证流程</h2>
+<pre><code>input
+  ↓
+[预处理] coerce — 类型强制转换 (e.g. &quot;42&quot; → 42)
+  ↓
+[类型检查] 核心校验逻辑
+  ↓                         ↓
+成功 → 返回 typed data    失败 → 收集 issue
+  ↓                         ↓
+[后处理]                   构造 $ZodError
+  refine — 自定义校验        ├─ issues[] 结构化错误列表
+  transform — 数据变换       ├─ tree formatting
+  default — 默认值填充       └─ flat formatting
+  ↓
+返回最终 output</code></pre>
+<h2>错误系统 (<code>$ZodError</code>)</h2>
+<p>错误是 Zod 的一等公民，不是简单的字符串：</p>
+<pre><code>interface $ZodError {
+  issues: $ZodIssue[];  // 所有验证问题的列表
+}
+
+interface $ZodIssue {
+  code: string;         // 错误类型码
+  message: string;      // 人类可读消息
+  path: (string|number)[];  // 数据路径 e.g. [&quot;user&quot;, &quot;email&quot;]
+  expected?: string;    // 期望的类型
+  received?: string;    // 实际的类型
+}</code></pre>
+<p>错误格式化提供两种视图：</p>
+<pre><code>// 树形格式（按路径嵌套）
+error.format()
+// { user: { email: { _errors: [&quot;Invalid email&quot;] } } }
+
+// 扁平格式
+error.flatten()
+// { formErrors: [], fieldErrors: { &quot;user.email&quot;: [&quot;Invalid email&quot;] } }</code></pre>
+<h2>国际化</h2>
+<p>v4 的错误消息支持多语言：</p>
+<pre><code>v4/locales/
+├── en.ts      # 英文
+├── zh-CN.ts   # 简体中文
+├── ja.ts      # 日文
+└── ...        # 其他语言</code></pre>
+<p>每个 locale 文件导出错误消息映射表，替换默认的英文提示。</p>
+<h2>Lazy Method Binding</h2>
+<p>Zod 使用了一种延迟绑定的优化技巧：</p>
+<pre><code>// 方法首次调用时才绑定到实例
+get optional() {
+  return /* 新的 optional schema */;
+}</code></pre>
+<p>这样做的好处是：</p>
+<ul><li>减少实例创建开销（不是每个方法都在构造时生成）</li><li>保持不可变语义（每次调用返回新实例）</li><li>用户代码无感知</li></ul>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(1);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(3);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch3"><h1>Schema 类型体系</h1>
+<blockquote><p>Zod 提供的完整类型动物园——从基础类型到高级组合子。</p></blockquote>
+<h2>基础类型</h2>
+<table><thead><tr><th>Schema</th><th>TypeScript 类型</th><th>用途</th></tr></thead><tbody><tr><td><code>z.string()</code></td><td><code>string</code></td><td>字符串，支持 min/max/email/url/uuid 等约束</td></tr><tr><td><code>z.number()</code></td><td><code>number</code></td><td>数字，支持 int/positive/negative/finite</td></tr><tr><td><code>z.boolean()</code></td><td><code>boolean</code></td><td>布尔值</td></tr><tr><td><code>z.bigint()</code></td><td><code>bigint</code></td><td>大整数</td></tr><tr><td><code>z.date()</code></td><td><code>Date</code></td><td>日期对象</td></tr><tr><td><code>z.symbol()</code></td><td><code>symbol</code></td><td>Symbol</td></tr><tr><td><code>z.undefined()</code></td><td><code>undefined</code></td><td>undefined</td></tr><tr><td><code>z.null()</code></td><td><code>null</code></td><td>null</td></tr><tr><td><code>z.any()</code></td><td><code>any</code></td><td>任意值</td></tr><tr><td><code>z.unknown()</code></td><td><code>unknown</code></td><td>未知类型</td></tr><tr><td><code>z.void()</code></td><td><code>void</code></td><td>void</td></tr><tr><td><code>z.never()</code></td><td><code>never</code></td><td>永不匹配</td></tr></tbody></table>
+<h2>复合类型</h2>
+<h3>Object</h3>
+<pre><code>const User = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  email: z.string().email(),
+  age: z.number().int().positive().optional(),
+});</code></pre>
+<p>Object schema 支持：</p>
+<ul><li><code>.extend()</code> / <code>.merge()</code> — 扩展字段</li><li><code>.pick()</code> / <code>.omit()</code> — 选择/排除字段</li><li><code>.partial()</code> — 所有字段变 optional</li><li><code>.required()</code> — 所有字段变 required</li><li><code>.strict()</code> — 禁止多余字段</li></ul>
+<h3>Array / Tuple</h3>
+<pre><code>z.array(z.string());              // string[]
+z.tuple([z.string(), z.number()]); // [string, number]
+z.record(z.string(), z.number()); // Record&lt;string, number&gt;</code></pre>
+<h3>Union / Discriminated Union</h3>
+<pre><code>// 普通联合
+z.union([z.string(), z.number()]);
+
+// 鉴别联合（性能更优，按 discriminator 字段分发）
+z.discriminatedUnion(&quot;type&quot;, [
+  z.object({ type: z.literal(&quot;success&quot;), data: z.any() }),
+  z.object({ type: z.literal(&quot;error&quot;), message: z.string() }),
+]);</code></pre>
+<h2>高级特性</h2>
+<h3>Branded Types</h3>
+<p>名义类型（nominal typing），让 TypeScript 区分结构相同但语义不同的类型：</p>
+<pre><code>const BrandEmail = z.string().email().brand&lt;&quot;Email&quot;&gt;();
+type Email = z.infer&lt;typeof BrandEmail&gt;; // string &amp; Brand&lt;&quot;Email&quot;&gt;
+
+// Email 不能赋给普通 string，需要通过验证才能获得</code></pre>
+<h3>Coercion</h3>
+<p>输入自动强制转换类型：</p>
+<pre><code>z.coerce.string();  // 123 → &quot;123&quot;
+z.coerce.number();  // &quot;42&quot; → 42
+z.coerce.date();    // &quot;2024-01-01&quot; → Date
+z.coerce.boolean(); // &quot;true&quot; → true</code></pre>
+<h3>Transform / Refine</h3>
+<pre><code>z.string()
+  .transform((val) =&gt; val.trim().toLowerCase())  // 数据变换
+  .refine((val) =&gt; val.length &gt; 0, &quot;不能为空&quot;)     // 自定义校验
+  .pipe(z.email());                               // 链式组合</code></pre>
+<h3>JSON Schema 互转</h3>
+<p>v4 内置了 JSON Schema 的双向转换：</p>
+<pre><code>z.toJsonSchema(schema);  // Zod schema → JSON Schema
+z.fromJsonSchema(json);  // JSON Schema → Zod schema</code></pre>
+<p>这使 Zod 可以与任何支持 JSON Schema 的工具集成（OpenAPI、FastAPI、Prisma 等）。</p>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(2);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(4);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch4"><h1>微型 Bundle 架构</h1>
+<blockquote><p>Zod v4 的分层设计：core 仅 2KB gzip，classic 完整 API，mini 按需裁剪。</p></blockquote>
+<h2>分层策略</h2>
+<pre><code>┌─────────────────────────────────────────────┐
+│  zod (classic)                              │
+│  完整 API: z.string(), z.object(), ...      │
+│  适合大多数场景                               │
+├─────────────────────────────────────────────┤
+│  zod/mini                                   │
+│  最小化子集: z.string(), z.object() 等       │
+│  去掉错误格式化、coerce 等非核心功能           │
+├─────────────────────────────────────────────┤
+│  zod/core                                   │
+│  核心引擎: $ZodType, parse(), $ZodError      │
+│  ~2KB gzip                                  │
+└─────────────────────────────────────────────┘</code></pre>
+<h2>Core 层 (<code>v4/core/</code>)</h2>
+<p>Core 层只包含最基础的抽象：</p>
+<pre><code>// 核心导出
+export { $ZodType } from &quot;./core&quot;;        // 基类
+export { $constructor } from &quot;./core&quot;;    // 类型工厂
+export { $ZodError, $ZodIssue } from &quot;./error&quot;;  // 错误
+export { parse, safeParse } from &quot;./parse&quot;;       // 解析</code></pre>
+<p>不包含具体类型（没有 <code>ZodString</code>、<code>ZodNumber</code> 等），只有类型系统的基础设施。</p>
+<h2>Classic 层 (<code>v4/classic/</code>)</h2>
+<p>Classic 层在 core 之上构建完整的用户 API：</p>
+<pre><code>v4/classic/
+├── string.ts      # z.string()
+├── number.ts      # z.number()
+├── boolean.ts     # z.boolean()
+├── object.ts      # z.object()
+├── array.ts       # z.array()
+├── union.ts       # z.union() + z.discriminatedUnion()
+├── record.ts      # z.record()
+├── tuple.ts       # z.tuple()
+├── enum.ts        # z.enum()
+├── native-enum.ts # z.nativeEnum()
+├── effects.ts     # refine / transform / preprocess
+├── coerce.ts      # 类型强制转换
+├── brand.ts       # 名义类型
+├── parse.ts       # parse / safeParse / async 版本
+├── error.ts       # 错误格式化
+└── external.ts    # 重新导出所有类型</code></pre>
+<h2>Mini 层 (<code>v4/mini/</code>)</h2>
+<p>针对 bundle size 敏感的场景（浏览器、边缘计算）：</p>
+<pre><code>// 从 mini 导入 — 只打包用到的类型
+import { z } from &quot;zod/mini&quot;;
+
+const schema = z.object({
+  name: z.string(),
+  age: z.number(),
+});</code></pre>
+<p>Mini 裁掉了：</p>
+<ul><li>错误格式化（format/flatten）</li><li>Coercion</li><li>Branded types</li><li>JSON Schema 互转</li><li>国际化</li></ul>
+<h2>Tree-shaking 设计</h2>
+<p>Zod v4 的模块化设计天然支持 tree-shaking：</p>
+<pre><code>// 只导入 string 和 object，不会打包 array/union/...
+import { z } from &quot;zod&quot;;
+z.string(); // 只打包 string 相关代码</code></pre>
+<p>每个类型是独立模块，bundler 可以精确地只打包用到的类型。</p>
+<h2>与 v3 的对比</h2>
+<table><thead><tr><th>维度</th><th>v3</th><th>v4</th></tr></thead><tbody><tr><td>架构</td><td>单体</td><td>core + classic + mini</td></tr><tr><td>Core gzip</td><td>~13KB</td><td>~2KB</td></tr><tr><td>Bundle 策略</td><td>无分层</td><td>三层可选</td></tr><tr><td>模块化</td><td>全量导入</td><td>per-type 模块</td></tr><tr><td>向后兼容</td><td>—</td><td>v3 作为子集保留</td></tr></tbody></table>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(3);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(5);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch5"><h1>创新总结与行业影响</h1>
+<blockquote><p>Zod 重新定义了 &quot;TypeScript 优先&quot; 的验证库该是什么样。</p></blockquote>
+<h2>五大创新</h2>
+<h3>1. Schema = Type + Validator</h3>
+<p>传统方案需要写两遍——TypeScript 接口 + 运行时校验（Joi、Yup）。Zod 合二为一：</p>
+<pre><code>// 传统：两处定义，容易不一致
+interface User { name: string; age: number; }
+const validate = (data) =&gt; { /* 手写校验 */ };
+
+// Zod：一处定义
+const UserSchema = z.object({ name: z.string(), age: z.number() });
+type User = z.infer&lt;typeof UserSchema&gt;; // 自动推断</code></pre>
+<h3>2. Input/Output 类型分离</h3>
+<p>v4 引入的 <code>z.input&lt;&gt;</code> vs <code>z.output&lt;&gt;</code> 解决了 coerce/transform 场景的类型安全：</p>
+<pre><code>const schema = z.object({ age: z.coerce.number() });
+type In  = z.input&lt;typeof schema&gt;;   // { age: string }
+type Out = z.output&lt;typeof schema&gt;;  // { age: number }</code></pre>
+<p>这在 API 边界（接收 string query params，输出 typed 数据）非常有用。</p>
+<h3>3. 微型 Bundle 架构</h3>
+<p>core 2KB gzip + 分层打包，让 Zod 可以用在之前不敢用的场景：</p>
+<ul><li>Cloudflare Workers（50ms CPU 限制）</li><li>浏览器扩展</li><li>移动端 React Native</li></ul>
+<h3>4. JSON Schema 双向互转</h3>
+<p>不只是一个验证库，还是 TypeScript 类型系统的通用桥接层：</p>
+<pre><code>TypeScript ↔ Zod ↔ JSON Schema ↔ OpenAPI / Prisma / FastAPI</code></pre>
+<p>这让 Zod 成为整个生态的类型中枢。</p>
+<h3>5. 错误作为一等公民</h3>
+<p>结构化的 <code>$ZodIssue</code> + 路径信息 + 树形/扁平格式化 + 国际化，远超简单的 &quot;invalid&quot; 字符串。错误是 API 响应、表单校验、日志系统的可靠数据源。</p>
+<h2>竞品对比</h2>
+<table><thead><tr><th>维度</th><th>Zod v4</th><th>Joi</th><th>Yup</th><th>Valibot</th></tr></thead><tbody><tr><td>TS 类型推断</td><td>自动</td><td>无</td><td>基础</td><td>自动</td></tr><tr><td>零依赖</td><td>是</td><td>否</td><td>否</td><td>是</td></tr><tr><td>Bundle size (core)</td><td>~2KB</td><td>~70KB</td><td>~20KB</td><td>~0.5KB</td></tr><tr><td>JSON Schema 互转</td><td>内置</td><td>需插件</td><td>需插件</td><td>需插件</td></tr><tr><td>国际化</td><td>内置</td><td>无</td><td>无</td><td>无</td></tr><tr><td>TS 优先设计</td><td>是</td><td>否</td><td>部分</td><td>是</td></tr></tbody></table>
+<h2>推荐阅读顺序</h2>
+<p>如果是 Zod 新手：先读 <a href="#">01-overview</a> → <a href="#">04-schema-types</a> → 动手写几个 schema。 如果评估是否采用：重点看 <a href="#">02-type-system</a> 和 <a href="#">05-micro-bundle</a> 的分层设计。 如果贡献代码：从 <code>v4/core/</code> 开始读，理解 <code>$ZodType</code> 和 <code>$constructor</code> 的机制。</p>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(4);return false;">&larr; 上一章</a><span></span></div></div>
+
+</main>
+<script>
+function toggleTheme(){var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'&#9788;':'&#9790;'}
+(function(){var s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'&#9788;':'&#9790;'})();
+function showChapter(i){document.querySelectorAll('.chapter').forEach(function(c){c.classList.remove('active')});document.querySelectorAll('.sidebar a').forEach(function(a){a.classList.remove('active')});if(document.querySelectorAll('.chapter')[i])document.querySelectorAll('.chapter')[i].classList.add('active');if(document.querySelectorAll('.sidebar a')[i])document.querySelectorAll('.sidebar a')[i].classList.add('active');window.scrollTo(0,0);document.getElementById('sidebar').classList.remove('open')}
+showChapter(0);
+</script>
+</body></html>

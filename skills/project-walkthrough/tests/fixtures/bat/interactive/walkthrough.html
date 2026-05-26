@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bat Walkthrough</title>
+<style>
+:root{--bg:#fff;--text:#1a1a2e;--sidebar-bg:#f0f0f5;--sidebar-text:#333;--sidebar-hover:#e0e0ea;--sidebar-active:#d0d0e0;--card-bg:#f8f8fc;--card-border:#e0e0e8;--accent:#d97706;--link:#d97706;--code-bg:#f4f4f8;--quote-bg:#f8f8ff;--quote-border:#d9770688}
+[data-theme="dark"]{--bg:#1a1a2e;--text:#e0e0ea;--sidebar-bg:#16213e;--sidebar-text:#c0c0d0;--sidebar-hover:#1a2744;--sidebar-active:#1e2d4a;--card-bg:#1e2744;--card-border:#2a3555;--accent:#d97706cc;--link:#d97706cc;--code-bg:#162030;--quote-bg:#1a1a30;--quote-border:#d9770688}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--sidebar-bg);color:var(--sidebar-text);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;border-right:1px solid var(--card-border);z-index:100}
+.sidebar h2{font-size:14px;padding:8px 20px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.sidebar a{display:block;padding:8px 20px;text-decoration:none;color:var(--sidebar-text);font-size:13px;border-left:3px solid transparent}
+.sidebar a:hover{background:var(--sidebar-hover);border-left-color:var(--accent)}
+.sidebar a.active{background:var(--sidebar-active);border-left-color:var(--accent);font-weight:600}
+.main{margin-left:280px;padding:40px 60px;max-width:860px;width:100%}
+h1{font-size:28px;margin-bottom:16px;color:var(--accent)}h2{font-size:22px;margin:32px 0 12px;color:var(--accent)}h3{font-size:18px;margin:24px 0 8px}h4{font-size:16px;margin:20px 0 8px;opacity:0.9}
+p{margin-bottom:12px}blockquote{border-left:4px solid var(--quote-border);background:var(--quote-bg);padding:12px 20px;margin:16px 0;font-style:italic}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}th,td{border:1px solid var(--card-border);padding:8px 12px;text-align:left}th{background:var(--card-bg);font-weight:600}
+pre{background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:16px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.5}
+code{font-family:'SF Mono',Monaco,'Cascadia Code',monospace}pre code{background:none;border:none;padding:0}p code,li code{background:var(--code-bg);padding:2px 6px;border-radius:3px;font-size:0.9em}
+ul,ol{margin:12px 0 12px 24px}li{margin-bottom:6px}hr{border:none;border-top:1px solid var(--card-border);margin:24px 0}
+details{margin:12px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:12px 16px}summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:14px}
+.nav-links{display:flex;justify-content:space-between;margin:40px 0 20px;padding-top:20px;border-top:1px solid var(--card-border)}.nav-links a{color:var(--link);text-decoration:none}
+.topbar{display:none;position:fixed;top:0;left:0;right:0;height:50px;background:var(--sidebar-bg);border-bottom:1px solid var(--card-border);z-index:200;padding:0 16px;align-items:center;justify-content:space-between}.topbar button{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer}
+.theme-toggle{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.chapter{display:none}.chapter.active{display:block}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:60px 20px 40px}.topbar{display:flex}}
+@media print{.sidebar,.topbar,.theme-toggle{display:none!important}.main{margin-left:0;padding:20px}.chapter{display:block!important;page-break-after:always}}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">&#9790;</button>
+<div class="topbar"><button onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button><span>bat Walkthrough</span><span></span></div>
+<nav class="sidebar" id="sidebar"><h2>章节</h2><a href="#" onclick="showChapter(0);return false;">01 bat 项目走读 — 总览</a>
+<a href="#" onclick="showChapter(1);return false;">02 输入处理与配置系统</a>
+<a href="#" onclick="showChapter(2);return false;">03 语法高亮引擎</a>
+<a href="#" onclick="showChapter(3);return false;">04 Git 集成与分页器</a>
+<a href="#" onclick="showChapter(4);return false;">05 创新总结与行业影响</a></nav>
+<main class="main" id="main"><div class="chapter" id="ch0"><h1>bat 项目走读 — 总览</h1>
+<blockquote><p>版本: 0.25.x | 作者: David Peter (sharkdp) | 协议: Apache 2.0 / MIT<br>源码: https://github.com/sharkdp/bat<br>走读日期: 2026-05-07</p></blockquote>
+<h2>一句话概括</h2>
+<p>bat 是一个用 Rust 写的 cat(1) 替代品——加了语法高亮、Git 集成和分页器，让终端文件查看体验从 1980 年代跳到了现代。</p>
+<h2>核心问题</h2>
+<p><code>cat</code> 命令 50 年没变——无高亮、无行号、无 Git 感知。终端已经是开发者最常用的界面，为什么查看文件还这么原始？</p>
+<h2>解决方案</h2>
+<pre><code># cat — 无高亮、无行号
+cat src/main.rs
+
+# bat — 语法高亮 + 行号 + Git 变更标记 + 自动分页
+bat src/main.rs</code></pre>
+<h2>项目结构</h2>
+<pre><code>bat/
+├── src/
+│   ├── bin/bat/main.rs     # CLI 入口
+│   ├── lib.rs              # 库 API
+│   ├── controller.rs       # 主控流程
+│   ├── input.rs            # 输入处理（文件/stdin）
+│   ├── printer.rs          # 语法高亮引擎
+│   ├── output.rs           # 输出 &amp; 分页
+│   ├── config.rs           # 配置管理
+│   ├── assets/             # 语法 &amp; 主题资源
+│   └── syntax_mapping/     # 语言映射规则
+├── tests/                  # 集成测试
+├── assets/                 # 打包资源（语法集、主题）
+└── Cargo.toml              # Rust 项目配置</code></pre>
+<h2>技术栈</h2>
+<table><thead><tr><th>技术</th><th>用途</th></tr></thead><tbody><tr><td><strong>Rust 1.88+</strong></td><td>核心语言</td></tr><tr><td><strong>syntect</strong></td><td>语法高亮引擎（TextMate 语法）</td></tr><tr><td><strong>clap</strong></td><td>CLI 参数解析</td></tr><tr><td><strong>git2</strong></td><td>Git 集成（可选 feature）</td></tr><tr><td><strong>minus</strong></td><td>内置分页器（可选 feature）</td></tr><tr><td><strong>nu-ansi-term</strong></td><td>ANSI 颜色输出</td></tr></tbody></table>
+<h2>架构概览</h2>
+<pre><code>输入源 (文件/stdin/管道)
+  ↓
+[Input] — 文件读取 + 编码检测
+  ↓
+[Config] — 合并 CLI 参数 + 配置文件 + 环境变量
+  ↓
+[Controller] — 编排整个流程
+  ↓
+[Printer] — 语法高亮 + 行号 + Git 变更标记
+  ↓
+[Output] — stdout / 分页器 / 内置分页器</code></pre>
+<hr>
+<div class="nav-links"><span></span><a href="#" onclick="showChapter(1);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch1"><h1>输入处理与配置系统</h1>
+<blockquote><p>bat 如何处理多种输入源和三层配置合并。</p></blockquote>
+<h2>输入源</h2>
+<p><code>input.rs</code> 负责处理多种输入来源：</p>
+<table><thead><tr><th>输入类型</th><th>处理方式</th></tr></thead><tbody><tr><td>文件路径</td><td>直接读取，检测编码</td></tr><tr><td>stdin/管道</td><td>缓冲读取</td></tr><tr><td>目录</td><td>跳过，提示</td></tr><tr><td><code>-</code> (显式 stdin)</td><td>与 stdin 相同</td></tr><tr><td>内联脚本 <code>&lt;&lt;&lt;</code></td><td>shell 展开后读取</td></tr></tbody></table>
+<p>编码检测：优先尝试 UTF-8，失败后用无损转换保证不丢数据。</p>
+<h2>配置系统</h2>
+<p><code>config.rs</code> 实现了三层配置合并：</p>
+<pre><code>优先级从高到低:
+1. CLI 参数 (--style, --theme, --paging 等)
+2. 环境变量 (BAT_STYLE, BAT_THEME, BAT_PAGER 等)
+3. 配置文件 (~/.config/bat/config)</code></pre>
+<p>配置文件是简单的 key=value 格式：</p>
+<pre><code># ~/.config/bat/config
+--theme=&quot;TwoDark&quot;
+--style=&quot;full&quot;
+--paging=&quot;auto&quot;
+--map-syntax &quot;.conf:JSON&quot;</code></pre>
+<h2>Style 组件</h2>
+<p>bat 的 <code>--style</code> 参数支持组合多个组件：</p>
+<pre><code># 只显示行号和高亮
+bat --style numbers,highlight
+
+# 完整样式（默认）
+bat --style full
+# = header + grid + numbers + changes + snip</code></pre>
+<table><thead><tr><th>组件</th><th>作用</th></tr></thead><tbody><tr><td><code>numbers</code></td><td>行号</td></tr><tr><td><code>header</code></td><td>文件名头部</td></tr><tr><td><code>grid</code></td><td>行分隔线</td></tr><tr><td><code>changes</code></td><td>Git 变更标记</td></tr><tr><td><code>snip</code></td><td>长文件省略标记</td></tr></tbody></table>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(0);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(2);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch2"><h1>语法高亮引擎</h1>
+<blockquote><p>bat 的核心价值——基于 syntect 的 TextMate 语法高亮。</p></blockquote>
+<h2>高亮流程</h2>
+<pre><code>文件内容
+  ↓
+[语言检测] — 文件扩展名 / shebang / 自定义映射
+  ↓
+[语法加载] — 从缓存或内置语法集加载 TextMate 语法
+  ↓
+[Tokenize] — syntect 解析为 token 序列
+  ↓
+[Theme 应用] — 将 token 映射到主题颜色
+  ↓
+[ANSI 输出] — 生成终端可显示的彩色文本</code></pre>
+<h2>语言检测</h2>
+<p>bat 的语言检测链：</p>
+<pre><code>1. --language 参数（显式指定）
+2. 自定义映射 (--map-syntax)
+3. 文件扩展名匹配
+4. shebang 行检测 (#!/usr/bin/env python)
+5. 内容嗅探 (第一行匹配)
+6. 回退到纯文本</code></pre>
+<p><code>syntax_mapping/</code> 目录包含自定义语言映射规则，用户可以通过配置文件扩展。</p>
+<h2>语法资源管理</h2>
+<p><code>assets/</code> 模块处理语法集和主题的加载：</p>
+<pre><code>// 两种加载模式
+// 1. 内置模式：编译时打包到二进制
+let syntax_set = SyntaxSet::load_defaults_newlines();
+
+// 2. 缓存模式：从缓存目录加载（支持用户自定义语法）
+let syntax_set = asset::get_syntax_set()?;</code></pre>
+<p>缓存机制：</p>
+<ul><li>首次运行：从二进制解压到 <code>~/.cache/bat/</code></li><li>后续运行：直接从缓存加载</li><li>用户自定义语法放入 <code>~/.config/bat/syntaxes/</code> 后自动编译</li></ul>
+<h2>主题系统</h2>
+<p>内置多个主题，也可以自定义：</p>
+<pre><code>bat --list-themes          # 列出所有可用主题
+bat --theme=TwoDark file   # 使用特定主题</code></pre>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(1);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(3);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch3"><h1>Git 集成与分页器</h1>
+<blockquote><p>bat 如何在文件查看中集成 Git 变更标记和多策略分页。</p></blockquote>
+<h2>Git 集成</h2>
+<p>bat 使用 <code>git2</code> 库（libgit2 的 Rust 绑定）实现原生 Git 支持：</p>
+<pre><code># 显示 Git 变更标记
+bat --style changes src/main.rs</code></pre>
+<p>输出示例：</p>
+<pre><code>    1 │ use std::io;          ← 无变更
++   2 │ use clap::Parser;     ← 新增行 (绿色 +)
+-   3 │ fn main() {           ← 删除行 (红色 -，与工作树对比)
+    4 │     println!(&quot;hi&quot;);   ← 无变更</code></pre>
+<h3>变更检测策略</h3>
+<pre><code>1. 检查文件是否在 Git 仓库中
+2. 比较工作区文件与 HEAD 版本
+3. 对每行标记状态: added / removed / modified / unchanged
+4. 用 ANSI 颜色在 gutter 区域显示标记</code></pre>
+<p>如果文件不在 Git 仓库中，变更标记自动跳过，不影响性能。</p>
+<h2>分页器策略</h2>
+<p><code>output.rs</code> 实现了三种分页模式：</p>
+<table><thead><tr><th>模式</th><th>说明</th><th>何时使用</th></tr></thead><tbody><tr><td><strong>never</strong></td><td>直接输出到 stdout</td><td>输出内容少，或管道模式</td></tr><tr><td><strong>always</strong></td><td>总是使用分页器</td><td>用户显式指定</td></tr><tr><td><strong>auto</strong></td><td>自动判断</td><td>默认模式</td></tr></tbody></table>
+<h3>auto 模式决策逻辑</h3>
+<pre><code>输出到终端？
+  ├─ 否 → 直接输出 (管道/重定向)
+  └─ 是 → 输出行数 &gt; 终端高度？
+       ├─ 否 → 直接输出
+       └─ 是 → 启动分页器</code></pre>
+<h3>分页器选择</h3>
+<pre><code>1. 内置分页器 (minus) — 如果启用了 builtin-pager feature
+2. 环境变量 BAT_PAGER — 用户自定义
+3. 环境变量 PAGER — 系统 pager
+4. less — 默认分页器
+   └─ 自动传入 -R (支持 ANSI color) + -F (内容不足一屏不启动)</code></pre>
+<p>这个设计让 bat 的输出体验像 <code>git diff</code> 一样——内容少时直接显示，多时自动分页。</p>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(2);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(4);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch4"><h1>创新总结与行业影响</h1>
+<blockquote><p>bat 证明了：一个 50 年没变的基础工具也可以重新设计。</p></blockquote>
+<h2>五大创新</h2>
+<h3>1. 语法高亮的文件查看</h3>
+<p>把 IDE 级别的语法高亮带到终端。基于 TextMate 语法（和 VS Code 同源），支持 200+ 语言。不再是白底黑字。</p>
+<h3>2. Git 原生集成</h3>
+<p>文件查看器第一次能感知版本控制。不需要单独跑 <code>git diff</code>，看文件时就能看到哪些行被修改了。</p>
+<h3>3. 智能分页器策略</h3>
+<p>auto 模式解决了 &quot;cat 太短不管用，less 太长要退出&quot; 的痛点。内容少直接显示，多时自动分页，管道时自动关闭。三行代码做到的事，cat 50 年没做。</p>
+<h3>4. 三层配置系统</h3>
+<p>CLI &gt; 环境变量 &gt; 配置文件。用户可以从任何层级定制行为，不需要改命令。这比传统 Unix 工具的 &quot;只有环境变量&quot; 好得多。</p>
+<h3>5. 资源缓存机制</h3>
+<p>语法集编译一次缓存到本地，后续启动几乎是零开销。同时支持用户自定义语法——放入 <code>~/.config/bat/syntaxes/</code> 即可。</p>
+<h2>竞品对比</h2>
+<table><thead><tr><th>维度</th><th>bat</th><th>cat</th><th>less</th><th>pygments (pygmentize)</th></tr></thead><tbody><tr><td>语法高亮</td><td>内置</td><td>无</td><td>无</td><td>有（需安装 Python）</td></tr><tr><td>Git 集成</td><td>内置</td><td>无</td><td>无</td><td>无</td></tr><tr><td>行号</td><td>内置</td><td>无</td><td>有 (-N)</td><td>有</td></tr><tr><td>分页</td><td>自动</td><td>无</td><td>就是分页器</td><td>无</td></tr><tr><td>速度</td><td>极快</td><td>极快</td><td>快</td><td>慢（Python）</td></tr><tr><td>二进制大小</td><td>~5MB</td><td>系统内置</td><td>系统内置</td><td>~20MB (Python)</td></tr></tbody></table>
+<h2>适用场景</h2>
+<ul><li>替代 <code>cat</code> — 日常文件查看</li><li>替代 <code>less</code> — 带高亮的分页查看</li><li>替代 <code>head</code>/<code>tail</code> — 带行号的输出</li><li>代码审查 — Git 变更 + 高亮</li><li>演示 — 文件内容展示</li></ul>
+<h2>alias 建议</h2>
+<pre><code># 在 .bashrc/.zshrc 中
+alias cat=&quot;bat --paging=never&quot;</code></pre>
+<hr>
+<div class="nav-links"><a href="#" onclick="showChapter(3);return false;">&larr; 上一章</a><span></span></div></div>
+
+</main>
+<script>
+function toggleTheme(){var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'&#9788;':'&#9790;'}
+(function(){var s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'&#9788;':'&#9790;'})();
+function showChapter(i){document.querySelectorAll('.chapter').forEach(function(c){c.classList.remove('active')});document.querySelectorAll('.sidebar a').forEach(function(a){a.classList.remove('active')});if(document.querySelectorAll('.chapter')[i])document.querySelectorAll('.chapter')[i].classList.add('active');if(document.querySelectorAll('.sidebar a')[i])document.querySelectorAll('.sidebar a')[i].classList.add('active');window.scrollTo(0,0);document.getElementById('sidebar').classList.remove('open')}
+showChapter(0);
+</script>
+</body></html>
