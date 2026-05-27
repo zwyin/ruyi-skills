@@ -297,6 +297,17 @@ project_study_<project-name>/
 
 ## Process
 
+### Version Check
+
+> Before starting any phase, check for updates.
+
+```bash
+bash scripts/check_update.sh
+```
+
+If the script outputs an upgrade reminder, inform the user: "A new version is available. You can continue with the current version, or run `claude plugin update ruyi-skills` to upgrade."
+The check has a 24-hour cache and won't query the network every time. Silently skips on failure without blocking the main workflow.
+
 ### Phase 0: Analyze & Confirm (~5% of time)
 
 **Purpose:** Analyze input content, determine scope, get user confirmation before generating. Like baoyu-comic's Step 1.2 + Step 2.
