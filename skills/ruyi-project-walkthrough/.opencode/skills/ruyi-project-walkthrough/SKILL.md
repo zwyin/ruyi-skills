@@ -260,8 +260,10 @@ Generate all three depth levels sequentially. Starts with brief, then medium, th
 
 ## Output Structure
 
+The output directory name MUST use the skill's name prefix: `<prefix>_project_study_<project-name>/`, where `<prefix>` comes from the `name` field in frontmatter (e.g., `ruyi` from `ruyi-project-walkthrough` → `ruyi_project_study_my-codebase/`).
+
 ```
-project_study_<project-name>/
+<prefix>_project_study_<project-name>/
 ├── analysis.md                          ← Content analysis (Phase 0)
 ├── docs/
 │   ├── 01-overview.md              ← Brief level (flat, no subdirectory)
@@ -723,6 +725,9 @@ Do NOT claim completion or deliver HTML until ALL of these pass:
 - [ ] Quiz answers are correct (if quiz exists)
 
 **Report to user (read values from verify-result.json):**
+
+The final output MUST follow this exact structure — do not omit any section:
+
 ```
 Walkthrough Generation Complete
 ================================
@@ -740,7 +745,24 @@ Quality metrics (from verify-result.json):
 ├─ Code blocks: <C> (manifest entries: <M>)
 ├─ Quiz: <Q> questions
 └─ Status: PASSED ✓
+
+文件列表：
+- <output_directory>/analysis.md — 内容分析
+- <output_directory>/docs/01-<title>.md — <one-line description>
+- <output_directory>/docs/02-<title>.md — <one-line description>
+- ... (one line per chapter)
+- <output_directory>/docs/sources-manifest.json — <M> 条验证声明
+- <output_directory>/interactive/walkthrough-<project>-<depth>-<timestamp>.html — 交互式 HTML
+
+<N> 个章节涵盖：<list key topics in one sentence>。
+HTML 文件是自包含的，可直接在浏览器中打开（含侧边栏导航、明暗主题切换和 <Q> 道 Quiz）。
 ```
+
+**Rules:**
+1. Every output MUST include all three sections: summary tree + file list + text description
+2. File list: one line per output file with relative path + short description (Chinese)
+3. Text description: summarize what the chapters cover, mention HTML features
+4. Do NOT fabricate values — read from verify-result.json
 
 **IMPORTANT:** The quality metrics above MUST be read from `verify-result.json`, not fabricated. If the file does not exist, report "Verification: NOT RUN" — do not claim PASSED.
 
