@@ -311,6 +311,38 @@ data.forEach(function(item,idx){{
 </script>'''
 
 
+def build_watermark_section(tool_name, tool_url, lang="zh"):
+    """Generate promo page as the last chapter of the HTML report."""
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    is_en = lang in ("en", "bilingual")
+
+    if is_en:
+        heading = "About This Report"
+        gen_line = f"Generated on {now}"
+        tool_line = f"Built with <strong>{escape_html(tool_name)}</strong>"
+        url_line = f'<a href="{sanitize_url(tool_url)}" target="_blank">{escape_html(tool_url)}</a>' if tool_url else ""
+        closing = "Feedback and contributions are welcome!"
+    else:
+        heading = "关于本报告"
+        gen_line = f"生成时间：{now}"
+        tool_line = f"使用工具：<strong>{escape_html(tool_name)}</strong>"
+        url_line = f'<a href="{sanitize_url(tool_url)}" target="_blank">{escape_html(tool_url)}</a>' if tool_url else ""
+        closing = "欢迎大家使用、讨论和反馈！"
+
+    parts = [f'<div class="chapter" id="ch-watermark">']
+    parts.append(f'<h1>{heading}</h1>')
+    parts.append(f'<div style="text-align:center;padding:40px 20px;">')
+    parts.append(f'<p style="font-size:15px;color:var(--text);opacity:0.85;">{gen_line}</p>')
+    parts.append(f'<p style="font-size:15px;color:var(--text);margin-top:16px;">{tool_line}</p>')
+    if url_line:
+        parts.append(f'<p style="margin-top:12px;">{url_line}</p>')
+    parts.append(f'<p style="font-size:14px;color:var(--text);opacity:0.7;margin-top:24px;">{closing}</p>')
+    parts.append('</div>')
+    parts.append('<div class="nav-links"><span></span><span></span></div>')
+    parts.append('</div>')
+    return chr(10).join(parts)
+
+
 # ── Title extraction ──────────────────────────────────────────────
 
 def extract_title(md):
@@ -323,7 +355,7 @@ def extract_title(md):
 
 # ── HTML assembly ─────────────────────────────────────────────────
 
-def build_html(chapters, accent, title, lang="zh", quiz_html=""):
+def build_html(chapters, accent, title, lang="zh", quiz_html="", watermark_html=""):
     l = I18N.get(lang, I18N["zh"])
     divs, links = [], []
     for idx, ch in enumerate(chapters):
@@ -339,11 +371,26 @@ def build_html(chapters, accent, title, lang="zh", quiz_html=""):
         links.append(f'<a href="#" onclick="showChapter({len(chapters)});return false;">{escape_html(l["quiz_title"])}</a>')
 
     quiz_idx = len(chapters)
-    # Fix last chapter's Next link to point to quiz if quiz exists
-    if quiz_html and chapters:
+    # Watermark nav item
+    watermark_idx = quiz_idx + (1 if quiz_html else 0)
+    if watermark_html:
+        wm_label = "About" if lang in ("en",) else ("About / 关于" if lang == "bilingual" else "关于")
+        links.append(f'<a href="#" onclick="showChapter({watermark_idx});return false;">{escape_html(wm_label)}</a>')
+
+    # Fix last chapter's Next link to point to quiz/watermark if they exist
+    next_target = None
+    if watermark_html:
+        next_target = watermark_idx
+    elif quiz_html:
+        next_target = quiz_idx
+    if next_target is not None and chapters:
         old_nav = '<span></span></div>'
-        new_nav = f'<a href="#" onclick="showChapter({quiz_idx});return false;">{l["next"]}</a></div>'
+        new_nav = f'<a href="#" onclick="showChapter({next_target});return false;">{l["next"]}</a></div>'
         divs[-1] = divs[-1].replace(old_nav, new_nav, 1)
+
+    # Fix quiz Next link to point to watermark
+    if quiz_html and watermark_html:
+        pass  # watermark follows quiz in template, navigation is self-contained
 
     raw = f'''<!DOCTYPE html>
 <html lang="{l["lang"]}">
@@ -382,6 +429,7 @@ details{{margin:12px 0;background:var(--card-bg);border:1px solid var(--card-bor
 <nav class="sidebar" id="sidebar"><h2>{l["chapters"]}</h2>{chr(10).join(links)}</nav>
 <main class="main" id="main">{chr(10).join(divs)}
 {quiz_html}
+{watermark_html}
 </main>
 <script>
 function toggleTheme(){{var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'&#9788;':'&#9790;'}}
@@ -509,6 +557,12 @@ def main():
                    help="Verify a generated HTML file instead of generating")
     p.add_argument("--source-dir", default=None,
                    help="Source markdown dir for --verify")
+    p.add_argument("--no-watermark", action="store_true",
+                   help=argparse.SUPPRESS)
+    p.add_argument("--tool-name", default=None,
+                   help=argparse.SUPPRESS)
+    p.add_argument("--tool-url", default=None,
+                   help=argparse.SUPPRESS)
     a = p.parse_args()
 
     if a.verify:
@@ -552,12 +606,20 @@ def main():
             "html": convert_md_to_html(preprocess_md(t), nav_skip_re),
         })
 
-    r = build_html(chapters, a.accent, title, a.lang, quiz_html)
+    # Watermark (promo page)
+    watermark_html = ""
+    if not a.no_watermark:
+        tool_name = a.tool_name or "project-walkthrough"
+        tool_url = a.tool_url or "https://github.com/zwyin/project-walkthrough-skill"
+        watermark_html = build_watermark_section(tool_name, tool_url, a.lang)
+
+    r = build_html(chapters, a.accent, title, a.lang, quiz_html, watermark_html)
     out = Path(a.output_html); out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(r, "utf-8")
     mt = sum(f.stat().st_size for f in mds); hs = out.stat().st_size
     q_info = f", {len(quiz_questions)} quiz questions" if quiz_questions else ""
-    print(f"Converted {len(mds)} files ({mt:,}b -> {hs:,}b, {hs/mt*100:.0f}%{q_info})")
+    w_info = ", +promo page" if watermark_html else ""
+    print(f"Converted {len(mds)} files ({mt:,}b -> {hs:,}b, {hs/mt*100:.0f}%{q_info}{w_info})")
 
     # Auto-verify and write result
     v, result = verify_html(a.output_html, source_dir=a.docs_dir)
