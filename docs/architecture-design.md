@@ -85,16 +85,16 @@ git subtree push --prefix=skills/github-safe-publish \
 
 ### P6. 多品牌推送
 
-**做法**：一个本地仓库，四个 GitHub remote。sync-all.sh 自动替换 marketplace.json 的 name/description 和 README 版本后推送。
+**做法**：ruyi-skills 是唯一开发仓库。通过独立的 brand-sync-tool 生成各品牌仓库，每个品牌拥有独立的 git 历史（单 orphan commit）。brand-sync-tool 自动替换：SKILL.md name、目录名、marketplace.json、README、CI 路径、测试文件、版本检查脚本、平台输出文件等。
 
-| Remote | 受众 | README |
-|--------|------|--------|
-| ruyi | 中文用户 | 中文默认 + 英文链接 |
-| paoding | 中文用户 | 中文默认 + 英文链接 |
-| davinci | 海外用户 | 英文默认 + 中文链接 |
-| doraemon | 海外用户 | 英文默认 + 中文链接 |
+| 品牌 | GitHub 仓库 | 受众 | README |
+|------|-----------|------|--------|
+| ruyi | zwyin/ruyi-skills | 中文用户 | 中文默认 + 英文链接 |
+| paoding | zwyin/paoding-skills | 中文用户 | 中文默认 + 英文链接 |
+| davinci | zwyin/davinci-skills | 海外用户 | 英文默认 + 中文链接 |
+| doraemon | zwyin/doraemon-skills | 海外用户 | 英文默认 + 中文链接 |
 
-**优势**：一个代码库，四个入口，各自积累 star。用户从任何一个品牌名找到我们都能用。
+**优势**：一个代码库，四个入口，各自积累 star。用户从任何一个品牌名找到我们都能用。各品牌仓库由 brand-sync-tool 生成，不作为 remote 添加到本仓库。
 
 ### P7. 生成文件隔离
 

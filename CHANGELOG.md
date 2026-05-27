@@ -9,6 +9,7 @@
 - CI workflow with per-skill tests and structure validation
 - Makefile with test/ci/release/sync/convert/clean targets
 - sync-all.sh for pushing to 4 remotes with per-brand customization
+- Hybrid version check (git SHA + time fallback) via scripts/check_update.sh
 - check_self_contained.py to enforce skill self-containment
 - GitHub community templates (bug report, feature request, PR)
 - Architecture design document with 8 principles
