@@ -29,7 +29,7 @@ for key, entries in data.get('plugins', {}).items():
         e = entries[0]
         print(e.get('version',''), e.get('gitCommitSha',''))
         break
-" 2>/dev/null || true)
+" 2>/dev/null || true) || true
 fi
 
 if [ -z "$LOCAL_SHA" ]; then
