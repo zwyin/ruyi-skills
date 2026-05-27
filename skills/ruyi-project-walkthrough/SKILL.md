@@ -1,0 +1,1 @@
+skills/ruyi-project-walkthrough/SKILL.md

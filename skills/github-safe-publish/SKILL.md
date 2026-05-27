@@ -1,1 +1,0 @@
-skills/github-safe-publish/SKILL.md

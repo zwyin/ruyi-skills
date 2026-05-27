@@ -20,8 +20,8 @@
         "walkthrough"
       ],
       "skills": [
-        "./skills/github-safe-publish/skills/github-safe-publish",
-        "./skills/project-walkthrough/skills/project-walkthrough"
+        "./skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish",
+        "./skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough"
       ]
     }
   ]

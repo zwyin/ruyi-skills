@@ -1,0 +1,1 @@
+skills/ruyi-github-safe-publish/SKILL.md
