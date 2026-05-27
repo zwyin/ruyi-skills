@@ -1,5 +1,5 @@
 {
-  "name": "github-safe-publish",
+  "name": "ruyi-github-safe-publish",
   "description": "Safely publish local Git projects to GitHub with two-layer secret scanning (135 rules + AI), auto-fix, backup, and optional SEO/CI modules",
   "version": "0.7.0",
   "owner": {
@@ -7,7 +7,7 @@
   },
   "plugins": [
     {
-      "name": "github-safe-publish",
+      "name": "ruyi-github-safe-publish",
       "source": "./",
       "description": "End-to-end safe publishing workflow: two-layer desensitization scanning (135 deterministic rules + AI semantic analysis), auto-fix with user confirmation, backup branch, GitHub repo creation, push, and verification. Optional --seo and --ci modules.",
       "category": "security",

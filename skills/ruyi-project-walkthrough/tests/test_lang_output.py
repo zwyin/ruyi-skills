@@ -110,7 +110,7 @@ class TestSkillDefinesAllLangModes:
 
     @pytest.fixture
     def skill_content(self):
-        path = SKILL_ROOT / "skills" / "project-walkthrough" / "SKILL.md"
+        path = SKILL_ROOT / "skills" / "ruyi-project-walkthrough" / "SKILL.md"
         return path.read_text()
 
     def test_lang_param_has_4_modes(self, skill_content):
@@ -136,13 +136,13 @@ class TestVersionFlag:
 
     @pytest.fixture
     def skill_content(self):
-        path = SKILL_ROOT / "skills" / "project-walkthrough" / "SKILL.md"
+        path = SKILL_ROOT / "skills" / "ruyi-project-walkthrough" / "SKILL.md"
         return path.read_text()
 
     @pytest.fixture
     def skill_version(self):
         """Extract version from SKILL.md frontmatter"""
-        path = SKILL_ROOT / "skills" / "project-walkthrough" / "SKILL.md"
+        path = SKILL_ROOT / "skills" / "ruyi-project-walkthrough" / "SKILL.md"
         import re
         m = re.search(r'^version:\s*"([^"]+)"', path.read_text(), re.MULTILINE)
         return m.group(1) if m else None
@@ -162,7 +162,7 @@ class TestVersionFlag:
         pytest.fail("--version should be documented as standalone flag")
 
     def test_version_example_exists(self, skill_content):
-        assert "/project-walkthrough --version" in skill_content, \
+        assert "/ruyi-project-walkthrough --version" in skill_content, \
             "Should have --version usage example"
 
     def test_version_startup_message(self, skill_content, skill_version):

@@ -19,7 +19,7 @@ def test_frontmatter_has_required_fields(skill_frontmatter):
 
 
 def test_frontmatter_name_matches_skill(skill_frontmatter):
-    assert skill_frontmatter.get("name") == "github-safe-publish"
+    assert skill_frontmatter.get("name") == "ruyi-github-safe-publish"
 
 
 def test_frontmatter_version_is_semver(skill_frontmatter):
@@ -30,7 +30,7 @@ def test_frontmatter_version_is_semver(skill_frontmatter):
 # --- Parameters ---
 
 def test_skill_contains_all_parameters(skill_text):
-    params = ["--seo", "--ci", "--scan-only", "--dry-run"]
+    params = ["--seo", "--ci", "--scan", "--dry-run"]
     for param in params:
         assert param in skill_text, f"Missing parameter: {param}"
 
@@ -93,7 +93,7 @@ def test_step2_handles_stash_conflict(skill_text):
 
 def test_step2_skips_in_scan_modes(skill_text):
     step2 = _extract_step(skill_text, 2)
-    assert "scan-only" in step2 or "dry-run" in step2
+    assert "--scan" in step2 or "dry-run" in step2
 
 
 # --- Step 3: Scanning ---
@@ -224,7 +224,7 @@ def test_step6_outputs_report(skill_text):
 
 def test_step6_handles_three_modes(skill_text):
     step6 = _extract_step(skill_text, 6)
-    assert "scan-only" in step6
+    assert "scan-only" in step6 or "--scan" in step6
     assert "dry-run" in step6
 
 

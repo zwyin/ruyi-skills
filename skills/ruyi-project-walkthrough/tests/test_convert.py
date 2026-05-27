@@ -14,10 +14,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 SCRIPT = ROOT / "scripts" / "convert.sh"
-SKILL_MD = ROOT / "skills" / "project-walkthrough/SKILL.md"
-CURSOR_FILE = ROOT / "cursor" / "project-walkthrough.mdc"
-WINDSURF_FILE = ROOT / ".windsurf" / "rules" / "project-walkthrough.md"
-OPENCODE_FILE = ROOT / ".opencode" / "skills" / "project-walkthrough" / "SKILL.md"
+SKILL_MD = ROOT / "skills" / "ruyi-project-walkthrough/SKILL.md"
+CURSOR_FILE = ROOT / "cursor" / "ruyi-project-walkthrough.mdc"
+WINDSURF_FILE = ROOT / ".windsurf" / "rules" / "ruyi-project-walkthrough.md"
+OPENCODE_FILE = ROOT / ".opencode" / "skills" / "ruyi-project-walkthrough" / "SKILL.md"
 MAX_WINDSURF_CHARS = 12000
 
 
@@ -96,7 +96,7 @@ class TestOpenCodeFile:
 
     def test_frontmatter_has_name(self):
         fm, _ = read_frontmatter(OPENCODE_FILE)
-        assert fm.get("name") == "project-walkthrough"
+        assert fm.get("name") == "ruyi-project-walkthrough"
 
     def test_frontmatter_has_license(self):
         fm, _ = read_frontmatter(OPENCODE_FILE)

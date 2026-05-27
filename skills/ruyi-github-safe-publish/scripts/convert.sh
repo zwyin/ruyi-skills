@@ -13,7 +13,7 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SKILL_MD="$ROOT/skills/github-safe-publish/SKILL.md"
+SKILL_MD="$ROOT/skills/ruyi-github-safe-publish/SKILL.md"
 OUT_DIR="$ROOT/dist"
 
 # Extract SKILL.md body (everything after YAML frontmatter)

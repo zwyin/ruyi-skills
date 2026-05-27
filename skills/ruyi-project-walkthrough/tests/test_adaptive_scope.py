@@ -17,8 +17,8 @@ import pytest
 from pathlib import Path
 
 SKILL_ROOT = Path(__file__).parent.parent
-SKILL_MD = SKILL_ROOT / "skills" / "project-walkthrough" / "SKILL.md"
-REFERENCES_DIR = SKILL_ROOT / "skills" / "project-walkthrough" / "references"
+SKILL_MD = SKILL_ROOT / "skills" / "ruyi-project-walkthrough" / "SKILL.md"
+REFERENCES_DIR = SKILL_ROOT / "skills" / "ruyi-project-walkthrough" / "references"
 DOCS_DIR = SKILL_ROOT / "docs"
 
 

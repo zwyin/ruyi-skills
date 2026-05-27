@@ -17,7 +17,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SKILL="$ROOT/skills/project-walkthrough/SKILL.md"
+SKILL="$ROOT/skills/ruyi-project-walkthrough/SKILL.md"
 MAX_WINDSURF_CHARS=12000
 
 TRIGGER_DESC="Use when the user wants to study, document, understand, or share analysis of a software project/codebase. Triggers on requests like 'walk through this project', 'explain this codebase', 'generate documentation for this project', 'help me understand this code'."
@@ -175,7 +175,7 @@ run_python() {
 # ─── Cursor ──────────────────────────────────────────────────
 
 generate_cursor() {
-    local target="$ROOT/cursor/project-walkthrough.mdc"
+    local target="$ROOT/cursor/ruyi-project-walkthrough.mdc"
     run_python cursor "$SKILL" > "$target"
     echo "✓ Cursor: $target"
 }
@@ -183,7 +183,7 @@ generate_cursor() {
 # ─── Windsurf (condensed <12K) ───────────────────────────────
 
 generate_windsurf() {
-    local target="$ROOT/.windsurf/rules/project-walkthrough.md"
+    local target="$ROOT/.windsurf/rules/ruyi-project-walkthrough.md"
     mkdir -p "$(dirname "$target")"
     run_python windsurf "$SKILL" "$MAX_WINDSURF_CHARS" > "$target"
 
@@ -199,7 +199,7 @@ generate_windsurf() {
 # ─── OpenCode ─────────────────────────────────────────────────
 
 generate_opencode() {
-    local target="$ROOT/.opencode/skills/project-walkthrough/SKILL.md"
+    local target="$ROOT/.opencode/skills/ruyi-project-walkthrough/SKILL.md"
     mkdir -p "$(dirname "$target")"
     run_python opencode "$SKILL" > "$target"
     echo "✓ OpenCode: $target"
@@ -214,7 +214,7 @@ check_sync() {
 
     # Cursor
     local cursor_check
-    cursor_check=$(run_python check "$SKILL" "$ROOT/cursor/project-walkthrough.mdc")
+    cursor_check=$(run_python check "$SKILL" "$ROOT/cursor/ruyi-project-walkthrough.mdc")
     if [ "$cursor_check" = "SYNC" ]; then
         echo "✓ Cursor: in sync"
     else
@@ -224,7 +224,7 @@ check_sync() {
 
     # OpenCode
     local opencode_check
-    opencode_check=$(run_python check "$SKILL" "$ROOT/.opencode/skills/project-walkthrough/SKILL.md")
+    opencode_check=$(run_python check "$SKILL" "$ROOT/.opencode/skills/ruyi-project-walkthrough/SKILL.md")
     if [ "$opencode_check" = "SYNC" ]; then
         echo "✓ OpenCode: in sync"
     else
@@ -234,7 +234,7 @@ check_sync() {
 
     # Windsurf: char limit only (content is condensed, can't compare directly)
     local windsurf_chars
-    windsurf_chars=$(wc -c < "$ROOT/.windsurf/rules/project-walkthrough.md" | tr -d ' ')
+    windsurf_chars=$(wc -c < "$ROOT/.windsurf/rules/ruyi-project-walkthrough.md" | tr -d ' ')
     if [ "$windsurf_chars" -gt "$MAX_WINDSURF_CHARS" ]; then
         echo "✗ Windsurf: ${windsurf_chars} chars exceeds ${MAX_WINDSURF_CHARS} limit"
         ok=false

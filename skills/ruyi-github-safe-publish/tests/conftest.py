@@ -1,7 +1,7 @@
 import pathlib
 import pytest
 
-SKILL_MD = pathlib.Path(__file__).parent.parent / "skills" / "github-safe-publish" / "SKILL.md"
+SKILL_MD = pathlib.Path(__file__).parent.parent / "skills" / "ruyi-github-safe-publish" / "SKILL.md"
 SCANNING_RULES_MD = pathlib.Path(__file__).parent.parent / "docs" / "scanning-rules.md"
 
 

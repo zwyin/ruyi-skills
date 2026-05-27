@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PLUGIN_JSON = ROOT / ".claude-plugin" / "plugin.json"
 MARKETPLACE_JSON = ROOT / ".claude-plugin" / "marketplace.json"
-SKILL_MD = ROOT / "skills" / "github-safe-publish" / "SKILL.md"
+SKILL_MD = ROOT / "skills" / "ruyi-github-safe-publish" / "SKILL.md"
 
 
 def _load_json(path):
@@ -38,7 +38,7 @@ def test_plugin_json_has_required_fields():
 
 def test_plugin_json_name_matches_skill():
     data = _load_json(PLUGIN_JSON)
-    assert data["name"] == "github-safe-publish"
+    assert data["name"] == "ruyi-github-safe-publish"
 
 
 def test_plugin_json_version_matches_skill():
@@ -77,7 +77,7 @@ def test_marketplace_json_has_plugins():
     data = _load_json(MARKETPLACE_JSON)
     plugins = data["plugins"]
     assert len(plugins) >= 1
-    assert plugins[0]["name"] == "github-safe-publish"
+    assert plugins[0]["name"] == "ruyi-github-safe-publish"
     assert "tags" in plugins[0]
     assert len(plugins[0]["tags"]) >= 3
 

@@ -19,7 +19,7 @@ When this skill prompts the user, follow this tool-selection rule (priority orde
 ## Usage
 
 ```
-/project-walkthrough [path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm] [--version]
+/ruyi-project-walkthrough [path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm] [--version]
 ```
 
 **Argument parsing:** Parse `$ARGUMENTS` using `--flag` convention:

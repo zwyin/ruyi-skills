@@ -19,7 +19,7 @@ def _run_convert(flag):
 
 def _skill_version():
     import re
-    text = (ROOT / "skills" / "github-safe-publish" / "SKILL.md").read_text()
+    text = (ROOT / "skills" / "ruyi-github-safe-publish" / "SKILL.md").read_text()
     match = re.search(r'^version:\s*"?(\d+\.\d+\.\d+)"?', text, re.MULTILINE)
     assert match
     return match.group(1)

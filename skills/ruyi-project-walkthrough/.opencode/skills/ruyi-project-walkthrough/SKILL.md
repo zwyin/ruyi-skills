@@ -1,5 +1,5 @@
 ---
-name: project-walkthrough
+name: ruyi-project-walkthrough
 description: Generate a structured walkthrough of any project — software codebase, research report, or document collection. Analyzes input, recommends scope, confirms with user, then generates markdown docs + interactive HTML. Use when user wants to study, document, or share analysis of any project.
 license: MIT
 compatibility: opencode
@@ -22,7 +22,7 @@ When this skill prompts the user, follow this tool-selection rule (priority orde
 ## Usage
 
 ```
-/project-walkthrough [path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm] [--version]
+/ruyi-project-walkthrough [path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm] [--version]
 ```
 
 **Argument parsing:** Parse `$ARGUMENTS` using `--flag` convention:
@@ -61,20 +61,20 @@ Invalid or missing flag values fall back to defaults. If a flag is repeated, the
 
 **Examples:**
 ```
-/project-walkthrough                                              # Brief + general + zh (CWD)
-/project-walkthrough /path/to/project                             # Brief + general + zh
-/project-walkthrough /path/to/project --depth medium              # Medium + general + zh
-/project-walkthrough /path/to/project --depth deep --audience dev # Deep + dev + zh
-/project-walkthrough --depth deep                                 # Deep + general + zh (CWD)
-/project-walkthrough --audience dev                               # Brief + dev + zh (CWD)
-/project-walkthrough --depth all --audience dev                   # All depths + dev + zh (CWD)
-/project-walkthrough ./deep --depth brief                         # Path "./deep", brief + general + zh
-/project-walkthrough /path/to/project --lang en                   # Brief + general + en
-/project-walkthrough --depth deep --lang en                       # Deep + general + en (CWD)
-/project-walkthrough --depth deep --no-confirm                    # Deep + skip confirmation
-/project-walkthrough /path/to/project --lang zh-pure              # Brief + general + zh-pure
-/project-walkthrough /path/to/project --lang bilingual            # Brief + general + bilingual
-/project-walkthrough --version                                    # Print version and exit
+/ruyi-project-walkthrough                                              # Brief + general + zh (CWD)
+/ruyi-project-walkthrough /path/to/project                             # Brief + general + zh
+/ruyi-project-walkthrough /path/to/project --depth medium              # Medium + general + zh
+/ruyi-project-walkthrough /path/to/project --depth deep --audience dev # Deep + dev + zh
+/ruyi-project-walkthrough --depth deep                                 # Deep + general + zh (CWD)
+/ruyi-project-walkthrough --audience dev                               # Brief + dev + zh (CWD)
+/ruyi-project-walkthrough --depth all --audience dev                   # All depths + dev + zh (CWD)
+/ruyi-project-walkthrough ./deep --depth brief                         # Path "./deep", brief + general + zh
+/ruyi-project-walkthrough /path/to/project --lang en                   # Brief + general + en
+/ruyi-project-walkthrough --depth deep --lang en                       # Deep + general + en (CWD)
+/ruyi-project-walkthrough --depth deep --no-confirm                    # Deep + skip confirmation
+/ruyi-project-walkthrough /path/to/project --lang zh-pure              # Brief + general + zh-pure
+/ruyi-project-walkthrough /path/to/project --lang bilingual            # Brief + general + bilingual
+/ruyi-project-walkthrough --version                                    # Print version and exit
 ```
 
 ## Audience Modes
