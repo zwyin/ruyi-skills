@@ -8,3 +8,5 @@ build/
 *.swp
 .env
 .claude/
+.project-walkthrough/
+project_study_*/
