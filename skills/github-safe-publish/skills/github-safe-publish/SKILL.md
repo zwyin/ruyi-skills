@@ -1,5 +1,5 @@
 ---
-name: github-safe-publish
+name: ruyi-github-safe-publish
 version: "0.7.0"
 description: |
   将本地 Git 项目安全地发布到 GitHub 公开仓库。包含两层脱敏扫描
@@ -31,12 +31,12 @@ allowed-tools:
 ## 参数
 
 ```
-/github-safe-publish                    # 核心流程（脱敏+发布）
-/github-safe-publish --seo              # 核心 + SEO 优化
-/github-safe-publish --ci               # 核心 + CI 生成
-/github-safe-publish --seo --ci         # 全部
-/github-safe-publish --scan        # 只做脱敏扫描，输出报告，不修复不发布
-/github-safe-publish --dry-run          # 模拟完整流程：扫描+模拟修复建议，但不做任何实际修改
+/ruyi-github-safe-publish                    # 核心流程（脱敏+发布）
+/ruyi-github-safe-publish --seo              # 核心 + SEO 优化
+/ruyi-github-safe-publish --ci               # 核心 + CI 生成
+/ruyi-github-safe-publish --seo --ci         # 全部
+/ruyi-github-safe-publish --scan        # 只做脱敏扫描，输出报告，不修复不发布
+/ruyi-github-safe-publish --dry-run          # 模拟完整流程：扫描+模拟修复建议，但不做任何实际修改
 ```
 
 **参数互斥与冲突处理**：
