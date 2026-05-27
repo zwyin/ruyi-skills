@@ -19,7 +19,7 @@ jobs:
         python-version: ['3.10', '3.12']
     defaults:
       run:
-        working-directory: skills/github-safe-publish
+        working-directory: skills/ruyi-github-safe-publish
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: skills/project-walkthrough
+        working-directory: skills/ruyi-project-walkthrough
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
