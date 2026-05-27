@@ -7,13 +7,11 @@
 # Output: upgrade reminder text (stdout) or nothing if up-to-date
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CACHE_DIR="${HOME}/.cache/skill-update"
 CACHE_FILE="${CACHE_DIR}/github-safe-publish.json"
 
 REPO="zwyin/ruyi-skills"
 PLUGIN_KEY="ruyi-skills"
-STALE_DAYS=7
 CHECK_INTERVAL_HOURS=24
 
 # --- 1. Read local version ---
@@ -79,7 +77,7 @@ if [ -n "$REMOTE_SHA" ]; then
     python3 -c "
 import json
 json.dump({'remoteSha': '$REMOTE_SHA', 'lastCheck': '$(date -u +%Y-%m-%dT%H:%M:%SZ)'}, open('$CACHE_FILE', 'w'))
-"
+" 2>/dev/null || true
     if [ "$REMOTE_SHA" != "$LOCAL_SHA" ]; then
         LOCAL_SHORT="${LOCAL_SHA:0:7}"
         REMOTE_SHORT="${REMOTE_SHA:0:7}"
