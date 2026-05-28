@@ -46,8 +46,8 @@ npx skills add zwyin/ruyi-skills
 > Not yet published to ClawHub registry. Track progress at [github.com/zwyin/ruyi-skills](https://github.com/zwyin/ruyi-skills).
 
 ```bash
-clawhub install github-safe-publish
-clawhub install project-walkthrough
+clawhub install ruyi-github-safe-publish
+clawhub install ruyi-project-walkthrough
 ```
 
 ### Option 6: Manual Install
@@ -61,7 +61,7 @@ claude --plugin-dir ./ruyi-skills
 
 ## Skills
 
-### github-safe-publish
+### ruyi-github-safe-publish
 
 安全发布到 GitHub——两层脱敏扫描（135 条规则 + AI）、自动修复、备份回滚、端到端发布。
 
@@ -99,7 +99,7 @@ claude --plugin-dir ./ruyi-skills
 
 ---
 
-### project-walkthrough
+### ruyi-project-walkthrough
 
 项目技术走读——多深度、多受众、多语言，输出 markdown + 交互式 HTML。
 
