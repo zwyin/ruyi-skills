@@ -1,4 +1,4 @@
-.PHONY: test ci release sync convert clean check test-collection
+.PHONY: test ci release convert clean check test-collection
 
 SKILLS := $(shell ls -d skills/*/)
 
@@ -24,11 +24,7 @@ test-collection:
 	@python3 -m pytest tests/ -v --tb=short
 
 release:
-	@bash scripts/release.sh
-
-sync:
-	@git subtree pull --prefix=skills/github-safe-publish https://github.com/zwyin/github-safe-publish.git master --squash
-	@git subtree pull --prefix=skills/project-walkthrough https://github.com/zwyin/project-walkthrough-skill.git master --squash
+	@bash scripts/release.sh $(ARGS)
 
 convert:
 	@bash scripts/convert.sh

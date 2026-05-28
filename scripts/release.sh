@@ -49,7 +49,9 @@ git commit -m "release: v$NEXT"
 # Tag
 git tag "v$NEXT" -m "v$NEXT"
 
-# Push to all remotes
-bash scripts/sync-all.sh
+# Push to ruyi remote
+RUyi_REMOTE=$(git remote | grep -v github | head -1 || echo "origin")
+git -c http.proxy="" -c https.proxy="" push "$RUyi_REMOTE" main --tags
 
 echo "Released v$NEXT"
+echo "To sync brand repos, run: cd brand-sync-tool && bash sync.sh"
