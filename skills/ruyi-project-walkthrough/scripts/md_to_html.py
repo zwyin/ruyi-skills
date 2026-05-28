@@ -417,23 +417,31 @@ ul,ol{{margin:12px 0 12px 24px}}li{{margin-bottom:6px}}hr{{border:none;border-to
 details{{margin:12px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:12px 16px}}summary{{cursor:pointer;color:var(--accent);font-weight:500;font-size:14px}}
 .nav-links{{display:flex;justify-content:space-between;margin:40px 0 20px;padding-top:20px;border-top:1px solid var(--card-border)}}.nav-links a{{color:var(--link);text-decoration:none}}
 .topbar{{display:none;position:fixed;top:0;left:0;right:0;height:50px;background:var(--sidebar-bg);border-bottom:1px solid var(--card-border);z-index:200;padding:0 16px;align-items:center;justify-content:space-between}}.topbar button{{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer}}
+.font-sm,.font-lg{{font-size:14px;font-weight:bold;padding:2px 8px;border-radius:4px}}
 .theme-toggle{{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}}
+.font-btn{{position:fixed;bottom:20px;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:14px;font-weight:bold;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}}
+.font-dec{{right:72px}}
+.font-inc{{right:120px}}
 .chapter{{display:none}}.chapter.active{{display:block}}
 @media(max-width:768px){{.sidebar{{transform:translateX(-100%)}}.sidebar.open{{transform:translateX(0)}}.main{{margin-left:0;padding:60px 20px 40px}}.topbar{{display:flex}}}}
-@media print{{.sidebar,.topbar,.theme-toggle{{display:none!important}}.main{{margin-left:0;padding:20px}}.chapter{{display:block!important;page-break-after:always}}}}
+@media print{{.sidebar,.topbar,.theme-toggle,.font-btn{{display:none!important}}.main{{margin-left:0;padding:20px}}.chapter{{display:block!important;page-break-after:always}}}}
 </style>
 </head>
 <body>
-<button class="theme-toggle" onclick="toggleTheme()">&#9790;</button>
-<div class="topbar"><button onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button><span>{escape_html(title)}</span><span></span></div>
+<button class="theme-toggle" onclick="toggleTheme()">☾</button>
+<button class="font-btn font-dec" onclick="adjustFontSize(-1)">A-</button>
+<button class="font-btn font-inc" onclick="adjustFontSize(1)">A+</button>
+<div class="topbar"><button onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button><span>{escape_html(title)}</span><span><button class="font-sm" onclick="adjustFontSize(-1)">A-</button><button class="font-lg" onclick="adjustFontSize(1)">A+</button></span></div>
 <nav class="sidebar" id="sidebar"><h2>{l["chapters"]}</h2>{chr(10).join(links)}</nav>
 <main class="main" id="main">{chr(10).join(divs)}
 {quiz_html}
 {watermark_html}
 </main>
 <script>
-function toggleTheme(){{var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'&#9788;':'&#9790;'}}
-(function(){{var s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'&#9788;':'&#9790;'}})();
+function toggleTheme(){{var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'☀':'☾'}}
+(function(){{var s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀':'☾'}})();
+function adjustFontSize(d){{var b=document.body,s=parseFloat(getComputedStyle(b).fontSize);b.style.fontSize=Math.max(12,Math.min(24,s+d))+'px';localStorage.setItem('fs',b.style.fontSize)}}
+(function(){{var f=localStorage.getItem('fs');if(f)document.body.style.fontSize=f}})();
 function showChapter(i){{document.querySelectorAll('.chapter').forEach(function(c){{c.classList.remove('active')}});document.querySelectorAll('.sidebar a').forEach(function(a){{a.classList.remove('active')}});if(document.querySelectorAll('.chapter')[i])document.querySelectorAll('.chapter')[i].classList.add('active');if(document.querySelectorAll('.sidebar a')[i])document.querySelectorAll('.sidebar a')[i].classList.add('active');window.scrollTo(0,0);document.getElementById('sidebar').classList.remove('open')}}
 showChapter(0);
 </script>
