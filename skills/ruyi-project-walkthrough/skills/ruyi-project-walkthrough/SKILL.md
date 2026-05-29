@@ -260,10 +260,22 @@ Generate all three depth levels sequentially. Starts with brief, then medium, th
 
 ## Output Structure
 
-The output directory name MUST use the skill's name prefix: `<prefix>_project_study_<project-name>/`, where `<prefix>` comes from the `name` field in frontmatter (e.g., `ruyi` from `ruyi-project-walkthrough` → `ruyi_project_study_my-codebase/`).
+The output directory name follows this deterministic pattern:
 
 ```
-<prefix>_project_study_<project-name>/
+<prefix>_project_study_<project-name>-<depth>-<lang>-<audience>/
+```
+
+- `<prefix>` — from the `name` field in frontmatter (e.g., `ruyi` from `ruyi-project-walkthrough`)
+- `<project-name>` — sanitized project directory name (lowercase, hyphens for spaces/special chars)
+- `<depth>` — `brief`, `medium`, or `deep`
+- `<lang>` — `zh` or `en`
+- `<audience>` — `general`, `dev`, or `contrib`
+
+Construct the name by concatenating these parts with `_project_study_` and `-` separators. Do NOT omit any segment.
+
+```
+<prefix>_project_study_<project-name>-<depth>-<lang>-<audience>/
 ├── analysis.md                          ← Content analysis (Phase 0)
 ├── docs/
 │   ├── 01-overview.md              ← Brief level (flat, no subdirectory)

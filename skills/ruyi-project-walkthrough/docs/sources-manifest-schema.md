@@ -95,7 +95,7 @@ sources-manifest.json 是 walkthrough 生成的强制产出物。它记录 walkt
 ## 输出位置
 
 ```
-project_study_<name>/
+<prefix>_project_study_<name>-<depth>-<lang>-<audience>/
 ├── docs/
 │   ├── 01-overview.md
 │   ├── ...

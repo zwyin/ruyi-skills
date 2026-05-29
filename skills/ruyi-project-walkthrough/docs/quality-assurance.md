@@ -237,8 +237,8 @@ Summary: 1 passed, 1 failed, 2 total
 /project-walkthrough /path/to/some/project --depth brief
 
 # 5. 检查产出
-ls project_study_<name>/docs/
-ls project_study_<name>/interactive/
+ls <prefix>_project_study_<name>-<depth>-<lang>-<audience>/docs/
+ls <prefix>_project_study_<name>-<depth>-<lang>-<audience>/interactive/
 ```
 
 ### 6.2 参数组合验证

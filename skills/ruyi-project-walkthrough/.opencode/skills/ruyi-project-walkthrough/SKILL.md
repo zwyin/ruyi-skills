@@ -260,10 +260,22 @@ Generate all three depth levels sequentially. Starts with brief, then medium, th
 
 ## Output Structure
 
-The output directory name MUST use the skill's name prefix: `<prefix>_project_study_<project-name>/`, where `<prefix>` comes from the `name` field in frontmatter (e.g., `ruyi` from `ruyi-project-walkthrough` → `ruyi_project_study_my-codebase/`).
+The output directory name follows this deterministic pattern:
 
 ```
-<prefix>_project_study_<project-name>/
+<prefix>_project_study_<project-name>-<depth>-<lang>-<audience>/
+```
+
+- `<prefix>` — from the `name` field in frontmatter (e.g., `ruyi` from `ruyi-project-walkthrough`)
+- `<project-name>` — sanitized project directory name (lowercase, hyphens for spaces/special chars)
+- `<depth>` — `brief`, `medium`, or `deep`
+- `<lang>` — `zh` or `en`
+- `<audience>` — `general`, `dev`, or `contrib`
+
+Construct the name by concatenating these parts with `_project_study_` and `-` separators. Do NOT omit any segment.
+
+```
+<prefix>_project_study_<project-name>-<depth>-<lang>-<audience>/
 ├── analysis.md                          ← Content analysis (Phase 0)
 ├── docs/
 │   ├── 01-overview.md              ← Brief level (flat, no subdirectory)
@@ -304,10 +316,10 @@ The output directory name MUST use the skill's name prefix: `<prefix>_project_st
 > Before starting any phase, check for updates.
 
 ```bash
-bash scripts/check_update.sh
+bash ../../../scripts/check_update.sh
 ```
 
-If the script outputs an upgrade reminder, inform the user: "A new version is available. You can continue with the current version, or run `claude plugin update ruyi-skills` to upgrade."
+If the script outputs an upgrade reminder, inform the user: "A new version is available. You can continue with the current version, or run `claude plugin update ruyi-skills@ruyi-skills` to upgrade."
 The check has a 24-hour cache and won't query the network every time. Silently skips on failure without blocking the main workflow.
 
 ### Phase 0: Analyze & Confirm (~5% of time)

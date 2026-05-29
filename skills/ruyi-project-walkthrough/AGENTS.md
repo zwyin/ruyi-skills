@@ -40,7 +40,7 @@ Or with options:
 ## Output
 
 ```
-project_study_<name>/
+<prefix>_project_study_<name>-<depth>-<lang>-<audience>/
 ├── docs/
 │   ├── 01-overview.md
 │   ├── 02-*.md

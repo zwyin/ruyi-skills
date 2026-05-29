@@ -127,7 +127,7 @@ skip_confirm: false
 ## 输出结构
 
 ```
-project_study_<project-name>/
+<prefix>_project_study_<project-name>-<depth>-<lang>-<audience>/
 ├── docs/
 │   ├── 01-overview.md              ← Brief
 │   ├── sources-manifest.json       ← Brief manifest（强制性）
