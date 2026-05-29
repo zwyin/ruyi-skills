@@ -70,10 +70,10 @@ allowed-tools:
 > 在执行任何步骤之前，检查是否有新版本可用。
 
 ```bash
-bash scripts/check_update.sh
+bash ../../../scripts/check_update.sh
 ```
 
-如果脚本输出了升级提醒，告知用户："检测到新版本，你可以继续使用当前版本，或运行 `claude plugin update ruyi-skills` 升级。"
+如果脚本输出了升级提醒，告知用户："检测到新版本，你可以继续使用当前版本，或运行 `claude plugin update ruyi-skills@ruyi-skills` 升级。"
 版本检查有 24 小时缓存，不会每次调用都查网络。检查失败时静默跳过，不阻塞主流程。
 
 ## Step 1: 前置检查 + 参数确认（集中交互 #1）

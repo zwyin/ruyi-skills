@@ -304,10 +304,10 @@ The output directory name MUST use the skill's name prefix: `<prefix>_project_st
 > Before starting any phase, check for updates.
 
 ```bash
-bash scripts/check_update.sh
+bash ../../../scripts/check_update.sh
 ```
 
-If the script outputs an upgrade reminder, inform the user: "A new version is available. You can continue with the current version, or run `claude plugin update ruyi-skills` to upgrade."
+If the script outputs an upgrade reminder, inform the user: "A new version is available. You can continue with the current version, or run `claude plugin update ruyi-skills@ruyi-skills` to upgrade."
 The check has a 24-hour cache and won't query the network every time. Silently skips on failure without blocking the main workflow.
 
 ### Phase 0: Analyze & Confirm (~5% of time)

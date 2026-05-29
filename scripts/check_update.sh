@@ -11,7 +11,7 @@ CACHE_DIR="${HOME}/.cache/skill-update"
 CACHE_FILE="${CACHE_DIR}/project-walkthrough.json"
 
 REPO="zwyin/ruyi-skills"
-PLUGIN_KEY="ruyi-skills"
+PLUGIN_KEY="ruyi-skills@ruyi-skills"
 CHECK_INTERVAL_HOURS=24
 
 # --- 1. Read local version ---
