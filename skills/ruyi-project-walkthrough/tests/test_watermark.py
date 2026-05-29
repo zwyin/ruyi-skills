@@ -119,3 +119,19 @@ class TestWatermarkCLI:
         assert "--no-watermark" not in r.stdout
         assert "--tool-name" not in r.stdout
         assert "--tool-url" not in r.stdout
+
+    def test_default_tool_name_matches_skill_name(self, docs_dir, tmp_path):
+        """Default tool_name/tool_url must contain the correct brand prefix."""
+        out = tmp_path / "out.html"
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), str(docs_dir), str(out),
+             "--title", "Test"],
+            capture_output=True, text=True)
+        assert r.returncode == 0
+        html = out.read_text()
+        # Derive expected brand prefix from directory name: skills/<brand>-project-walkthrough/scripts/md_to_html.py
+        parts = Path(SCRIPT).resolve().parts
+        skill_dir = parts[-3]  # e.g. "ruyi-project-walkthrough"
+        brand = skill_dir.split("-")[0]  # e.g. "ruyi"
+        assert f"{brand}-project-walkthrough" in html
+        assert f"zwyin/{brand}-skills" in html
