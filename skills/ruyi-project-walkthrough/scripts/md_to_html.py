@@ -617,8 +617,8 @@ def main():
     # Watermark (promo page)
     watermark_html = ""
     if not a.no_watermark:
-        tool_name = a.tool_name or "project-walkthrough"
-        tool_url = a.tool_url or "https://github.com/zwyin/project-walkthrough-skill"
+        tool_name = a.tool_name or "ruyi-project-walkthrough"
+        tool_url = a.tool_url or "https://github.com/zwyin/ruyi-skills"
         watermark_html = build_watermark_section(tool_name, tool_url, a.lang)
 
     r = build_html(chapters, a.accent, title, a.lang, quiz_html, watermark_html)

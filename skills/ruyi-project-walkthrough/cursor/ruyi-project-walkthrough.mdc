@@ -623,7 +623,7 @@ For the detailed verification procedure for each claim type (code blocks, direct
      The converter extracts the `## Quiz` section from that chapter and renders it
      as an interactive quiz. The quiz section is removed from the chapter's regular
      content to avoid duplication. If no chapter contains a quiz, omit this flag.
-   - `--tool-name <name>`: tool name shown in the promo page (default: `project-walkthrough`)
+   - `--tool-name <name>`: tool name shown in the promo page (default: `ruyi-project-walkthrough`)
    - `--tool-url <url>`: GitHub link shown in the promo page
    - `--no-watermark`: omit the promo page (last chapter with generation info, tool name, and link).
      By default the promo page is included so readers discover the tool when reports are shared.

@@ -4,7 +4,7 @@ set -euo pipefail
 echo "=== github-safe-publish skill validation ==="
 echo ""
 
-SKILL="skills/github-safe-publish/SKILL.md"
+SKILL="skills/ruyi-github-safe-publish/SKILL.md"
 version=$(grep '^version:' "$SKILL" | head -1 | awk '{print $2}' | tr -d '"')
 echo "Version: $version"
 echo ""

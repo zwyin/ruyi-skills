@@ -6,7 +6,7 @@
 #   ./scripts/release.sh 0.5.0 --bump-only  # Only bump version files, no tag
 #   ./scripts/release.sh 0.5.0 --dry-run    # Validate only, no side effects
 #
-# Version source: skills/github-safe-publish/SKILL.md frontmatter (唯一版本源)
+# Version source: skills/ruyi-github-safe-publish/SKILL.md frontmatter (唯一版本源)
 
 set -euo pipefail
 
@@ -21,7 +21,7 @@ if [ "$MODE" = "--bump-only" ]; then BUMP_ONLY=true; fi
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-SKILL_MD="skills/github-safe-publish/SKILL.md"
+SKILL_MD="skills/ruyi-github-safe-publish/SKILL.md"
 PLUGIN_JSON=".claude-plugin/plugin.json"
 MARKETPLACE_JSON=".claude-plugin/marketplace.json"
 

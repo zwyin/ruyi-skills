@@ -10,7 +10,7 @@ pip install pytest jsonschema pyyaml
 
 ## Project Structure
 
-- `skills/project-walkthrough/SKILL.md` — Canonical skill definition (single source of truth)
+- `skills/ruyi-project-walkthrough/SKILL.md` — Canonical skill definition (single source of truth)
 - `docs/` — Reference docs (chapter templates, exploration protocol, HTML spec)
 - `scripts/` — Helper tools (`convert.sh`, `verify_sources.py`, `import_graph.py`)
 - `tests/` — Test suite (pytest)
@@ -22,7 +22,7 @@ pip install pytest jsonschema pyyaml
 
 Only modify these files directly:
 
-- `skills/project-walkthrough/SKILL.md` — Skill logic, parameters, process
+- `skills/ruyi-project-walkthrough/SKILL.md` — Skill logic, parameters, process
 - `docs/chapter-templates.md` — Project type templates
 - `docs/exploration-protocol.md` — Project type detection
 - `docs/html-reference.md` — HTML output spec

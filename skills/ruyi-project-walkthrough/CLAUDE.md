@@ -4,14 +4,14 @@
 
 ### 唯一版本源
 
-版本号定义在 `skills/project-walkthrough/SKILL.md` frontmatter 的 `version` 字段。**所有其他位置的版本号必须从这里同步，不允许手动分别修改。**
+版本号定义在 `skills/ruyi-project-walkthrough/SKILL.md` frontmatter 的 `version` 字段。**所有其他位置的版本号必须从这里同步，不允许手动分别修改。**
 
 ### 版本号出现位置（6 处）
 
 | # | 文件 | 位置 | 说明 |
 |---|------|------|------|
-| 1 | `skills/project-walkthrough/SKILL.md` | frontmatter `version: "X.Y.Z"` | **唯一版本源**，手动修改 |
-| 2 | `skills/project-walkthrough/SKILL.md` | `--version` flag 文档 | `project-walkthrough vX.Y.Z`（2 处） |
+| 1 | `skills/ruyi-project-walkthrough/SKILL.md` | frontmatter `version: "X.Y.Z"` | **唯一版本源**，手动修改 |
+| 2 | `skills/ruyi-project-walkthrough/SKILL.md` | `--version` flag 文档 | `ruyi-project-walkthrough vX.Y.Z`（2 处） |
 | 3 | `.claude-plugin/plugin.json` | `"version": "X.Y.Z"` | Claude Code 插件元数据 |
 | 4 | `.claude-plugin/marketplace.json` | `"version": "X.Y.Z"` | Marketplace 注册信息 |
 | 5 | `README.md` | version badge URL | `badge/version-X.Y.Z-blue` |
@@ -19,7 +19,7 @@
 
 ### 发版流程
 
-1. **修改版本源**：编辑 `skills/project-walkthrough/SKILL.md` frontmatter 的 `version` 字段
+1. **修改版本源**：编辑 `skills/ruyi-project-walkthrough/SKILL.md` frontmatter 的 `version` 字段
 2. **运行 `scripts/release.sh X.Y.Z --bump-only`**：自动同步位置 1-6（从 SKILL.md frontmatter 读取当前版本，写入新版本到全部 6 处）
 3. **手动更新 CHANGELOG.md 内容**—— `release.sh` 只创建标题，不写变更内容
 4. **同步平台文件**：`bash scripts/convert.sh`
@@ -38,10 +38,10 @@
 
 ```bash
 # 位置 1: SKILL.md frontmatter
-grep '^version:' skills/project-walkthrough/SKILL.md
+grep '^version:' skills/ruyi-project-walkthrough/SKILL.md
 
 # 位置 2: --version 输出文本（2处）
-grep 'project-walkthrough v' skills/project-walkthrough/SKILL.md
+grep 'ruyi-project-walkthrough v' skills/ruyi-project-walkthrough/SKILL.md
 
 # 位置 3: plugin.json
 grep '"version"' .claude-plugin/plugin.json
@@ -60,7 +60,7 @@ head -5 CHANGELOG.md
 
 ## 项目结构要点
 
-- **SKILL.md 是单一事实源**：`skills/project-walkthrough/SKILL.md` 是所有平台文件的源头
+- **SKILL.md 是单一事实源**：`skills/ruyi-project-walkthrough/SKILL.md` 是所有平台文件的源头
 - **平台文件由 convert.sh 生成**：`cursor/`、`.windsurf/`、`.opencode/` 下的文件不要手动编辑，改完 SKILL.md 后运行 `bash scripts/convert.sh`
 - **HTML 转换器**：`scripts/md_to_html.py` 是所有深度级别的 HTML 生成器，支持 `--lang`、`--quiz-chapter`、`--verify`
 - **验证结果文件**：converter 自动在 HTML 同目录生成 `verify-result.json`，Phase 5 交付门禁必须读取该文件作为质量证据

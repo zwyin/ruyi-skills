@@ -34,7 +34,7 @@ Or with options:
 | **Claude Code** | `/plugin marketplace add zwyin/project-walkthrough-skill` |
 | **Cursor** | Copy `cursor/project-walkthrough.mdc` → `.cursor/rules/` |
 | **Windsurf** | Copy `.windsurf/rules/project-walkthrough.md` → `.windsurf/rules/` |
-| **OpenCode** | Copy `.opencode/skills/project-walkthrough/` → `.opencode/skills/` |
+| **OpenCode** | Copy `.opencode/skills/ruyi-project-walkthrough/` → `.opencode/skills/` |
 | **Gemini CLI** | `gemini skills install https://github.com/zwyin/project-walkthrough-skill.git --path skills/project-walkthrough` |
 
 ## Output
@@ -58,4 +58,4 @@ Or with options:
 
 ## Full Documentation
 
-See `skills/project-walkthrough/SKILL.md` for the complete workflow specification.
+See `skills/ruyi-project-walkthrough/SKILL.md` for the complete workflow specification.

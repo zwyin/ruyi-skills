@@ -55,21 +55,21 @@ make ci
 echo "==> Bumping version to $VERSION..."
 
 # Read current version from SKILL.md frontmatter (single source of truth)
-CURRENT_VERSION=$(grep '^version:' skills/project-walkthrough/SKILL.md | head -1 | sed 's/version: * "//;s/"//')
+CURRENT_VERSION=$(grep '^version:' skills/ruyi-project-walkthrough/SKILL.md | head -1 | sed 's/version: * "//;s/"//')
 if [ -z "$CURRENT_VERSION" ]; then
-    echo "ERROR: Cannot read version from skills/project-walkthrough/SKILL.md frontmatter" >&2
+    echo "ERROR: Cannot read version from skills/ruyi-project-walkthrough/SKILL.md frontmatter" >&2
     exit 1
 fi
 echo "    Current version: $CURRENT_VERSION → $VERSION"
 
 # 1. Update SKILL.md frontmatter
-sed -i.bak "s/^version: \"${CURRENT_VERSION}\"/version: \"${VERSION}\"/" skills/project-walkthrough/SKILL.md
-rm -f skills/project-walkthrough/SKILL.md.bak
+sed -i.bak "s/^version: \"${CURRENT_VERSION}\"/version: \"${VERSION}\"/" skills/ruyi-project-walkthrough/SKILL.md
+rm -f skills/ruyi-project-walkthrough/SKILL.md.bak
 
 # 2. Update SKILL.md --version output text (all version references)
-sed -i.bak "s/project-walkthrough v${CURRENT_VERSION}/project-walkthrough v${VERSION}/g" skills/project-walkthrough/SKILL.md
-sed -i.bak "s/Project Walkthrough v${CURRENT_VERSION}/Project Walkthrough v${VERSION}/g" skills/project-walkthrough/SKILL.md
-rm -f skills/project-walkthrough/SKILL.md.bak
+sed -i.bak "s/project-walkthrough v${CURRENT_VERSION}/project-walkthrough v${VERSION}/g" skills/ruyi-project-walkthrough/SKILL.md
+sed -i.bak "s/Project Walkthrough v${CURRENT_VERSION}/Project Walkthrough v${VERSION}/g" skills/ruyi-project-walkthrough/SKILL.md
+rm -f skills/ruyi-project-walkthrough/SKILL.md.bak
 
 # 3. Update plugin.json
 sed -i.bak "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" .claude-plugin/plugin.json
@@ -104,7 +104,7 @@ else
 fi
 
 echo "==> Committing version bump..."
-git add skills/project-walkthrough/SKILL.md .claude-plugin/plugin.json .claude-plugin/marketplace.json CHANGELOG.md README.md
+git add skills/ruyi-project-walkthrough/SKILL.md .claude-plugin/plugin.json .claude-plugin/marketplace.json CHANGELOG.md README.md
 git commit -m "chore: bump version to $VERSION"
 
 if $BUMP_ONLY; then

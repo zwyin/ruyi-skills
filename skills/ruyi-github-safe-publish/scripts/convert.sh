@@ -115,7 +115,7 @@ _convert_windsurf() {
 
     cat > "$OUT_DIR/windsurf/.windsurfrules" <<HEREDOC
 # GitHub Safe Publish ($(date +%Y-%m-%d))
-# Generated from skills/github-safe-publish/SKILL.md v$(_skill_version)
+# Generated from skills/ruyi-github-safe-publish/SKILL.md v$(_skill_version)
 # Manual invokation: ask the AI to "publish to github" or "github safe publish"
 
 $(_skill_body)
@@ -130,7 +130,7 @@ _convert_opencode() {
 
     cat > "$OUT_DIR/opencode/AGENTS.md" <<HEREDOC
 # GitHub Safe Publish ($(date +%Y-%m-%d))
-# Generated from skills/github-safe-publish/SKILL.md v$(_skill_version)
+# Generated from skills/ruyi-github-safe-publish/SKILL.md v$(_skill_version)
 
 $(_skill_body)
 HEREDOC

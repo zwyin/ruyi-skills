@@ -8,10 +8,10 @@
 #   ./scripts/convert.sh opencode     # Generate OpenCode only
 #   ./scripts/convert.sh --check      # Check if files are in sync
 #
-# Reads:  skills/project-walkthrough/SKILL.md (canonical source)
+# Reads:  skills/ruyi-project-walkthrough/SKILL.md (canonical source)
 # Writes: cursor/project-walkthrough.mdc
 #         .windsurf/rules/project-walkthrough.md
-#         .opencode/skills/project-walkthrough/SKILL.md
+#         .opencode/skills/ruyi-project-walkthrough/SKILL.md
 
 set -euo pipefail
 

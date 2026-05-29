@@ -1,6 +1,6 @@
 # GitHub Safe Publish
 
-[![version](https://img.shields.io/badge/version-0.7.0-blue)](../skills/github-safe-publish/SKILL.md) [![license](https://img.shields.io/badge/license-MIT-green)](../LICENSE) [![tests](https://img.shields.io/badge/tests-235%20passing-brightgreen)](../tests/) [![platform](https://img.shields.io/badge/platform-Claude%20Code-purple)](https://claude.ai/code)
+[![version](https://img.shields.io/badge/version-0.7.0-blue)](../skills/ruyi-github-safe-publish/SKILL.md) [![license](https://img.shields.io/badge/license-MIT-green)](../LICENSE) [![tests](https://img.shields.io/badge/tests-235%20passing-brightgreen)](../tests/) [![platform](https://img.shields.io/badge/platform-Claude%20Code-purple)](https://claude.ai/code)
 
 [English](../README.md)
 
@@ -156,7 +156,7 @@ git clone https://github.com/zwyin/github-safe-publish.git
 claude --plugin-dir ./github-safe-publish
 ```
 
-或将 `skills/github-safe-publish/SKILL.md` 复制到你的项目 skill 目录。
+或将 `skills/ruyi-github-safe-publish/SKILL.md` 复制到你的项目 skill 目录。
 
 ### 其他平台
 
