@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Walkthrough Skill — Medium Walkthrough</title>
+<style>
+:root{--bg:#fff;--text:#1a1a2e;--sidebar-bg:#f0f0f5;--sidebar-text:#333;--sidebar-hover:#e0e0ea;--sidebar-active:#d0d0e0;--card-bg:#f8f8fc;--card-border:#e0e0e8;--accent:#4a6fa5;--link:#4a6fa5;--code-bg:#f4f4f8;--quote-bg:#f8f8ff;--quote-border:#4a6fa588}
+[data-theme="dark"]{--bg:#1a1a2e;--text:#e0e0ea;--sidebar-bg:#16213e;--sidebar-text:#c0c0d0;--sidebar-hover:#1a2744;--sidebar-active:#1e2d4a;--card-bg:#1e2744;--card-border:#2a3555;--accent:#4a6fa5cc;--link:#4a6fa5cc;--code-bg:#162030;--quote-bg:#1a1a30;--quote-border:#4a6fa588}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--sidebar-bg);color:var(--sidebar-text);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;border-right:1px solid var(--card-border);z-index:100}
+.sidebar h2{font-size:14px;padding:8px 20px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.sidebar a{display:block;padding:8px 20px;text-decoration:none;color:var(--sidebar-text);font-size:13px;border-left:3px solid transparent}
+.sidebar a:hover{background:var(--sidebar-hover);border-left-color:var(--accent)}
+.sidebar a.active{background:var(--sidebar-active);border-left-color:var(--accent);font-weight:600}
+.main{margin-left:280px;padding:40px 60px;max-width:860px;width:100%}
+h1{font-size:28px;margin-bottom:16px;color:var(--accent)}h2{font-size:22px;margin:32px 0 12px;color:var(--accent)}h3{font-size:18px;margin:24px 0 8px}h4{font-size:16px;margin:20px 0 8px;opacity:0.9}
+p{margin-bottom:12px}blockquote{border-left:4px solid var(--quote-border);background:var(--quote-bg);padding:12px 20px;margin:16px 0;font-style:italic}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}th,td{border:1px solid var(--card-border);padding:8px 12px;text-align:left}th{background:var(--card-bg);font-weight:600}
+pre{background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:16px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.5}
+code{font-family:'SF Mono',Monaco,'Cascadia Code',monospace}pre code{background:none;border:none;padding:0}p code,li code{background:var(--code-bg);padding:2px 6px;border-radius:3px;font-size:0.9em}
+ul,ol{margin:12px 0 12px 24px}li{margin-bottom:6px}hr{border:none;border-top:1px solid var(--card-border);margin:24px 0}
+details{margin:12px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:12px 16px}summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:14px}
+.nav-links{display:flex;justify-content:space-between;margin:40px 0 20px;padding-top:20px;border-top:1px solid var(--card-border)}.nav-links a{color:var(--link);text-decoration:none}
+.topbar{display:none;position:fixed;top:0;left:0;right:0;height:50px;background:var(--sidebar-bg);border-bottom:1px solid var(--card-border);z-index:200;padding:0 16px;align-items:center;justify-content:space-between}.topbar button{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer}
+.font-sm,.font-lg{font-size:14px;font-weight:bold;padding:2px 8px;border-radius:4px}
+.theme-toggle{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.font-btn{position:fixed;bottom:20px;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:14px;font-weight:bold;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.font-dec{right:72px}
+.font-inc{right:120px}
+.chapter{display:none}.chapter.active{display:block}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:60px 20px 40px}.topbar{display:flex}}
+@media print{.sidebar,.topbar,.theme-toggle,.font-btn{display:none!important}.main{margin-left:0;padding:20px}.chapter{display:block!important;page-break-after:always}}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">☾</button>
+<button class="font-btn font-dec" onclick="adjustFontSize(-1)">A-</button>
+<button class="font-btn font-inc" onclick="adjustFontSize(1)">A+</button>
+<div class="topbar"><button onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button><span>Project Walkthrough Skill — Medium Walkthrough</span><span><button class="font-sm" onclick="adjustFontSize(-1)">A-</button><button class="font-lg" onclick="adjustFontSize(1)">A+</button></span></div>
+<nav class="sidebar" id="sidebar"><h2>章节</h2><a href="#" onclick="showChapter(0);return false;">01 概览：什么是 project-walkthrough</a>
+<a href="#" onclick="showChapter(1);return false;">02 五阶段 Pipeline 架构</a>
+<a href="#" onclick="showChapter(2);return false;">03 Phase 0：内容分析与确认门</a>
+<a href="#" onclick="showChapter(3);return false;">04 Phase 1-2：探索与章节规划</a>
+<a href="#" onclick="showChapter(4);return false;">05 Phase 3：Manifest-First 准确性保证</a>
+<a href="#" onclick="showChapter(5);return false;">06 md_to_html.py：Markdown 到交互式 ...</a>
+<a href="#" onclick="showChapter(6);return false;">07 辅助脚本：验证、依赖图、多平台转换</a>
+<a href="#" onclick="showChapter(7);return false;">08 发布自动化：release.sh 与版本管理</a>
+<a href="#" onclick="showChapter(8);return false;">09 多平台兼容策略</a>
+<a href="#" onclick="showChapter(9);return false;">10 测试体系与 CI</a>
+<a href="#" onclick="showChapter(10);return false;">11 设计哲学：准确性、Converter-First、Man...</a>
+<a href="#" onclick="showChapter(11);return false;">12 总结与扩展指南</a>
+<a href="#" onclick="showChapter(12);return false;">知识测验</a>
+<a href="#" onclick="showChapter(13);return false;">关于</a></nav>
+<main class="main" id="main"><div class="chapter" id="ch0"><h1>01 概览：什么是 project-walkthrough</h1>
+<h2>这个项目是什么</h2>
+<p>project-walkthrough 是一个 Claude Code skill（技能插件），为任意软件项目自动生成结构化的技术走读文档。输入一个项目路径，输出编号的 markdown 章节文件 + 一个可在浏览器打开的交互式 HTML。</p>
+<blockquote><p>类比理解：project-walkthrough 就像一个&quot;技术导游&quot;——你给它一个项目地址，它帮你把整个项目从头到尾走一遍，写一份带地图、带讲解、带小测验的旅行手册。</p></blockquote>
+<h2>核心功能</h2>
+<table><thead><tr><th>功能</th><th>说明</th></tr></thead><tbody><tr><td><strong>多深度输出</strong></td><td>brief（概览 ~30min）、medium（进阶 ~60min）、deep（深入 ~120min）、all（依次生成三级）</td></tr><tr><td><strong>多受众模式</strong></td><td>general（类比+白话解释）、dev（纯技术分析）</td></tr><tr><td><strong>多语言</strong></td><td>zh（中文+英文术语）、zh-pure（纯中文）、en（纯英文）、bilingual（中英对照）</td></tr><tr><td><strong>交互式 HTML</strong></td><td>自包含单文件，暗色/亮色切换、侧边栏导航、可展开详情、互动 quiz</td></tr><tr><td><strong>Manifest-first 准确性</strong></td><td>先验证所有事实声明，再写内容，每个代码块可追溯到源码</td></tr><tr><td><strong>Converter-first HTML</strong></td><td>Python 预渲染静态 HTML，避免 innerHTML 限制导致的空内容问题</td></tr></tbody></table>
+<h2>版本与仓库</h2>
+<p>当前版本 <strong>v1.6.1</strong>，MIT 许可证。</p>
+<p>版本号出现在 6 个位置，全部从 <code>skills/ruyi-project-walkthrough/SKILL.md</code> frontmatter 同步：</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/SKILL.md:1-5
+---
+name: project-walkthrough
+version: &quot;1.6.1&quot;
+description: &quot;...&quot;
+---</code></pre>
+<h2>技术栈</h2>
+<table><thead><tr><th>层面</th><th>技术</th></tr></thead><tbody><tr><td>Skill 定义</td><td>Markdown (SKILL.md)，890 行</td></tr><tr><td>辅助脚本</td><td>Python 3（md_to_html.py, verify_sources.py, import_graph.py）</td></tr><tr><td>平台转换</td><td>Bash（convert.sh）</td></tr><tr><td>版本发布</td><td>Bash（release.sh）</td></tr><tr><td>测试</td><td>pytest，8 个测试文件，250 个测试函数</td></tr><tr><td>CI</td><td>GitHub Actions，ubuntu-latest + Python 3.12</td></tr><tr><td>多平台</td><td>Cursor / Windsurf / OpenCode / Gemini CLI 兼容</td></tr></tbody></table>
+<h2>项目目录结构</h2>
+<pre><code>project-walkthrough/
+├── .claude-plugin/           ← 插件元数据（plugin.json, marketplace.json）
+├── skills/
+│   └── ruyi-project-walkthrough/
+│       ├── SKILL.md          ← 890 行，skill 的单一事实源
+│       └── references/       ← 分析框架、范围矩阵、偏好配置
+├── scripts/
+│   ├── md_to_html.py         ← 643 行，Markdown→HTML 转换器
+│   ├── verify_sources.py     ← 315 行，manifest 验证
+│   ├── import_graph.py       ← 239 行，依赖图提取
+│   ├── convert.sh            ← 272 行，多平台文件生成
+│   └── release.sh            ← 166 行，版本发布自动化
+├── docs/                     ← 设计文档（6 个规范文件）
+├── tests/                    ← 8 个测试文件，3 个 fixture 项目
+├── cursor/                   ← Cursor IDE 规则文件
+├── .windsurf/                ← Windsurf 规则文件
+├── .opencode/                ← OpenCode skill 文件
+├── examples/                 ← 自生成示例（zh + en）
+└── CHANGELOG.md              ← 6 个版本的变更记录</code></pre>
+<h2>设计亮点</h2>
+<ol><li><strong>Manifest-first</strong>：Phase 3A 先验证所有声明写入 manifest，Phase 3B 只写已验证内容——&quot;不可验证 = 不写入&quot;</li><li><strong>Converter-first</strong>：所有深度级别的 HTML 都由 <code>md_to_html.py</code> 生成，不依赖 LLM 手动拼 DOM</li><li><strong>SKILL.md 是单一事实源</strong>：所有平台文件由 <code>convert.sh</code> 从 SKILL.md 生成</li><li><strong>自动质量门禁</strong>：HTML 生成后自动校验 section 完整性、内容密度、broken links</li></ol>
+<div class="nav-links"><span></span><a href="#" onclick="showChapter(1);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch1"><h1>02 五阶段 Pipeline 架构</h1>
+<h2>整体流程</h2>
+<p>project-walkthrough 的核心是一个 5 阶段 pipeline，从分析到交付，每阶段有明确的输入、输出和质量门禁。</p>
+<blockquote><p>类比理解：这个 pipeline 就像一条工厂流水线——原材料（源码）进来，经过 5 道工序（分析→探索→规划→生成→验证），最终产出成品（markdown + HTML）。每道工序都有自己的质检标准，上一道不合格，下一道不接收。</p></blockquote>
+<h2>Pipeline 数据流</h2>
+<pre><code>用户输入 (--depth, --audience, --path)
+    │
+    ▼
+┌─────────────────────────┐
+│  Phase 0: 分析与确认     │  ~5% 时间
+│  ├─ 0.1 加载偏好         │
+│  ├─ 0.2 内容分析         │  → analysis.md
+│  └─ 0.3 确认门           │  → 用户确认 scope/depth/format
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│  Phase 1: 探索           │  ~15% 时间
+│  ├─ 识别项目类型          │
+│  ├─ 读核心文件           │
+│  ├─ 读关键源码           │
+│  ├─ 提取创新点           │
+│  └─ 映射架构             │
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│  Phase 2: 规划章节        │  ~10% 时间
+│  ├─ 选择章节模板          │
+│  ├─ 确定章节数量          │
+│  ├─ 适配项目特征          │
+│  └─ 映射源文件到章节      │
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────────────────────┐
+│  Phase 3: 生成 Markdown                  │  ~40% 时间
+│  ├─ 3A 验证声明 → sources-manifest.json │  ← 写入许可证
+│  ├─ 3B 写入章节内容（仅已验证声明）      │
+│  └─ 3C 校验覆盖率                        │
+└─────────┬───────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│  Phase 4: 生成 HTML      │  ~30% 时间
+│  ├─ 运行 md_to_html.py   │  ← Converter-first
+│  ├─ 生成交互式 HTML       │
+│  └─ 自动质量校验          │  → verify-result.json
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│  Phase 5: 验证交付       │  ~5% 时间
+│  ├─ 文件完整性检查        │
+│  ├─ Manifest 覆盖率       │
+│  ├─ HTML 有效性           │
+│  └─ Quiz 答案正确性       │
+└─────────────────────────┘</code></pre>
+<h2>各阶段时间分配</h2>
+<table><thead><tr><th>阶段</th><th>占比</th><th>核心产出</th></tr></thead><tbody><tr><td>Phase 0</td><td>~5%</td><td>analysis.md + 用户确认</td></tr><tr><td>Phase 1</td><td>~15%</td><td>探索笔记（不落盘）</td></tr><tr><td>Phase 2</td><td>~10%</td><td>章节大纲</td></tr><tr><td>Phase 3</td><td>~40%</td><td>12 个 .md 文件 + sources-manifest.json</td></tr><tr><td>Phase 4</td><td>~30%</td><td>1 个交互式 HTML + verify-result.json</td></tr><tr><td>Phase 5</td><td>~5%</td><td>验证报告</td></tr></tbody></table>
+<h2>Phase 3 的三阶段子流程</h2>
+<p>Phase 3 是整个 pipeline 的核心，因为它保证准确性。它分为三个子阶段：</p>
+<h3>Phase 3A：验证与构建 Manifest</h3>
+<p><strong>写入许可机制</strong>——manifest 不是审计日志，而是写入许可证。每个声明必须在 manifest 中有 <code>verified: true</code> 记录，才能在 Phase 3B 中被写入。</p>
+<p>验证步骤：</p>
+<ol><li>列出计划的所有声明（代码示例、目录结构、API 签名、版本号等）</li><li>逐个读取源文件验证（不是从 README 或记忆中推断）</li><li>创建 manifest 条目记录来源和验证状态</li><li>不可验证的声明被丢弃，用可验证的替代</li></ol>
+<h3>Phase 3B：写入章节内容</h3>
+<p>只使用 Phase 3A 中已验证的声明。每个代码块必须有 <code>// Simplified from: path:lines</code> 引用。</p>
+<h3>Phase 3C：校验覆盖率</h3>
+<p>回读每个章节，交叉检查所有事实声明是否有 manifest 条目，确保无遗漏。</p>
+<h2>为什么是这个顺序</h2>
+<p>这个 pipeline 的设计哲学是&quot;验证先行&quot;（verify before write）。传统做法是先写后验，但这会导致：</p>
+<ul><li>LLM 在生成内容时&quot;编造&quot;合理的代码片段</li><li>事后发现错误时需要大面积重写</li><li>读者无法判断内容是否可信</li></ul>
+<p>通过把验证（Phase 3A）放在写入（Phase 3B）之前，project-walkthrough 在结构层面消除了编造内容的可能性。</p>
+<div class="nav-links"><a href="#" onclick="showChapter(0);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(2);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch2"><h1>03 Phase 0：内容分析与确认门</h1>
+<h2>Phase 0 的角色</h2>
+<p>Phase 0 是整个 pipeline 的&quot;调度中心&quot;——它分析输入内容，推荐 scope/depth/format，然后让用户确认后才进入正式生成。这避免了&quot;生成了半天发现不是用户想要的&quot;问题。</p>
+<blockquote><p>类比理解：Phase 0 就像餐厅的菜单推荐——先看你是几个人、什么口味、预算多少，给你推荐套餐，你确认了再下单做菜。</p></blockquote>
+<h2>三个子阶段</h2>
+<h3>Phase 0.1：加载偏好 (EXTEND.md)</h3>
+<p>project-walkthrough 支持两级偏好配置文件：</p>
+<table><thead><tr><th>优先级</th><th>路径</th><th>作用域</th></tr></thead><tbody><tr><td>1</td><td><code>.project-walkthrough/EXTEND.md</code></td><td>项目级</td></tr><tr><td>2</td><td><code>$HOME/.project-walkthrough/EXTEND.md</code></td><td>用户级（全局）</td></tr></tbody></table>
+<pre><code>// Simplified from: .project-walkthrough/EXTEND.md:1-7
+---
+scope: auto
+depth: auto
+language: zh
+manifest_strictness: auto
+confirm_scope: true
+---</code></pre>
+<p>偏好文件遵循以下规则：</p>
+<ul><li><strong>找到</strong>：显示摘要，继续执行</li><li><strong>找到但 YAML 无效</strong>：显示错误，提供重新设置选项</li><li><strong>未找到</strong>：运行首次设置引导，生成 EXTEND.md 后继续</li></ul>
+<h3>Phase 0.2：内容分析 → analysis.md</h3>
+<p>内容分析框架定义在 <code>references/analysis-framework.md</code> 中，包含 5 个维度：</p>
+<ol><li><strong>检测内容类型</strong> — 软件项目 / 文档报告 / 混合</li><li><strong>测量输入规模</strong> — 文件数、行数、目录深度</li><li><strong>分析内容结构</strong> — 统计数据、案例研究、代码块、引用</li><li><strong>评估技术密度</strong> — 低 / 中 / 高</li><li><strong>生成推荐</strong> — scope、章节数、每章深度、manifest 严格度</li></ol>
+<p>分析结果保存为 <code>analysis.md</code>，包含 YAML front matter（类型、规模、技术密度）+ 分析正文。</p>
+<h3>Phase 0.3：确认门 (Confirmation Gate)</h3>
+<p>确认门通过交互式问答让用户最终决定生成参数。这是 Phase 0 的核心交互环节。</p>
+<p><strong>跳过条件</strong>：<code>--no-confirm</code> 标志或 EXTEND.md 中 <code>confirm_scope: false</code></p>
+<p>确认门包含 5 个问题：</p>
+<table><thead><tr><th>问题</th><th>选项</th></tr></thead><tbody><tr><td>Q1: 走读范围</td><td>Full / Focused / Overview / Custom</td></tr><tr><td>Q2: 每章深度</td><td>Detailed / Standard / Summary</td></tr><tr><td>Q3: 输出格式</td><td>HTML+Markdown / Markdown only / HTML only</td></tr><tr><td>Q4: 审查大纲</td><td>Yes / No</td></tr><tr><td>Q5: 输出语言</td><td>zh / zh-pure / en / bilingual</td></tr></tbody></table>
+<p><code>--depth</code> 标志会影响 Q1 的推荐选项。例如 <code>--depth medium</code> 对应 Focused scope，Q1 会预选 &quot;Focused walkthrough (Recommended)&quot;。</p>
+<h2>Depth ↔ Scope 映射表</h2>
+<p>CLI 的 <code>--depth</code> 标志设置两个内部参数的默认值：</p>
+<table><thead><tr><th>`--depth`</th><th>Scope</th><th>每章深度</th><th>章节数指南</th></tr></thead><tbody><tr><td><code>brief</code></td><td><code>overview</code></td><td><code>standard</code></td><td>5-8 个主题章节</td></tr><tr><td><code>medium</code></td><td><code>focused</code></td><td><code>detailed</code></td><td>10-15 个关键章节</td></tr><tr><td><code>deep</code></td><td><code>full</code></td><td><code>detailed</code></td><td>无硬性上限，适应输入</td></tr><tr><td><code>all</code></td><td>依次三级</td><td>按级别变化</td><td>按级别变化</td></tr></tbody></table>
+<h2>范围不匹配警告</h2>
+<p>如果 <code>--depth</code> 提示的 scope 会导致丢弃超过 50% 的输入章节（例如 <code>--depth brief</code> 作用在 30 章文档上），会显示警告：</p>
+<blockquote><p>Warning: overview scope will consolidate [N] chapters into 5-8 thematic groups. Consider &#x27;focused&#x27; to preserve top chapters.</p></blockquote>
+<p>这确保用户在知情的情况下做出选择。</p>
+<div class="nav-links"><a href="#" onclick="showChapter(1);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(3);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch3"><h1>04 Phase 1-2：探索与章节规划</h1>
+<h2>Phase 1：探索协议</h2>
+<p>探索协议（<code>docs/exploration-protocol.md</code>，206 行）定义了如何系统性地了解一个项目。它包含 6 个步骤：</p>
+<h3>Step 1：识别项目类型</h3>
+<p>通过检查顶层文件来分类项目：</p>
+<table><thead><tr><th>类型</th><th>指标</th><th>典型项目</th></tr></thead><tbody><tr><td>AI tool</td><td>Skills/prompts 目录，AI 模型引用，plugin 系统</td><td>superpowers, cursor</td></tr><tr><td>Library</td><td><code>src/index.ts</code> 导出，<code>lib/</code> 目录，API 文档</td><td>React, Lodash, zod</td></tr><tr><td>Web app</td><td>路由/页面目录，服务器入口，数据库迁移</td><td>Next.js, Rails</td></tr><tr><td>CLI tool</td><td><code>bin/</code> 目录，commander/yargs 依赖</td><td>git, esbuild</td></tr><tr><td>Game engine</td><td>渲染器/着色器/物理目录，ECS，场景图</td><td>Bevy, Godot</td></tr><tr><td>Database</td><td>存储引擎，WAL，查询规划器，B-tree/LSM-tree</td><td>RocksDB, SQLite</td></tr><tr><td>Compiler</td><td>词法分析器/解析器，AST，类型检查器，代码生成</td><td>Rustc, TypeScript</td></tr><tr><td>Document</td><td>连续 markdown 章节，无源码文件</td><td>研究报告，学习指南</td></tr></tbody></table>
+<h3>Step 2-3：读核心文件和关键源码</h3>
+<p>按优先级读取文件：</p>
+<ol><li>README.md、package.json、CLAUDE.md/AGENTS.md — 所有项目必读</li><li>核心逻辑模块 — 做主要工作的代码</li><li>配置 — 项目如何配置</li><li>入口点 — 执行从哪里开始</li><li>测试 — 项目认为值得测什么（揭示优先级）</li></ol>
+<p><strong>文件大小感知策略</strong>：</p>
+<table><thead><tr><th>文件大小</th><th>策略</th></tr></thead><tbody><tr><td>&lt; 500 行</td><td>全文阅读</td></tr><tr><td>500–2,000 行</td><td>前 100 行 + 关键段落</td></tr><tr><td>&gt; 2,000 行</td><td>先看大纲/符号，只读需要的段落</td></tr></tbody></table>
+<h3>Step 4：提取创新点</h3>
+<p>识别 3-5 个独特的设计决策、技术或关键发现。问四个问题：</p>
+<ul><li>这个项目和其他类似工具有什么不同？</li><li>哪些设计决策会让资深开发者惊讶？</li><li>它解决了别人没解决的问题吗？</li><li>作者做了什么权衡，为什么？</li></ul>
+<h3>Step 5：映射架构</h3>
+<p>构建项目的心理模型：组件、数据流、依赖、配置、状态。</p>
+<h3>Step 6：验证探索发现</h3>
+<p>交叉检查关键声明，标记不可验证的为 <code>[UNVERIFIED]</code>。这些声明必须在 Phase 3 中重新验证，否则从 walkthrough 中省略。</p>
+<h2>Phase 2：章节规划</h2>
+<p>章节规划使用 <code>docs/chapter-templates.md</code>（401 行）中的模板，按项目类型选择：</p>
+<table><thead><tr><th>项目类型</th><th>Brief 章节数</th><th>Medium 章节数</th></tr></thead><tbody><tr><td>AI Tool</td><td>7-8</td><td>12-15</td></tr><tr><td>Library</td><td>7-8</td><td>12-15</td></tr><tr><td>Web App</td><td>7-8</td><td>12-15</td></tr><tr><td>CLI Tool</td><td>7-8</td><td>12-15</td></tr><tr><td>Document</td><td>1:1 保留</td><td>选择关键章节</td></tr><tr><td>Game Engine</td><td>7-8</td><td>12-15</td></tr><tr><td>Database</td><td>7-8</td><td>12-15</td></tr><tr><td>Compiler</td><td>7-8</td><td>12-15</td></tr></tbody></table>
+<p>模板是起点，不是约束。规划时需要：</p>
+<ol><li><strong>删除无关章节</strong> — 如果项目没有安全模型，不硬造一个</li><li><strong>添加独特章节</strong> — 如果项目有不寻常的功能，加专门章节</li><li><strong>合并重叠章节</strong> — 如果两个模板章节在特定项目中重叠，合并</li><li><strong>尊重项目自身组织</strong> — 如果项目有清晰的模块结构，在章节中反映</li></ol>
+<h2>章节质量标准</h2>
+<p>每个章节应满足：</p>
+<ul><li><strong>一个清晰主题</strong> — 不是&quot;杂项功能&quot;</li><li><strong>有源文件支撑</strong> — 可以指向具体文件</li><li><strong>可独立阅读</strong> — 不需要读其他章节也能理解</li><li><strong>有实质内容</strong> — 不是&quot;这个文件有 200 行代码&quot;</li></ul>
+<div class="nav-links"><a href="#" onclick="showChapter(2);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(4);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch4"><h1>05 Phase 3：Manifest-First 准确性保证</h1>
+<h2>核心原则：Verify Before Write</h2>
+<p>project-walkthrough 最核心的设计决策是 <strong>manifest-first</strong>——先验证所有声明，再写内容。这不是一个审计日志，而是一个<strong>写入许可证</strong>。</p>
+<blockquote><p>类比理解：manifest 就像新闻编辑的&quot;事实核查表&quot;——每一条报道必须在核查表上打勾后才能发稿。没有打勾的，写得再好也不能发。</p></blockquote>
+<h2>Manifest 生命周期</h2>
+<p>manifest 文件 <code>sources-manifest.json</code> 经历三个阶段：</p>
+<table><thead><tr><th>阶段</th><th>状态</th><th>doc_file</th><th>doc_line</th></tr></thead><tbody><tr><td>Phase 3A（验证态）</td><td>claims 有 source_file + verified</td><td>可选</td><td>可选</td></tr><tr><td>Phase 3B（追溯态）</td><td>claims 增加 doc_file + doc_line</td><td>必填</td><td>必填</td></tr><tr><td>Phase 3C（校验态）</td><td>全部字段完整 + 源文件检查通过</td><td>必填</td><td>必填</td></tr></tbody></table>
+<h2>9 种声明类型</h2>
+<p>每种事实声明都有对应的验证方式：</p>
+<table><thead><tr><th>type</th><th>何时使用</th><th>验证方式</th></tr></thead><tbody><tr><td><code>code_example</code></td><td>md 文件中的代码块</td><td>读取源文件，复制精确行</td></tr><tr><td><code>directory_structure</code></td><td>目录/文件树描述</td><td><code>ls</code> 实际目录</td></tr><tr><td><code>api_signature</code></td><td>函数/方法签名</td><td>读取函数定义（不是调用点）</td></tr><tr><td><code>version_number</code></td><td>版本号声明</td><td>读取 package.json/Cargo.toml</td></tr><tr><td><code>architecture_claim</code></td><td>&quot;X 模块负责 Y&quot;</td><td>找到支撑源文件</td></tr><tr><td><code>dependency_claim</code></td><td>&quot;使用了库 X&quot;</td><td>找到 import 语句</td></tr><tr><td><code>config_claim</code></td><td>配置选项描述</td><td>读取配置定义</td></tr><tr><td><code>feature_claim</code></td><td>功能特性描述</td><td>读取实现代码</td></tr><tr><td><code>performance_claim</code></td><td>性能数据</td><td>读取 bench 测试文件</td></tr></tbody></table>
+<h2>Manifest JSON 结构</h2>
+<p>每个 claim 条目的核心字段：</p>
+<pre><code>// Simplified from: docs/sources-manifest-schema.md:52-62
+{
+  &quot;id&quot;: &quot;claim-001&quot;,
+  &quot;type&quot;: &quot;code_example&quot;,
+  &quot;source_file&quot;: &quot;src/main.py&quot;,
+  &quot;source_lines&quot;: [10, 25],
+  &quot;claim_summary&quot;: &quot;Main entry point with argument parsing&quot;,
+  &quot;verified&quot;: true,
+  &quot;verification_note&quot;: &quot;exact match from source&quot;,
+  &quot;doc_file&quot;: &quot;docs/03-core.md&quot;,
+  &quot;doc_line&quot;: 42
+}</code></pre>
+<p>关键规则：</p>
+<ul><li><strong>id 格式</strong>：<code>claim-</code> + 3 位以上数字（如 <code>claim-001</code>、<code>claim-042</code>）</li><li><strong>source_lines</strong>：<code>[start, end]</code> 行号范围，1-based</li><li><strong>verified</strong>：必须是 <code>true</code> 才能在 Phase 3B 中使用</li><li><strong>unverified 数组</strong>：无法验证的声明放入此数组，附带原因</li></ul>
+<h2>验证脚本</h2>
+<p><code>scripts/verify_sources.py</code>（315 行）对 manifest 执行 5 类检查：</p>
+<pre><code>// Simplified from: scripts/verify_sources.py:87-101
+def validate_basic(manifest, result, strict=False):
+    for key in REQUIRED_TOP_KEYS:
+        if key not in manifest:
+            result.error(f&quot;Missing required top-level key: {key}&quot;)
+    # ... 验证 claims 数组、ID 格式、类型枚举</code></pre>
+<p>检查项：</p>
+<ol><li><strong>Schema 验证</strong> — JSON 结构合法性</li><li><strong>基本结构</strong> — 必填字段、ID 格式、类型枚举</li><li><strong>文件存在性</strong> — source_file 指向的文件是否存在</li><li><strong>行号有效性</strong> — source_lines 不超过文件行数</li><li><strong>严格模式</strong> (<code>--strict</code>) — 要求 doc_file/doc_line 必填</li></ol>
+<h2>引用格式规则</h2>
+<p>每个代码块必须使用 <code>// Simplified from: path:lines</code>：</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:129-130
+def convert_md_to_html(md_text, nav_skip_re=None):
+    ...</code></pre>
+<p><strong>禁止</strong> 使用 <code>// Source:</code>。原因：walkthrough 中的代码总是被简化的（缩进改变、注释省略、上下文移除），<code>Simplified from:</code> 更诚实。</p>
+<h2>12 轮迭代验证</h2>
+<p>manifest-first 系统是通过 12 轮验证迭代建立的：</p>
+<ul><li>Round 1-9：逐步发现和修复准确性问题</li><li>Round 10-12：连续零问题，系统达到稳定状态</li><li>最终：185 个测试覆盖结构、manifest、引用和源文件完整性</li></ul>
+<div class="nav-links"><a href="#" onclick="showChapter(3);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(5);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch5"><h1>06 md_to_html.py：Markdown 到交互式 HTML 转换器</h1>
+<h2>概览</h2>
+<p><code>scripts/md_to_html.py</code>（643 行）是 project-walkthrough 的 HTML 生成引擎。从 v1.6.0 起，所有深度级别的 HTML 都由这个转换器生成——不再依赖 LLM 手动拼 DOM。</p>
+<blockquote><p>类比理解：这个转换器就像一个&quot;印刷机&quot;——markdown 是手稿，转换器把它们排版成精美的交互式网页。它处理文字排版、配色、导航、测验等功能。</p></blockquote>
+<h2>核心函数一览</h2>
+<table><thead><tr><th>函数</th><th>行号</th><th>作用</th></tr></thead><tbody><tr><td><code>convert_md_to_html()</code></td><td>129</td><td>Markdown→HTML 核心转换</td></tr><tr><td><code>parse_table()</code></td><td>103</td><td>Markdown 表格→HTML 表格</td></tr><tr><td><code>process_inline()</code></td><td>84</td><td>行内格式处理（加粗、斜体、代码、链接）</td></tr><tr><td><code>extract_quiz_section()</code></td><td>201</td><td>从 markdown 中分离 quiz 部分</td></tr><tr><td><code>parse_quiz_md()</code></td><td>223</td><td>解析 quiz markdown 为结构化数据</td></tr><tr><td><code>build_quiz_section()</code></td><td>270</td><td>生成交互式 quiz 的 HTML+JS</td></tr><tr><td><code>build_watermark_section()</code></td><td>314</td><td>生成&quot;关于本报告&quot;尾页</td></tr><tr><td><code>build_html()</code></td><td>358</td><td>组装完整 HTML 页面</td></tr><tr><td><code>verify_html()</code></td><td>462</td><td>生成后自动校验</td></tr><tr><td><code>main()</code></td><td>553</td><td>CLI 入口</td></tr></tbody></table>
+<h2>转换流程</h2>
+<pre><code># 基本用法
+python scripts/md_to_html.py docs/ output.html \
+  --title &quot;Project Name&quot; --accent &quot;#4a6fa5&quot; --lang zh --quiz-chapter 6
+
+# 验证已生成的 HTML
+python scripts/md_to_html.py --verify output.html --source-dir docs/</code></pre>
+<p>转换器按以下顺序处理：</p>
+<ol><li>读取 <code>docs_dir</code> 下的所有 <code>.md</code> 文件（按文件名排序）</li><li>提取第一个文件的 <code># 标题</code> 作为 HTML 标题</li><li>对每个文件调用 <code>convert_md_to_html()</code> 转换</li><li>如果指定 <code>--quiz-chapter</code>，从对应章节提取 quiz</li><li>可选生成 watermark（&quot;关于本报告&quot;页面）</li><li>调用 <code>build_html()</code> 组装完整页面</li><li>调用 <code>verify_html()</code> 自动校验</li><li>写入 <code>verify-result.json</code> 校验结果</li></ol>
+<h2>Markdown 元素映射</h2>
+<p>转换器支持所有常见 markdown 元素：</p>
+<table><thead><tr><th>Markdown</th><th>HTML</th></tr></thead><tbody><tr><td><code># H1</code></td><td><code>&lt;h1&gt;</code></td></tr><tr><td><code>## H2</code></td><td><code>&lt;h2&gt;</code></td></tr><tr><td><code>### H3</code></td><td><code>&lt;h3&gt;</code></td></tr><tr><td><code>#### H4</code></td><td><code>&lt;h4&gt;</code></td></tr><tr><td><code>---</code></td><td><code>&lt;hr&gt;</code></td></tr><tr><td>`<code> </code>`<code>code</code>`<code> </code><code> | </code>&lt;pre&gt;&lt;code&gt;`</td></tr><tr><td><code>| table |</code></td><td><code>&lt;table&gt;</code></td></tr><tr><td><code>&gt; quote</code></td><td><code>&lt;blockquote&gt;</code></td></tr><tr><td><code>- list</code></td><td><code>&lt;ul&gt;</code></td></tr><tr><td><code>1. list</code></td><td><code>&lt;ol&gt;</code></td></tr><tr><td><code><strong>bold</strong></code></td><td><code>&lt;strong&gt;</code></td></tr><tr><td><code><em>italic</em></code></td><td><code>&lt;em&gt;</code></td></tr><tr><td>`<code> </code>code<code> </code><code> | </code>&lt;code&gt;`</td></tr><tr><td><code>&lt;details&gt;</code></td><td>原样保留</td></tr></tbody></table>
+<h2>多语言支持 (I18N)</h2>
+<p>4 种语言模式影响导航、按钮、quiz 标题的文案：</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:23-30
+I18N = {
+    &quot;zh&quot;: {
+        &quot;lang&quot;: &quot;zh-CN&quot;, &quot;chapters&quot;: &quot;章节&quot;,
+        &quot;prev&quot;: &quot;&amp;larr; 上一章&quot;, &quot;next&quot;: &quot;下一章 &amp;rarr;&quot;,
+        &quot;quiz_title&quot;: &quot;知识测验&quot;,
+    },
+    &quot;en&quot;: { ... },
+}</code></pre>
+<p>每种语言模式还定义了 <code>nav_skip</code> 正则表达式，用于移除 markdown 中的&quot;上一章/下一章&quot;导航链接（HTML 中用 JS <code>showChapter()</code> 替代）。</p>
+<h2>Quiz 系统</h2>
+<p>Quiz 从 markdown 的 <code>## Quiz</code> 章节中提取，格式为：</p>
+<pre><code>**Q1:** 问题描述？
+- A. 选项1
+- B. 选项2
+- C. 选项3
+- D. 选项4
+**Answer: B**
+**Explanation:** 解释文本</code></pre>
+<p>解析后生成一个 JavaScript <code>quizData</code> 数组，用 DOM API 渲染为交互式按钮：</p>
+<ul><li>点击选项后禁用所有按钮</li><li>正确答案绿色高亮，错误答案红色</li><li>显示解释文本</li></ul>
+<h2>XSS 防护</h2>
+<p>转换器内置三层安全防护：</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:62-68
+def sanitize_url(url):
+    &quot;&quot;&quot;Block javascript:, data:, vbscript: etc.&quot;&quot;&quot;
+    scheme = re.match(r&#x27;^([a-zA-Z][a-zA-Z0-9+.-]*):&#x27;, url.strip())
+    if scheme and scheme.group(1).lower() not in (&#x27;http&#x27;, &#x27;https&#x27;, &#x27;mailto&#x27;, &#x27;tel&#x27;, &#x27;&#x27;):
+        return &#x27;#&#x27;
+    return url</code></pre>
+<ol><li><strong>URL 过滤</strong> — 阻止 <code>javascript:</code> 和 <code>data:</code> 协议</li><li><strong>HTML 转义</strong> — 所有文本内容通过 <code>escape_html()</code> 处理</li><li><strong>HTML 注释剥离</strong> — <code>preprocess_md()</code> 移除所有 ``</li></ol>
+<h2>自动校验 (verify_html)</h2>
+<p>每次生成后自动运行 6 项校验：</p>
+<ol><li><strong>Section 计数</strong> — HTML 章节数 = markdown 文件数</li><li><strong>Per-section 内容检查</strong> — 每个章节至少有标题和内容元素</li><li><strong>文件大小比率</strong> — HTML ≥ markdown 总大小的 80%</li><li><strong>Broken links</strong> — 零残留 <code>.md</code> 链接</li><li><strong>导航一致性</strong> — 侧边栏链接数 = 章节数</li><li><strong>Quiz 存在性</strong> — 如果源 markdown 有 quiz，HTML 也必须有</li></ol>
+<p>校验结果写入 <code>verify-result.json</code>：</p>
+<pre><code>{
+  &quot;passed&quot;: true,
+  &quot;section_count&quot;: 12,
+  &quot;html_size&quot;: 45678,
+  &quot;markdown_size&quot;: 52345,
+  &quot;ratio_pct&quot;: 87,
+  &quot;errors&quot;: []
+}</code></pre>
+<div class="nav-links"><a href="#" onclick="showChapter(4);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(6);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch6"><h1>07 辅助脚本：验证、依赖图、多平台转换</h1>
+<h2>概览</h2>
+<p>project-walkthrough 有 3 个辅助脚本支撑核心 pipeline：</p>
+<table><thead><tr><th>脚本</th><th>行数</th><th>核心职责</th></tr></thead><tbody><tr><td><code>verify_sources.py</code></td><td>315</td><td>Manifest 验证与源文件检查</td></tr><tr><td><code>import_graph.py</code></td><td>239</td><td>从源码提取模块间依赖关系</td></tr><tr><td><code>convert.sh</code></td><td>272</td><td>多平台文件生成</td></tr></tbody></table>
+<h2>verify_sources.py：Manifest 验证器</h2>
+<h3>用法</h3>
+<pre><code># 验证单个 manifest
+python scripts/verify_sources.py examples/bat docs/sources-manifest.json
+
+# 指定源码目录（检查文件存在性）
+python scripts/verify_sources.py examples/bat docs/sources-manifest.json --source-dir ../bat
+
+# 检查所有示例项目
+python scripts/verify_sources.py --check-all examples/ --strict
+
+# 限制到某个项目
+python scripts/verify_sources.py --check-all examples/ --project bat</code></pre>
+<h3>验证流程</h3>
+<pre><code>// Simplified from: scripts/verify_sources.py:212-234
+def validate_manifest(manifest_path, source_dir=None, strict=False):
+    result = VerificationResult()
+    # 1. 读取并解析 JSON
+    manifest = json.load(f)
+    # 2. JSON Schema 验证（如果安装了 jsonschema）
+    validate_jsonschema(manifest, schema, result)
+    # 3. 基本结构验证
+    validate_basic(manifest, result, strict=strict)
+    # 4. 源文件存在性检查
+    validate_source_files(manifest, source_dir, result)
+    return result</code></pre>
+<h3>验证结果类</h3>
+<pre><code>// Simplified from: scripts/verify_sources.py:43-73
+class VerificationResult:
+    def __init__(self):
+        self.errors = []
+        self.warnings = []
+        self.info = []
+
+    @property
+    def ok(self):
+        return len(self.errors) == 0</code></pre>
+<p>三类消息：<code>error</code>（阻塞）、<code>warning</code>（不阻塞但需注意）、<code>info</code>（信息）。</p>
+<h3>严格模式 vs 普通模式</h3>
+<table><thead><tr><th>检查项</th><th>普通（Phase 3A）</th><th>严格（Phase 3C）</th></tr></thead><tbody><tr><td>顶层字段</td><td>✅</td><td>✅</td></tr><tr><td>claim ID 格式</td><td>✅</td><td>✅</td></tr><tr><td>claim type 枚举</td><td>✅</td><td>✅</td></tr><tr><td>source_lines 范围</td><td>✅</td><td>✅</td></tr><tr><td>doc_file / doc_line</td><td>⚠️ 可选</td><td>✅ 必填</td></tr><tr><td>源文件存在性</td><td>✅</td><td>✅</td></tr></tbody></table>
+<h2>import_graph.py：依赖图提取</h2>
+<h3>设计目的</h3>
+<p>LLM 在画架构图时容易根据目录结构推断模块关系，但<strong>目录嵌套 ≠ 依赖层级</strong>。<code>import_graph.py</code> 通过实际分析 import 语句来提取真实的模块依赖。</p>
+<blockquote><p>类比理解：这个脚本就像&quot;间谍卫星&quot;——它不看地图上怎么画，而是实际追踪每个模块和谁有通信，画出真实的联络网。</p></blockquote>
+<h3>支持的语言</h3>
+<table><thead><tr><th>语言</th><th>文件扩展名</th><th>提取方式</th></tr></thead><tbody><tr><td>TypeScript/JavaScript</td><td>.ts, .tsx, .js, .jsx</td><td><code>import ... from</code>, <code>require()</code>, <code>import()</code></td></tr><tr><td>Python</td><td>.py</td><td><code>from . import</code>, <code>from .. import</code>, 绝对导入</td></tr><tr><td>Rust</td><td>.rs</td><td><code>use crate::</code>, <code>use super::</code>, <code>mod</code></td></tr></tbody></table>
+<pre><code>// Simplified from: scripts/import_graph.py:108-110
+def build_graph(root: str, lang: str, depth: int = 2) -&gt; tuple[dict, dict]:
+    ext_map = {
+        &quot;typescript&quot;: [&quot;.ts&quot;, &quot;.tsx&quot;, &quot;.js&quot;, &quot;.jsx&quot;],
+        &quot;python&quot;: [&quot;.py&quot;],
+        &quot;rust&quot;: [&quot;.rs&quot;],
+    }</code></pre>
+<h3>自动语言检测</h3>
+<p>如果 <code>--lang auto</code>（默认），按以下规则自动检测：</p>
+<ol><li>有 <code>Cargo.toml</code> → Rust</li><li>有 <code>pyproject.toml</code> 或 <code>setup.py</code> → Python</li><li>有 <code>package.json</code> 或 <code>tsconfig.json</code> → TypeScript</li><li>否则 → 分析所有语言</li></ol>
+<h3>输出格式</h3>
+<p>脚本输出文本格式的依赖图：</p>
+<pre><code># Import Dependency Graph: my-project
+# Modules found: 8
+# Files scanned: 23
+
+## src/core/
+   imports from: src/utils, src/types
+   dependency count: 2
+
+# Parallel modules (share a dependency, don&#x27;t import each other):
+   src/utils ← src/core, src/api (parallel siblings)</code></pre>
+<p><strong>Parallel siblings</strong> 是一个关键概念：两个模块共享一个依赖但不互相导入。这表示它们可以独立开发。</p>
+<h2>convert.sh：多平台文件生成</h2>
+<h3>设计目的</h3>
+<p>project-walkthrough 需要同时在 Cursor、Windsurf、OpenCode、Gemini CLI 上工作。但每个平台的文件格式和大小限制不同。<code>convert.sh</code> 从 <code>SKILL.md</code>（单一事实源）自动生成所有平台文件。</p>
+<h3>用法</h3>
+<pre><code># 生成所有平台文件
+./scripts/convert.sh
+
+# 只生成 Cursor
+./scripts/convert.sh cursor
+
+# 检查是否同步
+./scripts/convert.sh --check</code></pre>
+<h3>三个平台的处理方式</h3>
+<p><strong>Cursor</strong>（<code>cursor/ruyi-project-walkthrough.mdc</code>）：</p>
+<ul><li>完整 SKILL.md body + frontmatter 描述</li></ul>
+<p><strong>OpenCode</strong>（<code>.opencode/skills/ruyi-project-walkthrough/SKILL.md</code>）：</p>
+<ul><li>完整 body + SKILL.md frontmatter 元数据</li></ul>
+<p><strong>Windsurf</strong>（<code>.windsurf/rules/ruyi-project-walkthrough.md</code>）：</p>
+<ul><li><strong>精简版</strong>，限制 12,000 字符</li><li>跳过 Checklist、Documentation Standards 等冗长段落</li><li>跳过 Phase 3A/3B/3C 的详细验证步骤</li></ul>
+<pre><code># Simplified from: scripts/convert.sh:20-21
+SKILL=&quot;$ROOT/skills/ruyi-project-walkthrough/SKILL.md&quot;
+MAX_WINDSURF_CHARS=12000</code></pre>
+<h3>同步检查</h3>
+<p><code>--check</code> 模式比较目标文件 body 与 SKILL.md body 是否一致，输出 SYNC 或 OUT_OF_SYNC。</p>
+<div class="nav-links"><a href="#" onclick="showChapter(5);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(7);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch7"><h1>08 发布自动化：release.sh 与版本管理</h1>
+<h2>版本同步问题</h2>
+<p>project-walkthrough 的版本号出现在 6 个位置。手动维护容易遗漏或导致不一致。<code>scripts/release.sh</code>（166 行）自动化了这个过程。</p>
+<h2>版本号的 6 个位置</h2>
+<table><thead><tr><th>#</th><th>文件</th><th>位置</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td><code>SKILL.md</code></td><td>frontmatter <code>version: &quot;X.Y.Z&quot;</code></td><td><strong>唯一版本源</strong>，手动修改</td></tr><tr><td>2</td><td><code>SKILL.md</code></td><td><code>--version</code> 输出文本</td><td>2 处 <code>project-walkthrough vX.Y.Z</code></td></tr><tr><td>3</td><td><code>plugin.json</code></td><td><code>&quot;version&quot;: &quot;X.Y.Z&quot;</code></td><td>Claude Code 插件元数据</td></tr><tr><td>4</td><td><code>marketplace.json</code></td><td><code>&quot;version&quot;: &quot;X.Y.Z&quot;</code></td><td>Marketplace 注册信息</td></tr><tr><td>5</td><td><code>README.md</code></td><td>version badge URL</td><td><code>badge/version-X.Y.Z-blue</code></td></tr><tr><td>6</td><td><code>CHANGELOG.md</code></td><td>版本标题</td><td><code>## [X.Y.Z] - YYYY-MM-DD</code></td></tr></tbody></table>
+<h2>release.sh 工作流</h2>
+<h3>用法</h3>
+<pre><code># 完整发布（bump + PR + CI + merge + tag）
+./scripts/release.sh 1.7.0
+
+# 只更新版本号，不推送
+./scripts/release.sh 1.7.0 --bump-only
+
+# 验证不执行
+./scripts/release.sh 1.7.0 --dry-run</code></pre>
+<h3>完整发布流程</h3>
+<pre><code>验证版本格式 (semver)
+    │
+    ▼
+检查分支 (必须在 develop) + 工作区干净
+    │
+    ▼
+运行 CI (make ci)
+    │
+    ▼
+更新 6 处版本号 (sed)
+    │
+    ▼
+提交 &quot;chore: bump version to X.Y.Z&quot;
+    │
+    ▼
+推送到 develop
+    │
+    ▼
+创建 PR (develop → master) via gh CLI
+    │
+    ▼
+等待 CI (最多 120 秒)
+    │
+    ├─ CI 失败 → 停止，报错
+    ├─ CI 超时 → 停止，报错
+    └─ CI 通过 ↓
+    │
+    ▼
+合并 PR + 删除分支
+    │
+    ▼
+打 tag v.X.Y.Z + 推送
+    │
+    ▼
+同步 develop (ff merge from master)
+    │
+    ▼
+✓ 发布完成</code></pre>
+<h3>版本更新细节</h3>
+<pre><code># Simplified from: scripts/release.sh:57-63
+# 读取当前版本（单一事实源）
+CURRENT_VERSION=$(grep &#x27;^version:&#x27; skills/project-walkthrough/SKILL.md | head -1 | sed &#x27;s/version: * &quot;//;s/&quot;//&#x27;)
+
+# 更新 SKILL.md frontmatter
+sed -i.bak &quot;s/^version: \&quot;${CURRENT_VERSION}\&quot;/version: \&quot;${VERSION}\&quot;/&quot; skills/project-walkthrough/SKILL.md
+
+# 更新 plugin.json
+sed -i.bak &quot;s/\&quot;version\&quot;: \&quot;[^\&quot;]*\&quot;/\&quot;version\&quot;: \&quot;$VERSION\&quot;/&quot; .claude-plugin/plugin.json</code></pre>
+<p>每次 <code>sed</code> 后立即删除 <code>.bak</code> 文件，保持工作区干净。</p>
+<h3>CI 等待机制</h3>
+<pre><code># Simplified from: scripts/release.sh:129-143
+MAX_WAIT=120
+ELAPSED=0
+while [ $ELAPSED -lt $MAX_WAIT ]; do
+    sleep 10
+    ELAPSED=$((ELAPSED + 10))
+    CHECKS=$(gh pr checks &quot;$PR_NUM&quot; 2&gt;&amp;1 || true)
+    if echo &quot;$CHECKS&quot; | grep -q &quot;fail&quot;; then
+        echo &quot;ERROR: CI failed!&quot; &gt;&amp;2; exit 1
+    fi
+    if echo &quot;$CHECKS&quot; | grep -q &quot;pass&quot; &amp;&amp; ! echo &quot;$CHECKS&quot; | grep -q &quot;pending&quot;; then
+        echo &quot;CI passed!&quot;; break
+    fi
+done</code></pre>
+<p>每 10 秒轮询一次 CI 状态，最多等 120 秒。失败或超时都会中止发布。</p>
+<h2>版本历史</h2>
+<table><thead><tr><th>版本</th><th>日期</th><th>主要变更</th></tr></thead><tbody><tr><td>1.0.0</td><td>2026-05-09</td><td>Manifest-first Phase 3 + 185 tests</td></tr><tr><td>1.1.0</td><td>2026-05-20</td><td>多语言 + 自适应 scope + 多平台 + EXTEND.md</td></tr><tr><td>1.2.0</td><td>2026-05-20</td><td>AGENTS.md + GitHub Actions CI + convert.sh tests</td></tr><tr><td>1.3.0</td><td>2026-05-20</td><td>release.sh 自动化</td></tr><tr><td>1.4.0</td><td>2026-05-20</td><td>4 种语言模式 + <code>--version</code> flag</td></tr><tr><td>1.5.0</td><td>2026-05-20</td><td>Deep mode 全内容转换</td></tr><tr><td>1.6.0</td><td>2026-05-22</td><td>Converter-first + i18n + quiz + 自动质量门禁</td></tr><tr><td>1.6.1</td><td>2026-05-22</td><td>verify-result.json 结构化验证证据</td></tr></tbody></table>
+<div class="nav-links"><a href="#" onclick="showChapter(6);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(8);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch8"><h1>09 多平台兼容策略</h1>
+<h2>为什么要多平台</h2>
+<p>project-walkthrough 最初只支持 Claude Code。但 AI 编码助手生态快速扩张，Cursor、Windsurf、OpenCode、Gemini CLI 各有自己的 skill/rule 系统。为了最大化覆盖面，需要同时支持多个平台。</p>
+<h2>支持的平台</h2>
+<table><thead><tr><th>平台</th><th>文件位置</th><th>安装方式</th></tr></thead><tbody><tr><td><strong>Claude Code</strong></td><td><code>.claude-plugin/plugin.json</code></td><td><code>/plugin install</code></td></tr><tr><td><strong>Cursor</strong></td><td><code>cursor/ruyi-project-walkthrough.mdc</code></td><td>复制到 <code>.cursor/rules/</code></td></tr><tr><td><strong>Windsurf</strong></td><td><code>.windsurf/rules/ruyi-project-walkthrough.md</code></td><td>复制到 <code>.windsurf/rules/</code></td></tr><tr><td><strong>OpenCode</strong></td><td><code>.opencode/skills/ruyi-project-walkthrough/SKILL.md</code></td><td>复制到 <code>.opencode/skills/</code></td></tr><tr><td><strong>Gemini CLI</strong></td><td><code>skills/ruyi-project-walkthrough/SKILL.md</code></td><td><code>gemini skills install</code></td></tr></tbody></table>
+<h2>单一事实源策略</h2>
+<p>所有平台文件都从 <code>skills/ruyi-project-walkthrough/SKILL.md</code>（890 行）通过 <code>convert.sh</code> 生成。<strong>不应该手动编辑平台文件</strong>。</p>
+<pre><code># 修改 SKILL.md 后，运行：
+./scripts/convert.sh</code></pre>
+<p>这确保所有平台的内容始终与 SKILL.md 同步。</p>
+<h2>各平台的适配差异</h2>
+<h3>Cursor (.mdc 格式)</h3>
+<p>Cursor 的规则文件使用 <code>.mdc</code> 扩展名，frontmatter 包含 <code>description</code>、<code>globs</code>、<code>alwaysApply</code> 字段。</p>
+<pre><code># Simplified from: scripts/convert.sh:53-54
+def gen_cursor(body, trigger_desc):
+    return f&#x27;---\ndescription: &quot;{trigger_desc}&quot;\nglobs:\nalwaysApply: false\n---\n{body}&#x27;</code></pre>
+<p>Cursor 读取完整 SKILL.md body，不做精简。</p>
+<h3>OpenCode (SKILL.md 格式)</h3>
+<p>OpenCode 使用与 SKILL.md 相同的格式，但 frontmatter 额外包含 <code>license</code> 和 <code>compatibility</code> 字段。</p>
+<pre><code># Simplified from: scripts/convert.sh:56-60
+def gen_opencode(body, fm):
+    name = fm.get(&quot;name&quot;, &quot;project-walkthrough&quot;)
+    desc = fm.get(&quot;description&quot;, &quot;&quot;)
+    arg_hint = fm.get(&quot;argument-hint&quot;, &quot;&quot;)
+    return f&#x27;---\nname: {name}\ndescription: {desc}\nlicense: MIT\ncompatibility: opencode\nargument-hint: {arg_hint}\n---\n{body}&#x27;</code></pre>
+<h3>Windsurf (精简版)</h3>
+<p>Windsurf 对规则文件有字符数限制（12,000 字符）。<code>convert.sh</code> 会智能精简：</p>
+<pre><code># Simplified from: scripts/convert.sh:63-68
+def gen_windsurf(body, trigger_desc, max_chars):
+    &quot;&quot;&quot;Condense body to fit Windsurf&#x27;s char limit by removing verbose sections.&quot;&quot;&quot;</code></pre>
+<p>精简策略：</p>
+<ol><li>跳过 <code>## Checklist</code> 和 <code>## Documentation Standards</code> 整个段落</li><li>跳过 Phase 3A/3B/3C 详细验证步骤</li><li>如果仍然超限，进一步移除 Examples 段落</li><li>最后检查字符数是否在限制内</li></ol>
+<h3>Gemini CLI</h3>
+<p>Gemini CLI 直接使用 <code>skills/</code> 目录结构，不需要额外转换。安装命令：</p>
+<pre><code>gemini skills install https://github.com/zwyin/project-walkthrough-skill.git --path skills/project-walkthrough</code></pre>
+<h2>AGENTS.md：跨平台自描述</h2>
+<p>项目根目录的 <code>AGENTS.md</code> 是一个跨平台自描述文件。Cursor、Windsurf、OpenCode 都会自动扫描项目根目录的 <code>AGENTS.md</code> 来了解项目用途。</p>
+<pre><code>// Simplified from: AGENTS.md:1-4
+# Project Walkthrough Generator
+
+Generate a structured technical walkthrough of any software project...</code></pre>
+<p>这个文件提供了一个简短的 Quick Start + 选项说明 + 平台安装表格，让任何平台的用户都能快速上手。</p>
+<h2>同步检查</h2>
+<p>CI 中通过 <code>convert.sh --check</code> 确保平台文件与 SKILL.md 保持同步：</p>
+<pre><code># CI 中的检查
+make check  # 等价于 ./scripts/convert.sh --check</code></pre>
+<p>如果 SKILL.md 被修改但没有重新生成平台文件，CI 会失败并提示 <code>OUT_OF_SYNC</code>。</p>
+<div class="nav-links"><a href="#" onclick="showChapter(7);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(9);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch9"><h1>10 测试体系与 CI</h1>
+<h2>测试套件概览</h2>
+<p>project-walkthrough 有 8 个测试文件，250 个测试函数，覆盖所有主要组件：</p>
+<table><thead><tr><th>测试文件</th><th>行数</th><th>测试函数数</th><th>测试目标</th></tr></thead><tbody><tr><td><code>test_walkthrough_output.py</code></td><td>861</td><td>55</td><td>输出结构验证（目录、manifest、HTML）</td></tr><tr><td><code>test_verify_sources.py</code></td><td>611</td><td>59</td><td>Manifest 验证脚本</td></tr><tr><td><code>test_import_graph.py</code></td><td>534</td><td>46</td><td>依赖图提取</td></tr><tr><td><code>test_adaptive_scope.py</code></td><td>284</td><td>37</td><td>自适应范围系统</td></tr><tr><td><code>test_lang_output.py</code></td><td>170</td><td>16</td><td>多语言输出</td></tr><tr><td><code>test_convert.py</code></td><td>152</td><td>20</td><td>平台文件转换</td></tr><tr><td><code>test_watermark.py</code></td><td>121</td><td>12</td><td>Watermark/promo 页面</td></tr><tr><td><code>test_release_sh.py</code></td><td>45</td><td>5</td><td>发布脚本</td></tr><tr><td><strong>总计</strong></td><td><strong>2778</strong></td><td><strong>250</strong></td><td></td></tr></tbody></table>
+<h2>运行测试</h2>
+<pre><code># 完整测试套件（详细输出）
+pytest tests/ -v --tb=short
+
+# 快速模式
+pytest tests/ -q --tb=line
+
+# CI 模式（测试 + 平台同步检查）
+make ci
+
+# Manifest 验证
+python scripts/verify_sources.py --check-all examples/ --strict</code></pre>
+<h2>测试 Fixture 项目</h2>
+<p><code>tests/fixtures/</code> 包含 3 个预生成的 walkthrough 项目，用于测试产出物结构：</p>
+<table><thead><tr><th>项目</th><th>用途</th></tr></thead><tbody><tr><td><strong>bat</strong> (CLI tool)</td><td>测试 CLI 工具类型的 walkthrough</td></tr><tr><td><strong>fastapi</strong> (Library)</td><td>测试库类型的 walkthrough</td></tr><tr><td><strong>zod</strong> (Library)</td><td>测试另一个库，不同的 schema 特征</td></tr></tbody></table>
+<p>每个 fixture 包含完整的产出物结构：</p>
+<pre><code>tests/fixtures/bat/
+├── docs/
+│   ├── 01-overview.md
+│   ├── 02-input-and-config.md
+│   ├── 03-syntax-highlighting.md
+│   ├── 04-git-and-paging.md
+│   ├── 05-innovation-summary.md
+│   └── sources-manifest.json
+└── interactive/
+    └── walkthrough.html</code></pre>
+<h2>关键测试类</h2>
+<h3>TestDirectoryStructure</h3>
+<p>验证产出物目录结构是否符合 SKILL.md 规范：</p>
+<pre><code>// Simplified from: tests/test_walkthrough_output.py:32-55
+class TestDirectoryStructure:
+    def test_has_docs_dir(self, all_project_dir):
+        assert (all_project_dir / &quot;docs&quot;).is_dir()
+
+    def test_has_interactive_dir(self, all_project_dir):
+        assert (all_project_dir / &quot;interactive&quot;).is_dir()
+
+    def test_brief_docs_in_docs_flat(self, all_project_dir):
+        &quot;&quot;&quot;Brief 级别的 md 文件应直接在 docs/ 下&quot;&quot;&quot;</code></pre>
+<h3>Manifest 验证测试</h3>
+<p>覆盖 VerificationResult、validate_basic（严格/非严格）、validate_source_files、find_manifests 等核心函数：</p>
+<pre><code>// Simplified from: tests/test_verify_sources.py:36-56
+def _make_minimal_manifest(**overrides):
+    manifest = {
+        &quot;schema_version&quot;: &quot;1.0&quot;,
+        &quot;source_project&quot;: {&quot;name&quot;: &quot;test-project&quot;},
+        &quot;generated_at&quot;: &quot;2025-01-01T00:00:00Z&quot;,
+        &quot;claims&quot;: [{
+            &quot;id&quot;: &quot;claim-001&quot;,
+            &quot;type&quot;: &quot;code_example&quot;,
+            &quot;source_file&quot;: &quot;src/main.py&quot;,
+            &quot;claim_summary&quot;: &quot;A claim.&quot;,
+            &quot;verified&quot;: True,
+        }],
+    }</code></pre>
+<h2>CI 配置</h2>
+<pre><code>// Simplified from: .github/workflows/test.yml:1-24
+name: Tests
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: &quot;3.12&quot;
+      - run: pip install pytest jsonschema pyyaml
+      - run: make ci</code></pre>
+<p>CI 触发条件：</p>
+<ul><li><strong>push to master/develop</strong> — 合并到主分支或开发分支时</li><li><strong>PR to master</strong> — 创建或更新 PR 时</li></ul>
+<p>CI 执行 <code>make ci</code>，等价于 <code>pytest tests/ -v --tb=short &amp;&amp; ./scripts/convert.sh --check</code>。</p>
+<h2>Makefile 目标</h2>
+<pre><code># Simplified from: Makefile:1-20
+test:       python -m pytest tests/ -v --tb=short
+test-quick: python -m pytest tests/ -q --tb=line
+check:      ./scripts/convert.sh --check
+generate:   ./scripts/convert.sh
+verify:     python scripts/verify_sources.py --check-all examples/ --strict
+ci: test check
+release:    ./scripts/release.sh $(VERSION)
+clean:      # 清理 __pycache__ 和 .pytest_cache</code></pre>
+<p>关键组合：</p>
+<ul><li><code>make ci</code> — CI 完整检查（测试 + 平台同步）</li><li><code>make verify</code> — 额外的 manifest 严格验证（CI 中不默认运行）</li></ul>
+<div class="nav-links"><a href="#" onclick="showChapter(8);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(10);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch10"><h1>11 设计哲学：准确性、Converter-First、Manifest-First</h1>
+<h2>三个核心设计决策</h2>
+<p>project-walkthrough 的设计围绕三个相互支撑的原则，它们共同解决了&quot;AI 生成的技术文档能不能信任&quot;这个问题。</p>
+<h2>原则 1：Manifest-First — 验证先于写入</h2>
+<h3>问题</h3>
+<p>LLM 在生成技术内容时容易&quot;编造&quot;合理的代码片段——函数签名看起来正确但实际不存在，版本号来自 README 而不是 package.json，目录结构是推断的而不是验证的。</p>
+<h3>解决方案</h3>
+<p>Phase 3 分为 3A（验证）和 3B（写入）两个子阶段。manifest 不是事后审计，而是<strong>写入许可证</strong>。</p>
+<pre><code>传统流程：  写内容 → 审查 → 发现错误 → 重写
+Manifest：  验证声明 → 获得&quot;许可证&quot; → 只写已验证的内容</code></pre>
+<h3>核心规则</h3>
+<ol><li><strong>不可验证 = 不写入</strong> — 如果 Phase 3A 无法验证一个声明，它不会出现在 walkthrough 中</li><li><strong>禁止 <code>// Source:</code></strong> — 统一使用 <code>Simplified from:</code>，因为 walkthrough 代码总是被简化的</li><li><strong>12 轮迭代</strong> — 通过 12 轮验证迭代建立，最后 3 轮零问题</li></ol>
+<h3>代价</h3>
+<ul><li>生成速度较慢（每个声明都需要额外读取源文件）</li><li>内容量可能比无验证方式少（无法写入不确定的内容）</li><li>对 LLM 的上下文窗口有更高要求</li></ul>
+<h3>收益</h3>
+<ul><li>读者可以信任每个代码片段都来自真实源码</li><li>每个 <code>// Simplified from: path:lines</code> 引用可以手动验证</li><li>减少了&quot;看起来专业但内容不准确&quot;的风险</li></ul>
+<h2>原则 2：Converter-First — Python 预渲染替代 LLM 拼装</h2>
+<h3>问题</h3>
+<p>v1.6.0 之前，HTML 由 LLM 通过 DOM API（createElement、textContent）手动拼装。这导致了多个问题：</p>
+<ul><li>innerHTML 限制使得富内容生成几乎不可能</li><li>手动拼装 3-5 倍冗长于等价 HTML</li><li>出现过静默空内容 bug（section 只有标题没有内容）</li><li>安全 hook 阻止动态 DOM 写入</li></ul>
+<h3>解决方案</h3>
+<p><code>md_to_html.py</code> 作为唯一的 HTML 生成器，所有深度级别都走 converter：</p>
+<ul><li>Brief/Medium：converter 自动处理，产出物可靠</li><li>Deep：完整 markdown-to-HTML 转换，零内容裁剪</li></ul>
+<h3>内置安全保障</h3>
+<p>converter 自带三层 XSS 防护：</p>
+<ol><li><code>sanitize_url()</code> — 阻止 <code>javascript:</code> 和 <code>data:</code> URL</li><li><code>escape_html()</code> — 所有文本内容 HTML 转义</li><li><code>preprocess_md()</code> — 移除 HTML 注释</li></ol>
+<h3>生成后自动校验</h3>
+<p>每次 converter 运行后自动执行 <code>verify_html()</code>：</p>
+<ul><li>Section 计数 = markdown 文件数</li><li>每个章节至少有标题和内容元素</li><li>HTML 大小 ≥ markdown 总大小的 80%</li><li>零残留 <code>.md</code> 链接</li></ul>
+<h2>原则 3：单一事实源 — SKILL.md 驱动一切</h2>
+<h3>问题</h3>
+<p>多平台支持意味着同一份内容需要出现在不同格式、不同位置。手动维护会导致不一致。</p>
+<h3>解决方案</h3>
+<p><code>skills/ruyi-project-walkthrough/SKILL.md</code>（890 行）是所有内容的唯一来源：</p>
+<pre><code>SKILL.md (890 行，单一事实源)
+    │
+    ├─→ convert.sh → cursor/ruyi-project-walkthrough.mdc
+    ├─→ convert.sh → .windsurf/rules/ruyi-project-walkthrough.md (精简 &lt;12K)
+    └─→ convert.sh → .opencode/skills/ruyi-project-walkthrough/SKILL.md</code></pre>
+<p>版本号也是单一来源：</p>
+<pre><code>SKILL.md frontmatter (version: &quot;1.6.1&quot;)
+    │
+    ├─→ release.sh → plugin.json
+    ├─→ release.sh → marketplace.json
+    ├─→ release.sh → README badge
+    └─→ release.sh → CHANGELOG</code></pre>
+<p>CI 通过 <code>convert.sh --check</code> 确保同步，任何不同步都会导致 CI 失败。</p>
+<h2>三个原则的协同</h2>
+<pre><code>SKILL.md (单一事实源)
+    │
+    ├─→ Manifest-First 保证内容准确性
+    │     └─→ verify_sources.py 验证
+    │
+    └─→ Converter-First 保证 HTML 质量
+          └─→ md_to_html.py + verify_html() 校验</code></pre>
+<p>三个原则形成一个闭环：</p>
+<ul><li>SKILL.md 定义了&quot;应该做什么&quot;</li><li>Manifest-first 确保执行时不偏离事实</li><li>Converter-first 确保输出质量不受 LLM 限制</li></ul>
+<h2>权衡与取舍</h2>
+<table><thead><tr><th>决策</th><th>优势</th><th>代价</th></tr></thead><tbody><tr><td>Manifest-first</td><td>内容可信</td><td>生成更慢，需要更多上下文</td></tr><tr><td>Converter-first</td><td>HTML 质量稳定</td><td>依赖 Python 环境</td></tr><tr><td>SKILL.md 单一来源</td><td>一致性保证</td><td>修改任何内容都需要 convert.sh</td></tr><tr><td>Windsurf 12K 限制</td><td>兼容 Windsurf</td><td>部分内容被精简</td></tr></tbody></table>
+<div class="nav-links"><a href="#" onclick="showChapter(9);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(11);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch11"><h1>12 总结与扩展指南</h1>
+<h2>项目核心总结</h2>
+<p>project-walkthrough 是一个 Claude Code skill，为任意软件项目自动生成结构化技术走读文档。它的核心贡献不是&quot;生成文档&quot;本身，而是<strong>如何确保生成的文档是可信的</strong>。</p>
+<h3>关键数字</h3>
+<table><thead><tr><th>维度</th><th>数值</th></tr></thead><tbody><tr><td>版本</td><td>1.6.1（6 个版本迭代）</td></tr><tr><td>SKILL.md</td><td>890 行（单一事实源）</td></tr><tr><td>脚本</td><td>5 个，共 1635 行 Python + Bash</td></tr><tr><td>测试</td><td>250 个测试函数，2778 行</td></tr><tr><td>支持平台</td><td>5 个（Claude Code, Cursor, Windsurf, OpenCode, Gemini CLI）</td></tr><tr><td>支持语言</td><td>4 种（zh, zh-pure, en, bilingual）</td></tr><tr><td>支持深度</td><td>4 种（brief, medium, deep, all）</td></tr><tr><td>项目类型模板</td><td>8 个（AI Tool, Library, Web App, CLI, Document, Game Engine, Database, Compiler）</td></tr></tbody></table>
+<h3>架构一句话总结</h3>
+<p>5 阶段 pipeline（分析→探索→规划→生成→验证），以 manifest-first 保证准确性，converter-first 保证 HTML 质量，SKILL.md 单一来源保证一致性。</p>
+<h2>创新点</h2>
+<ol><li><strong>Manifest 作为写入许可证</strong> — 不是审计日志，而是结构化的写入前置条件</li><li><strong>Converter-first HTML</strong> — 用 Python 预渲染替代 LLM 手动拼 DOM，消除空内容 bug</li><li><strong>6 位置版本同步</strong> — 从单一来源自动同步到 6 个位置</li><li><strong>自适应范围系统</strong> — Phase 0 分析输入后推荐 scope/depth，交互确认后再生成</li><li><strong>Windsurf 智能精简</strong> — 根据字符限制自动跳过冗长段落</li></ol>
+<h2>已知限制</h2>
+<table><thead><tr><th>限制</th><th>说明</th></tr></thead><tbody><tr><td>Python 依赖</td><td>HTML 生成需要 Python 3，无 Python 时只能输出 markdown</td></tr><tr><td>版本手动更新</td><td>仍需手动修改 SKILL.md frontmatter 的 version 字段</td></tr><tr><td>插件无自动更新</td><td>用户需重新安装或 <code>git pull</code> 来获取更新</td></tr><tr><td><code>--version</code> 硬编码</td><td>版本输出是字符串，不从 plugin.json 动态读取</td></tr><tr><td>Windsurf 精简</td><td>为满足 12K 字符限制，部分详细内容被省略</td></tr></tbody></table>
+<h2>扩展指南</h2>
+<h3>添加新的项目类型模板</h3>
+<ol><li>在 <code>docs/chapter-templates.md</code> 中添加新模板</li><li>在 <code>docs/exploration-protocol.md</code> 的 Step 1 表格中添加新类型</li><li>运行 <code>./scripts/convert.sh</code> 更新所有平台文件</li></ol>
+<h3>添加新的声明类型</h3>
+<ol><li>在 <code>docs/sources-manifest-schema.md</code> 中添加类型说明</li><li>在 <code>docs/sources-manifest.schema.json</code> 的 enum 中添加类型</li><li>在 <code>scripts/verify_sources.py</code> 的 <code>VALID_CLAIM_TYPES</code> 集合中添加</li><li>添加对应的验证逻辑</li></ol>
+<h3>添加新的支持平台</h3>
+<ol><li>在 <code>scripts/convert.sh</code> 中添加新的生成函数</li><li>在 <code>convert.sh</code> 的 <code>--check</code> 模式中添加同步检查</li><li>在 <code>AGENTS.md</code> 和 <code>README.md</code> 中添加安装说明</li></ol>
+<h3>修改 pipeline 流程</h3>
+<ol><li>在 <code>skills/ruyi-project-walkthrough/SKILL.md</code> 中修改对应 Phase</li><li>更新 Checklist 部分</li><li>运行 <code>./scripts/convert.sh</code> 同步到所有平台</li><li>在 <code>CHANGELOG.md</code> 中记录变更</li></ol>
+<h2>版本发布流程</h2>
+<ol><li>修改 <code>SKILL.md</code> frontmatter 的 <code>version</code> 字段</li><li>运行 <code>./scripts/release.sh X.Y.Z --bump-only</code></li><li>手动更新 <code>CHANGELOG.md</code> 内容</li><li>运行 <code>./scripts/convert.sh</code> 同步平台文件</li><li>更新 <code>tests/test_lang_output.py</code> 中的版本断言</li><li>运行 <code>pytest tests/ -q</code> 验证</li><li>推送到 develop，创建 PR 到 master</li></ol>
+<h2>贡献者资源</h2>
+<ul><li><strong>CONTRIBUTING.md</strong> — 贡献指南和发布流程</li><li><strong>AGENTS.md</strong> — 跨平台自描述文件</li><li><strong>docs/</strong> — 6 个设计规范文档</li><li><strong>examples/</strong> — 自生成示例（zh + en）</li><li><strong>Makefile</strong> — 开发命令速查</li></ul>
+<div class="nav-links"><a href="#" onclick="showChapter(10);return false;">&larr; 上一章</a><a href="#" onclick="showChapter(13);return false;">下一章 &rarr;</a></div></div>
+<div class="chapter" id="ch-quiz">
+<h1>知识测验</h1>
+<div id="quiz-container"></div>
+<div class="nav-links"><span></span><span></span></div>
+</div>
+<script>
+(function(){
+var data=[{q:'project-walkthrough 的 Manifest-first 原则中，sources-manifest.json 在 Phase 3A 和 Phase 3B 之间扮演什么角色？',o:['事后审计日志，记录所有已写入内容的来源','写入许可证，只有 verified: true 的声明才能在 Phase 3B 中被写入','配置文件，定义哪些源文件应该被读取','临时缓存，在 Phase 3C 中被删除'],c:0,e:'Manifest 是"写入许可证"（write permit），不是审计日志。Phase 3A 验证声明并记录到 manifest，Phase 3B 只能使用 manifest 中 verified: true 的声明。这从结构层面消除了编造内容的可能性。'},{q:'为什么 project-walkthrough 禁止使用 `// Source:` 引用格式，只允许 `// Simplified from:`？',o:['因为 `Source:` 是其他工具的注册商标','因为 walkthrough 中的代码总是被简化的，`Simplified from:` 更诚实','因为 `Source:` 格式在 JSON 中会导致解析错误','因为 `Simplified from:` 可以自动链接到源文件'],c:0,e:'Walkthrough 中的代码总是会被简化（缩进改变、注释省略、上下文移除）。`Source:` 暗示逐字复制，而 `Simplified from:` 诚实表达了"这段代码来自源文件但经过了简化"。'},{q:'`md_to_html.py` 转换器的 `verify_html()` 函数检查 HTML 大小是否 ≥ markdown 总大小的 80%。这个检查的目的是什么？',o:['确保 HTML 文件有足够的空间存储 CSS 和 JavaScript','防止转换器静默丢弃大量内容（空内容 bug）','确保浏览器能正确渲染文件','满足 GitHub 的文件大小限制'],c:0,e:'这个检查直接针对 v1.6.0 之前的空内容 bug——HTML 文件可能只有标题没有内容。80% 的比率确保 HTML 包含了 markdown 的大部分内容，而不是被静默裁剪。'},{q:'`convert.sh` 对 Windsurf 平台做了什么特殊处理？',o:['为 Windsurf 生成完全不同的内容','将内容翻译为纯英文','将 SKILL.md body 精简到 12,000 字符以内','生成 ZIP 压缩包'],c:0,e:'Windsurf 对规则文件有字符数限制。convert.sh 通过跳过 Checklist、Documentation Standards、Phase 3 详细步骤等冗长段落来精简内容。如果仍然超限，进一步移除 Examples 段落。'},{q:'`import_graph.py` 的 "parallel siblings" 概念指什么？',o:['同一个目录下的所有文件','共享一个依赖但不互相导入的两个模块','具有相同函数名的两个模块','版本号相同的两个依赖'],c:0,e:'Parallel siblings 是指两个模块都依赖同一个模块，但彼此之间没有导入关系。这表示它们可以独立开发和修改，是架构解耦的信号。'},{q:'`release.sh` 的 CI 等待机制中，什么条件会导致发布中止？',o:['CI 运行时间超过 60 秒','CI 状态包含 "fail" 或等待超过 120 秒','PR 有待处理的 review','develop 分支和 master 分支有冲突'],c:0,e:'release.sh 每 10 秒轮询一次 CI 状态，最多等 120 秒。如果 `gh pr checks` 输出包含 "fail"，立即中止。如果 120 秒后仍有 "pending" 状态，也中止并报超时错误。'},{q:'project-walkthrough 的 Phase 0 确认门中，`--depth medium` 标志会预选哪个 scope 选项？',o:['Full walkthrough','Focused walkthrough','Overview','Custom'],c:0,e:'Depth ↔ Scope 映射表中，`--depth medium` 对应 `focused` scope。确认门的 Q1 会预选 "Focused walkthrough (Recommended)"，但用户仍可以覆盖选择。'},{q:'`sources-manifest.json` 中 claim 的 `source_lines` 字段在什么类型中可以为 null？',o:['code_example','api_signature','directory_structure','version_number'],c:0,e:'directory_structure 类型的声明描述的是目录路径本身，不是一个文件中的具体行范围，所以 source_lines 可以为 null。'},{q:'`md_to_html.py` 中 `sanitize_url()` 函数允许哪些 URL 协议？',o:['只允许 http 和 https','允许 http, https, mailto, tel','允许所有协议','允许 http, https, ftp'],c:0,e:'sanitize_url() 的白名单包含 http, https, mailto, tel 和空字符串（相对路径）。所有其他协议（javascript:, data:, vbscript: 等）被替换为 `#`。'},{q:'如果 `project-walkthrough` 的 `--version` 标志出现在命令行中，会怎样？',o:['显示 SKILL.md 的完整内容','显示 plugin.json 中的版本号','打印 "project-walkthrough v1.6.1" 并立即退出，忽略所有其他参数','从 GitHub API 获取最新版本号'],c:0,e:'`--version` 是一个独立标志，不消耗值。当它出现在命令行中时，打印硬编码的版本字符串并立即停止，忽略所有其他标志和路径参数。'}];
+var container=document.getElementById('quiz-container');
+data.forEach(function(item,idx){
+  var wrap=document.createElement('div');wrap.style.cssText='margin:24px 0;padding:20px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px';
+  var qTitle=document.createElement('div');qTitle.style.cssText='font-weight:600;margin-bottom:12px;font-size:16px';
+  qTitle.textContent=(idx+1)+'. '+item.q;wrap.appendChild(qTitle);
+  item.o.forEach(function(opt,oi){
+    var btn=document.createElement('button');
+    btn.style.cssText='display:block;width:100%;text-align:left;padding:10px 16px;margin:6px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;cursor:pointer;font-size:14px;color:var(--text)';
+    btn.textContent=String.fromCharCode(65+oi)+'. '+opt;
+    btn.addEventListener('click',function(){
+      var buttons=wrap.querySelectorAll('button');buttons.forEach(function(b){b.disabled=true;b.style.cursor='default'});
+      if(oi===item.c){btn.style.background='#059669';btn.style.color='#fff'}
+      else{btn.style.background='#dc2626';btn.style.color='#fff';buttons[item.c].style.background='#059669';buttons[item.c].style.color='#fff'}
+      var fb=document.createElement('div');fb.style.cssText='margin-top:12px;padding:12px;background:var(--quote-bg);border-left:4px solid var(--quote-border);font-size:14px;line-height:1.6';
+      fb.textContent=item.e;wrap.appendChild(fb);
+    });
+    wrap.appendChild(btn);
+  });
+  container.appendChild(wrap);
+});
+})();
+</script>
+<div class="chapter" id="ch-watermark">
+<h1>关于本报告</h1>
+<div style="text-align:center;padding:40px 20px;">
+<p style="font-size:15px;color:var(--text);opacity:0.85;">生成时间：2026-05-29 10:49 UTC</p>
+<p style="font-size:15px;color:var(--text);margin-top:16px;">使用工具：<strong>project-walkthrough</strong></p>
+<p style="margin-top:12px;"><a href="https://github.com/zwyin/project-walkthrough-skill" target="_blank">https://github.com/zwyin/project-walkthrough-skill</a></p>
+<p style="font-size:14px;color:var(--text);opacity:0.7;margin-top:24px;">欢迎大家使用、讨论和反馈！</p>
+</div>
+<div class="nav-links"><span></span><span></span></div>
+</div>
+</main>
+<script>
+function toggleTheme(){var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'☀':'☾'}
+(function(){var s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀':'☾'})();
+function adjustFontSize(d){var b=document.body,s=parseFloat(getComputedStyle(b).fontSize);b.style.fontSize=Math.max(12,Math.min(24,s+d))+'px';localStorage.setItem('fs',b.style.fontSize)}
+(function(){var f=localStorage.getItem('fs');if(f)document.body.style.fontSize=f})();
+function showChapter(i){document.querySelectorAll('.chapter').forEach(function(c){c.classList.remove('active')});document.querySelectorAll('.sidebar a').forEach(function(a){a.classList.remove('active')});if(document.querySelectorAll('.chapter')[i])document.querySelectorAll('.chapter')[i].classList.add('active');if(document.querySelectorAll('.sidebar a')[i])document.querySelectorAll('.sidebar a')[i].classList.add('active');window.scrollTo(0,0);document.getElementById('sidebar').classList.remove('open')}
+showChapter(0);
+</script>
+</body></html>

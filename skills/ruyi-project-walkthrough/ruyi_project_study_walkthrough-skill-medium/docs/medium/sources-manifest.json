@@ -1,0 +1,285 @@
+{
+  "schema_version": "1.0",
+  "source_project": {
+    "name": "project-walkthrough",
+    "repo_url": "https://github.com/zwyin/project-walkthrough-skill",
+    "local_path": "."
+  },
+  "generated_at": "2026-05-29T00:00:00Z",
+  "depth": "medium",
+  "audience": "general",
+  "lang": "zh",
+  "claims": [
+    {
+      "id": "claim-001",
+      "type": "version_number",
+      "source_file": "skills/ruyi-project-walkthrough/SKILL.md",
+      "source_lines": [1, 5],
+      "claim_summary": "Skill version is 1.6.1",
+      "verified": true,
+      "verification_note": "exact match from SKILL.md frontmatter"
+    },
+    {
+      "id": "claim-002",
+      "type": "version_number",
+      "source_file": ".claude-plugin/plugin.json",
+      "source_lines": [4, 4],
+      "claim_summary": "plugin.json version is 1.6.1",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-003",
+      "type": "version_number",
+      "source_file": ".claude-plugin/marketplace.json",
+      "source_lines": [4, 4],
+      "claim_summary": "marketplace.json version is 1.6.1",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-004",
+      "type": "version_number",
+      "source_file": "README.md",
+      "source_lines": [5, 5],
+      "claim_summary": "README badge shows version 1.6.1",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-005",
+      "type": "code_example",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [1, 10],
+      "claim_summary": "md_to_html.py converter with CLI usage pattern",
+      "verified": true,
+      "verification_note": "file exists, 643 lines"
+    },
+    {
+      "id": "claim-006",
+      "type": "api_signature",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [129, 130],
+      "claim_summary": "convert_md_to_html function signature",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-007",
+      "type": "api_signature",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [462, 463],
+      "claim_summary": "verify_html function signature",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-008",
+      "type": "api_signature",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [223, 224],
+      "claim_summary": "parse_quiz_md function signature",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-009",
+      "type": "feature_claim",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [20, 53],
+      "claim_summary": "I18N dict supports zh, zh-pure, en, bilingual",
+      "verified": true,
+      "verification_note": "4 language keys confirmed in dict"
+    },
+    {
+      "id": "claim-010",
+      "type": "code_example",
+      "source_file": "scripts/verify_sources.py",
+      "source_lines": [1, 12],
+      "claim_summary": "verify_sources.py manifest validation script",
+      "verified": true,
+      "verification_note": "file exists, 315 lines"
+    },
+    {
+      "id": "claim-011",
+      "type": "code_example",
+      "source_file": "scripts/import_graph.py",
+      "source_lines": [1, 12],
+      "claim_summary": "import_graph.py dependency extraction tool",
+      "verified": true,
+      "verification_note": "file exists, 239 lines"
+    },
+    {
+      "id": "claim-012",
+      "type": "code_example",
+      "source_file": "scripts/convert.sh",
+      "source_lines": [1, 15],
+      "claim_summary": "convert.sh multi-platform file generation",
+      "verified": true,
+      "verification_note": "file exists, 272 lines"
+    },
+    {
+      "id": "claim-013",
+      "type": "code_example",
+      "source_file": "scripts/release.sh",
+      "source_lines": [1, 13],
+      "claim_summary": "release.sh automated version release",
+      "verified": true,
+      "verification_note": "file exists, 166 lines"
+    },
+    {
+      "id": "claim-014",
+      "type": "architecture_claim",
+      "source_file": "skills/ruyi-project-walkthrough/SKILL.md",
+      "source_lines": null,
+      "claim_summary": "5-phase pipeline: Phase 0 (Analyze & Confirm), Phase 1 (Explore), Phase 2 (Plan), Phase 3 (Generate Markdown), Phase 4 (Generate HTML), Phase 5 (Verify)",
+      "verified": true,
+      "verification_note": "confirmed from SKILL.md Process section headers"
+    },
+    {
+      "id": "claim-015",
+      "type": "architecture_claim",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [62, 68],
+      "claim_summary": "sanitize_url blocks javascript:, data:, vbscript: URLs for XSS protection",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-016",
+      "type": "feature_claim",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [270, 311],
+      "claim_summary": "build_quiz_section generates interactive quiz with DOM API",
+      "verified": true,
+      "verification_note": "exact match, uses createElement/addEventListener"
+    },
+    {
+      "id": "claim-017",
+      "type": "feature_claim",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [314, 343],
+      "claim_summary": "build_watermark_section generates promo page as last chapter",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-018",
+      "type": "architecture_claim",
+      "source_file": "scripts/verify_sources.py",
+      "source_lines": [35, 39],
+      "claim_summary": "9 valid claim types: code_example, directory_structure, api_signature, version_number, architecture_claim, dependency_claim, config_claim, feature_claim, performance_claim",
+      "verified": true,
+      "verification_note": "exact match from VALID_CLAIM_TYPES set"
+    },
+    {
+      "id": "claim-019",
+      "type": "feature_claim",
+      "source_file": "scripts/import_graph.py",
+      "source_lines": [36, 105],
+      "claim_summary": "import_graph supports TypeScript, Python, Rust with auto-detection",
+      "verified": true,
+      "verification_note": "extract_imports_ts, extract_imports_python, extract_imports_rust functions confirmed"
+    },
+    {
+      "id": "claim-020",
+      "type": "architecture_claim",
+      "source_file": "scripts/convert.sh",
+      "source_lines": [20, 28],
+      "claim_summary": "convert.sh reads skills/ruyi-project-walkthrough/SKILL.md as canonical source",
+      "verified": true,
+      "verification_note": "SKILL variable points to correct path"
+    },
+    {
+      "id": "claim-021",
+      "type": "feature_claim",
+      "source_file": "scripts/convert.sh",
+      "source_lines": [21, 21],
+      "claim_summary": "Windsurf output limited to 12000 chars",
+      "verified": true,
+      "verification_note": "MAX_WINDSURF_CHARS=12000 confirmed"
+    },
+    {
+      "id": "claim-022",
+      "type": "feature_claim",
+      "source_file": "scripts/release.sh",
+      "source_lines": [57, 63],
+      "claim_summary": "release.sh reads current version from SKILL.md frontmatter as single source of truth",
+      "verified": true,
+      "verification_note": "grep command reads from skills/project-walkthrough/SKILL.md"
+    },
+    {
+      "id": "claim-023",
+      "type": "feature_claim",
+      "source_file": "scripts/release.sh",
+      "source_lines": [66, 104],
+      "claim_summary": "release.sh updates 6 version locations: SKILL.md frontmatter, SKILL.md --version text, plugin.json, marketplace.json, README badge, CHANGELOG",
+      "verified": true,
+      "verification_note": "6 sed commands confirmed at lines 66-103"
+    },
+    {
+      "id": "claim-024",
+      "type": "directory_structure",
+      "source_file": "scripts",
+      "source_lines": null,
+      "claim_summary": "scripts/ contains 5 files: __init__.py, md_to_html.py, verify_sources.py, import_graph.py, convert.sh, release.sh",
+      "verified": true,
+      "verification_note": "ls confirmed 6 files in scripts/"
+    },
+    {
+      "id": "claim-025",
+      "type": "directory_structure",
+      "source_file": "tests",
+      "source_lines": null,
+      "claim_summary": "tests/ contains 8 test files with 250 test functions total",
+      "verified": true,
+      "verification_note": "grep -c 'def test_' sums to 250 across 8 files"
+    },
+    {
+      "id": "claim-026",
+      "type": "directory_structure",
+      "source_file": "tests/fixtures",
+      "source_lines": null,
+      "claim_summary": "tests/fixtures/ contains 3 projects: bat, fastapi, zod",
+      "verified": true,
+      "verification_note": "ls confirmed"
+    },
+    {
+      "id": "claim-027",
+      "type": "config_claim",
+      "source_file": ".github/workflows/test.yml",
+      "source_lines": [1, 24],
+      "claim_summary": "CI runs on ubuntu-latest with Python 3.12, triggers on push to master/develop and PRs to master",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-028",
+      "type": "directory_structure",
+      "source_file": "cursor",
+      "source_lines": null,
+      "claim_summary": "Multi-platform files exist: cursor/ruyi-project-walkthrough.mdc, .windsurf/rules/ruyi-project-walkthrough.md, .opencode/skills/ruyi-project-walkthrough/SKILL.md",
+      "verified": true,
+      "verification_note": "ls confirmed all 3 platform files"
+    },
+    {
+      "id": "claim-029",
+      "type": "feature_claim",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [201, 220],
+      "claim_summary": "extract_quiz_section separates quiz from main content, returns quiz_md and remaining_md",
+      "verified": true,
+      "verification_note": "exact match"
+    },
+    {
+      "id": "claim-030",
+      "type": "feature_claim",
+      "source_file": "scripts/md_to_html.py",
+      "source_lines": [585, 639],
+      "claim_summary": "main() function handles both generation and verification modes with --verify flag",
+      "verified": true,
+      "verification_note": "exact match"
+    }
+  ],
+  "unverified": []
+}

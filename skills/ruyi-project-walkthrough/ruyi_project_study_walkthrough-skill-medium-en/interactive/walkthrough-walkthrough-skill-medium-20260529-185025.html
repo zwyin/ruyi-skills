@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Walkthrough Skill</title>
+<style>
+:root{--bg:#fff;--text:#1a1a2e;--sidebar-bg:#f0f0f5;--sidebar-text:#333;--sidebar-hover:#e0e0ea;--sidebar-active:#d0d0e0;--card-bg:#f8f8fc;--card-border:#e0e0e8;--accent:#4a6fa5;--link:#4a6fa5;--code-bg:#f4f4f8;--quote-bg:#f8f8ff;--quote-border:#4a6fa588}
+[data-theme="dark"]{--bg:#1a1a2e;--text:#e0e0ea;--sidebar-bg:#16213e;--sidebar-text:#c0c0d0;--sidebar-hover:#1a2744;--sidebar-active:#1e2d4a;--card-bg:#1e2744;--card-border:#2a3555;--accent:#4a6fa5cc;--link:#4a6fa5cc;--code-bg:#162030;--quote-bg:#1a1a30;--quote-border:#4a6fa588}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--sidebar-bg);color:var(--sidebar-text);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;border-right:1px solid var(--card-border);z-index:100}
+.sidebar h2{font-size:14px;padding:8px 20px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.sidebar a{display:block;padding:8px 20px;text-decoration:none;color:var(--sidebar-text);font-size:13px;border-left:3px solid transparent}
+.sidebar a:hover{background:var(--sidebar-hover);border-left-color:var(--accent)}
+.sidebar a.active{background:var(--sidebar-active);border-left-color:var(--accent);font-weight:600}
+.main{margin-left:280px;padding:40px 60px;max-width:860px;width:100%}
+h1{font-size:28px;margin-bottom:16px;color:var(--accent)}h2{font-size:22px;margin:32px 0 12px;color:var(--accent)}h3{font-size:18px;margin:24px 0 8px}h4{font-size:16px;margin:20px 0 8px;opacity:0.9}
+p{margin-bottom:12px}blockquote{border-left:4px solid var(--quote-border);background:var(--quote-bg);padding:12px 20px;margin:16px 0;font-style:italic}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}th,td{border:1px solid var(--card-border);padding:8px 12px;text-align:left}th{background:var(--card-bg);font-weight:600}
+pre{background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:16px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.5}
+code{font-family:'SF Mono',Monaco,'Cascadia Code',monospace}pre code{background:none;border:none;padding:0}p code,li code{background:var(--code-bg);padding:2px 6px;border-radius:3px;font-size:0.9em}
+ul,ol{margin:12px 0 12px 24px}li{margin-bottom:6px}hr{border:none;border-top:1px solid var(--card-border);margin:24px 0}
+details{margin:12px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:12px 16px}summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:14px}
+.nav-links{display:flex;justify-content:space-between;margin:40px 0 20px;padding-top:20px;border-top:1px solid var(--card-border)}.nav-links a{color:var(--link);text-decoration:none}
+.topbar{display:none;position:fixed;top:0;left:0;right:0;height:50px;background:var(--sidebar-bg);border-bottom:1px solid var(--card-border);z-index:200;padding:0 16px;align-items:center;justify-content:space-between}.topbar button{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer}
+.font-sm,.font-lg{font-size:14px;font-weight:bold;padding:2px 8px;border-radius:4px}
+.theme-toggle{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.font-btn{position:fixed;bottom:20px;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:14px;font-weight:bold;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.font-dec{right:72px}
+.font-inc{right:120px}
+.chapter{display:none}.chapter.active{display:block}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:60px 20px 40px}.topbar{display:flex}}
+@media print{.sidebar,.topbar,.theme-toggle,.font-btn{display:none!important}.main{margin-left:0;padding:20px}.chapter{display:block!important;page-break-after:always}}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">☾</button>
+<button class="font-btn font-dec" onclick="adjustFontSize(-1)">A-</button>
+<button class="font-btn font-inc" onclick="adjustFontSize(1)">A+</button>
+<div class="topbar"><button onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button><span>Project Walkthrough Skill</span><span><button class="font-sm" onclick="adjustFontSize(-1)">A-</button><button class="font-lg" onclick="adjustFontSize(1)">A+</button></span></div>
+<nav class="sidebar" id="sidebar"><h2>Chapters</h2><a href="#" onclick="showChapter(0);return false;">01 Project Overview</a>
+<a href="#" onclick="showChapter(1);return false;">02 Architecture &amp; Design Philos...</a>
+<a href="#" onclick="showChapter(2);return false;">03 Phase Pipeline: From Analysi...</a>
+<a href="#" onclick="showChapter(3);return false;">04 The Converter Engine: md_to_...</a>
+<a href="#" onclick="showChapter(4);return false;">05 Accuracy System: Manifest-Fi...</a>
+<a href="#" onclick="showChapter(5);return false;">06 Dependency Graph Extraction</a>
+<a href="#" onclick="showChapter(6);return false;">07 Multi-Platform Distribution</a>
+<a href="#" onclick="showChapter(7);return false;">08 Version Management &amp; Release</a>
+<a href="#" onclick="showChapter(8);return false;">09 Test Suite Architecture</a>
+<a href="#" onclick="showChapter(9);return false;">10 Interactive HTML: UX &amp; Acces...</a>
+<a href="#" onclick="showChapter(10);return false;">11 Extensibility: EXTEND.md &amp; P...</a>
+<a href="#" onclick="showChapter(11);return false;">12 Quality Assurance &amp; CI</a>
+<a href="#" onclick="showChapter(12);return false;">13 Design Evolution &amp; Lessons L...</a>
+<a href="#" onclick="showChapter(13);return false;">Quiz</a>
+<a href="#" onclick="showChapter(14);return false;">About</a></nav>
+<main class="main" id="main"><div class="chapter" id="ch0"><h1>Project Overview</h1>
+<p>Project Walkthrough is a Claude Code skill plugin that generates structured technical walkthroughs of any software project. Given a codebase directory, it produces numbered markdown chapters and a self-contained interactive HTML file with sidebar navigation, dark/light theme toggle, and an interactive quiz.</p>
+<h2>What It Does</h2>
+<p>The plugin analyzes a project&#x27;s source code, identifies its architecture and key design decisions, and produces documentation at configurable depth levels:</p>
+<ul><li><strong>Brief</strong> — 5-8 thematic chapters, quick orientation (~30 min to produce)</li><li><strong>Medium</strong> — 10-15 chapters with code excerpts and design rationale (~60 min)</li><li><strong>Deep</strong> — Comprehensive analysis with line-by-line code walkthrough (~120 min)</li><li><strong>All</strong> — All three levels sequentially</li></ul>
+<p>It supports multiple audiences (general with analogies, or developer-focused) and four output languages (Chinese with English terms, pure Chinese, English, or bilingual).</p>
+<h2>Tech Stack</h2>
+<table><thead><tr><th>Component</th><th>Technology</th></tr></thead><tbody><tr><td>Skill definition</td><td>Markdown (SKILL.md)</td></tr><tr><td>Scripts</td><td>Python 3, Bash</td></tr><tr><td>Tests</td><td>pytest</td></tr><tr><td>Generated output</td><td>Markdown + HTML/CSS/JS</td></tr><tr><td>CI</td><td>GitHub Actions</td></tr><tr><td>Version management</td><td>shell script + sed</td></tr></tbody></table>
+<p>The project has no runtime dependencies beyond Python 3 and a POSIX shell.</p>
+<h2>Installation</h2>
+<p>The plugin installs through Claude Code&#x27;s plugin system:</p>
+<pre><code>// Simplified from: README.md:27-32
+### Claude Code（推荐）
+</code></pre>
+<h1>1. 添加 marketplace</h1>
+<p>/plugin marketplace add zwyin/project-walkthrough-skill</p>
+<h1>2. 安装插件</h1>
+<p>/plugin install project-walkthrough@project-walkthrough-skill</p>
+<pre><code></code></pre>
+<p>Alternative platforms (Cursor, Windsurf, OpenCode, Gemini CLI) each have their own installation paths detailed in the README.</p>
+<h2>Key Features</h2>
+<p>The README lists the plugin&#x27;s core capabilities:</p>
+<pre><code>// Simplified from: README.md:9-21
+- **多深度**：brief（概览）、medium（进阶）、deep（深入）、all（全部）
+- **多受众**：general（类比+白话）、dev（纯技术）
+- **多语言**：zh（中文+英文术语，默认）、zh-pure（纯中文）、en（纯英文）、bilingual（中英对照）
+- **输出**：编号 markdown 章节 + 自包含交互式 HTML（暗色/亮色、侧边栏、quiz）
+- **Converter-first HTML**：md_to_html.py 离线转换器，Python 预渲染静态 HTML
+- **自动质量门禁**：生成后自动校验 section 完整性、内容密度、broken links
+- **自适应范围**：Phase 0 分析内容类型，推荐 scope/depth/format
+- **偏好配置**：支持项目级/用户级 EXTEND.md
+- **自动探索协议**：识别项目类型 → 读核心文件 → 提取创新点 → 生成章节
+- **Manifest-first 准确性保证**：先验证所有声明，再写内容</code></pre>
+<h2>Plugin Metadata</h2>
+<p>The plugin registers itself through two JSON files:</p>
+<pre><code>// Simplified from: .claude-plugin/plugin.json:1-13
+{
+  &quot;name&quot;: &quot;project-walkthrough&quot;,
+  &quot;description&quot;: &quot;Generate structured technical walkthroughs of any software project...&quot;,
+  &quot;version&quot;: &quot;1.6.1&quot;,
+  &quot;author&quot;: { &quot;name&quot;: &quot;zwyin&quot; },
+  &quot;homepage&quot;: &quot;https://github.com/zwyin/project-walkthrough-skill&quot;,
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;skills&quot;: &quot;./skills/&quot;
+}</code></pre>
+<p>The <code>marketplace.json</code> provides registration info for Claude Code&#x27;s marketplace, listing the plugin under the &quot;development&quot; category with tags like &quot;walkthrough&quot;, &quot;documentation&quot;, &quot;code-analysis&quot;, and &quot;architecture&quot;.</p>
+<h2>Project Structure</h2>
+<pre><code>project-walkthrough-skill/
+├── .claude-plugin/          # Plugin metadata
+├── skills/                  # Skill definitions (SKILL.md)
+├── scripts/                 # Python &amp; Bash tools
+├── tests/                   # pytest test suite
+├── docs/                    # Design documentation
+├── cursor/                  # Cursor IDE adapter
+├── .windsurf/               # Windsurf adapter
+├── .opencode/               # OpenCode adapter
+├── CHANGELOG.md             # Version history
+├── CLAUDE.md                # Project-specific instructions
+├── Makefile                 # Build targets
+└── README.md                # User-facing documentation</code></pre>
+<h2>Quick Start</h2>
+<pre><code>// Simplified from: README.md:64-66
+# Basic usage (brief overview of current project)
+/project-walkthrough
+
+# Deep technical analysis
+/project-walkthrough /path/to/project --depth deep --audience dev</code></pre>
+<div class="nav-links"><span></span><a href="#" onclick="showChapter(1);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch1"><h1>Architecture &amp; Design Philosophy</h1>
+<p>The project is built around a small number of deliberate design principles that shape every component. Understanding these principles makes the codebase much easier to navigate.</p>
+<h2>Single Source of Truth: SKILL.md</h2>
+<p>The entire plugin&#x27;s behavior is defined in one file: <code>skills/ruyi-project-walkthrough/SKILL.md</code>. This 890-line document contains the skill&#x27;s frontmatter metadata, argument parsing rules, depth/scope mappings, the complete 5-phase generation process, accuracy rules, and the quality checklist.</p>
+<p>All platform-specific files (Cursor <code>.mdc</code>, Windsurf <code>.md</code>, OpenCode <code>SKILL.md</code>) are generated from this single source via <code>convert.sh</code>. They should never be manually edited.</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/SKILL.md:1-6
+---
+name: ruyi-project-walkthrough
+version: &quot;1.6.1&quot;
+description: Generate a structured walkthrough of any project...
+argument-hint: &quot;[path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm]&quot;
+---</code></pre>
+<p>The CLAUDE.md file in the project root reinforces this principle:</p>
+<pre><code>// Simplified from: CLAUDE.md:2-5
+### 唯一版本源
+
+版本号定义在 `skills/project-walkthrough/SKILL.md` frontmatter 的 `version` 字段。
+**所有其他位置的版本号必须从这里同步，不允许手动分别修改。**</code></pre>
+<h2>Self-Contained Skill</h2>
+<p>Each skill must work when extracted from the repository. The SKILL.md and its <code>references/</code> directory cannot link to files outside the skill directory. This constraint means the skill can be installed independently without pulling in the entire repository.</p>
+<h2>Multi-Layer Output Pipeline</h2>
+<p>The generation process follows a strict pipeline with five phases:</p>
+<pre><code>Phase 0: Analyze &amp; Confirm → analysis.md
+     ↓
+Phase 1: Explore → read source files
+     ↓
+Phase 2: Plan → chapter outline
+     ↓
+Phase 3: Generate Markdown → sources-manifest.json + NN-*.md files
+     ↓
+Phase 4: Generate HTML → walkthrough.html
+     ↓
+Phase 5: Verify &amp; Deliver → verify-result.json</code></pre>
+<p>Each phase feeds into the next. Phase 3 is further split into two gated sub-phases (3A: verify claims, 3B: write content) to enforce accuracy.</p>
+<h2>Manifest-First Accuracy</h2>
+<p>The most distinctive design principle: <strong>verify before write</strong>. You cannot write a claim in a chapter unless it has been verified and recorded in <code>sources-manifest.json</code>. The manifest is a write permit, not an audit log.</p>
+<p>This means:</p>
+<ol><li>Phase 3A lists all planned claims and verifies each one against the actual source code</li><li>Only verified claims get manifest entries with <code>verified: true</code></li><li>Phase 3B can only write content that has a corresponding manifest entry</li><li>Unverifiable claims are dropped — they don&#x27;t appear in the walkthrough</li></ol>
+<h2>Converter-First HTML</h2>
+<p>HTML generation is done entirely by <code>md_to_html.py</code>, not by the AI model. The model&#x27;s job in Phase 4 is to run the converter script, not to write HTML. This separation ensures:</p>
+<ul><li>Content decisions happen in Phase 3 (markdown)</li><li>Phase 4 is mechanical conversion — no content modification</li><li>Automated verification catches any conversion issues</li><li>The same converter handles all depth levels</li></ul>
+<h2>Adaptive Scope</h2>
+<p>The plugin adapts its output to the input&#x27;s size and type. Rather than forcing every project into the same structure, Phase 0 analyzes the content and recommends appropriate scope and depth. The user confirms before generation begins.</p>
+<p>Content types detected:</p>
+<ul><li><code>software-project</code> — source code files &gt; 5 or package manifest exists</li><li><code>document-report</code> — markdown chapters &gt; 3 and source files &lt; 3</li><li><code>mixed</code> — both code and document content</li></ul>
+<h2>Version Synchronization</h2>
+<p>Version numbers appear in six locations and must always match:</p>
+<pre><code>// Simplified from: CLAUDE.md:9-18
+| # | 文件 | 位置 | 说明 |
+|---|------|------|------|
+| 1 | SKILL.md | frontmatter version | **唯一版本源** |
+| 2 | SKILL.md | --version flag 文档 | project-walkthrough vX.Y.Z |
+| 3 | plugin.json | &quot;version&quot;: &quot;X.Y.Z&quot; | 插件元数据 |
+| 4 | marketplace.json | &quot;version&quot;: &quot;X.Y.Z&quot; | Marketplace 注册 |
+| 5 | README.md | version badge URL | badge/version-X.Y.Z-blue |
+| 6 | CHANGELOG.md | 版本标题 | ## [X.Y.Z] - YYYY-MM-DD |</code></pre>
+<p>The <code>release.sh</code> script synchronizes all six from the SKILL.md frontmatter. Manual editing of any location except the source is forbidden.</p>
+<div class="nav-links"><a href="#" onclick="showChapter(0);return false;">&larr; Previous</a><a href="#" onclick="showChapter(2);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch2"><h1>Phase Pipeline: From Analysis to Delivery</h1>
+<p>The walkthrough generation follows a strict five-phase pipeline. Each phase has defined inputs, outputs, and quality gates. Understanding this pipeline is essential for anyone contributing to the project.</p>
+<h2>Pipeline Overview</h2>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│ Phase 0: Analyze &amp; Confirm                              │
+│   Input:  Raw project directory                         │
+│   Output: analysis.md + user-confirmed scope config     │
+│   Gate:   User confirmation (unless --no-confirm)       │
+└──────────────────────┬──────────────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────────────┐
+│ Phase 1: Explore                                        │
+│   Input:  Confirmed scope config                        │
+│   Output: Project understanding (in-memory)             │
+│   Gate:   None (quality depends on thoroughness)        │
+└──────────────────────┬──────────────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────────────┐
+│ Phase 2: Plan                                           │
+│   Input:  Exploration results + scope config            │
+│   Output: Chapter outline mapped to source files        │
+│   Gate:   User review (if confirmed in Phase 0)         │
+└──────────────────────┬──────────────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────────────┐
+│ Phase 3: Generate Markdown                              │
+│   Input:  Chapter outline + verified claims             │
+│   Output: sources-manifest.json + NN-*.md files         │
+│   Gate:   Manifest completeness + line range audit      │
+│   Sub-phases: 3A (verify) → 3B (write) → 3C (validate) │
+└──────────────────────┬──────────────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────────────┐
+│ Phase 4: Generate HTML                                  │
+│   Input:  Markdown chapters directory                   │
+│   Output: Self-contained interactive HTML               │
+│   Tool:   python scripts/md_to_html.py                  │
+│   Gate:   Automated verification (--verify)             │
+└──────────────────────┬──────────────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────────────┐
+│ Phase 5: Verify &amp; Deliver                               │
+│   Input:  All generated files                           │
+│   Output: verify-result.json + delivery report          │
+│   Gate:   Hard delivery gate (PASSED required)          │
+│   Recovery: 3-retry loop with targeted fixes            │
+└─────────────────────────────────────────────────────────┘</code></pre>
+<h2>Phase 0: Analyze &amp; Confirm (~5% of time)</h2>
+<p>This phase was added in v1.1.0 to solve the problem of data loss when large documents were forced into too few chapters.</p>
+<p><strong>Phase 0.1 — Load Preferences:</strong> Check for <code>.project-walkthrough/EXTEND.md</code> (project-level) or <code>~/.project-walkthrough/EXTEND.md</code> (user-level). Load saved defaults for scope, depth, and language.</p>
+<p><strong>Phase 0.2 — Content Analysis:</strong> Analyze the project&#x27;s content type, scope (file count, line count), content structure, and technical density. Save results to <code>analysis.md</code>.</p>
+<p><strong>Phase 0.3 — Confirmation Gate:</strong> Present analysis to the user with interactive questions about scope, depth, format, and language. The <code>--depth</code> flag pre-selects recommended options.</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/SKILL.md:349-364
+**Display to user:**
+Content Analysis:
+├─ Type: [software-project / document-report / mixed]
+├─ Scope: [N files/chapters, X lines]
+├─ Content: [statistics, case studies, code, etc.]
+└─ Recommended: [scope] scope, [N] chapters, [depth] depth</code></pre>
+<p>Skip condition: <code>--no-confirm</code> flag or EXTEND.md with <code>confirm_scope: false</code>.</p>
+<h2>Phase 1: Explore (~15% of time)</h2>
+<p>Read source files based on confirmed scope. The exploration protocol (defined in <code>docs/exploration-protocol.md</code>) guides the model through:</p>
+<ol><li>Identify project type (AI tool, Library, Web app, CLI tool, Document, Report)</li><li>Read core files (README, ARCHITECTURE, CLAUDE.md, package.json, configs)</li><li>Read key source files (entry points, core modules)</li><li>Extract 3-5 unique innovations or design decisions</li><li>Map component architecture</li></ol>
+<p>Exploration depth adapts to scope: full scope reads all files, focused reads key files + skims rest, overview reads core files only.</p>
+<h2>Phase 2: Plan (~10% of time)</h2>
+<p>Plan chapters using templates from <code>docs/chapter-templates.md</code>. Chapter count comes from scope config, not fixed presets. Each chapter is mapped to source files that provide its content.</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/SKILL.md:457-469
+1. Select chapter template based on content type
+2. Determine chapter count from scope config
+3. Adapt template to the specific project
+4. Map each chapter to source files
+5. Plan cross-references between chapters</code></pre>
+<p>If the user confirmed outline review in Phase 0, the chapter list is presented for approval before Phase 3.</p>
+<h2>Phase 3: Generate Markdown (~40% of time)</h2>
+<p>The most complex phase, split into three gated sub-phases:</p>
+<p><strong>Phase 3A — Verify &amp; Build Manifest:</strong> For each chapter, list all planned claims, read the actual source files, verify each claim, and create manifest entries. Unverifiable claims are dropped.</p>
+<p><strong>Phase 3B — Write Chapter Content:</strong> Using only verified claims from 3A, write the chapter markdown. Every code block must have a <code>// Simplified from: path:lines</code> citation.</p>
+<p><strong>Phase 3C — Validate Coverage:</strong> Read back each chapter, cross-check against manifest, audit line ranges, run <code>verify_sources.py</code>.</p>
+<h2>Phase 4: Generate HTML (~30% of time)</h2>
+<p>Run the converter tool:</p>
+<pre><code>python scripts/md_to_html.py &lt;docs_dir&gt; &lt;output.html&gt; \
+  --title &quot;Project Name&quot; --accent &quot;#hex&quot; --lang &lt;lang&gt; --quiz-chapter &lt;N&gt;</code></pre>
+<p>Then verify the output:</p>
+<pre><code>python scripts/md_to_html.py --verify &lt;output.html&gt; --source-dir &lt;docs_dir&gt;</code></pre>
+<p>No manual fallback. Python is a hard requirement. The converter handles all HTML generation including sidebar, theme toggle, quiz, and watermark.</p>
+<h2>Phase 5: Verify &amp; Deliver (~5% of time)</h2>
+<p>A hard delivery gate with four steps:</p>
+<ol><li><strong>Automated structural verification</strong> — reads <code>verify-result.json</code> for section count, file size ratio, nav consistency</li><li><strong>Automated content verification</strong> — checks broken links, code block count against manifest</li><li><strong>Error recovery loop</strong> — up to 3 retries for fixable issues (empty sections, broken links)</li><li><strong>Delivery gate</strong> — final checkpoint before reporting to user</li></ol>
+<p>No output is delivered without <code>verify-result.json</code> containing <code>&quot;passed&quot;: true</code>.</p>
+<h2>Time Distribution</h2>
+<p>The pipeline allocates time proportionally:</p>
+<table><thead><tr><th>Phase</th><th>Allocation</th><th>Purpose</th></tr></thead><tbody><tr><td>Phase 0</td><td>~5%</td><td>Analysis + user confirmation</td></tr><tr><td>Phase 1</td><td>~15%</td><td>Source code exploration</td></tr><tr><td>Phase 2</td><td>~10%</td><td>Chapter planning</td></tr><tr><td>Phase 3</td><td>~40%</td><td>Markdown generation + verification</td></tr><tr><td>Phase 4</td><td>~30%</td><td>HTML conversion + verification</td></tr><tr><td>Phase 5</td><td>~5%</td><td>Final delivery checks</td></tr></tbody></table>
+<div class="nav-links"><a href="#" onclick="showChapter(1);return false;">&larr; Previous</a><a href="#" onclick="showChapter(3);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch3"><h1>The Converter Engine: md_to_html.py</h1>
+<p>The heart of HTML generation is <code>scripts/md_to_html.py</code> — a 643-line Python script that converts markdown chapter files into a single self-contained interactive HTML page. This chapter walks through its major subsystems.</p>
+<h2>What It Does</h2>
+<p>Given a directory of numbered markdown files, <code>md_to_html.py</code> produces one HTML file that works when opened via <code>file://</code> with no server, no network, and no other files present. The output includes sidebar navigation, dark/light theme toggle, font size controls, interactive quiz, and a promo watermark page.</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:1-10
+#!/usr/bin/env python3
+&quot;&quot;&quot;
+Convert markdown chapter files into a single self-contained interactive HTML.
+Build tool for project-walkthrough all-depth conversion.
+
+Usage:
+    python md_to_html.py &lt;docs_dir&gt; &lt;output_html&gt; [--title &quot;Title&quot;] [--accent &quot;#hex&quot;]
+                         [--lang zh|zh-pure|en|bilingual] [--quiz-chapter N]
+    python md_to_html.py --verify &lt;html_file&gt; [--source-dir &lt;docs_dir&gt;]
+&quot;&quot;&quot;</code></pre>
+<h2>i18n System</h2>
+<p>Four language modes are supported through the <code>I18N</code> dictionary:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:20-53
+I18N = {
+    &quot;zh&quot;: {
+        &quot;lang&quot;: &quot;zh-CN&quot;, &quot;chapters&quot;: &quot;章节&quot;,
+        &quot;prev&quot;: &quot;&amp;larr; 上一章&quot;, &quot;next&quot;: &quot;下一章 &amp;rarr;&quot;,
+        &quot;quiz_title&quot;: &quot;知识测验&quot;,
+    },
+    &quot;en&quot;: {
+        &quot;lang&quot;: &quot;en&quot;, &quot;chapters&quot;: &quot;Chapters&quot;,
+        &quot;prev&quot;: &quot;&amp;larr; Previous&quot;, &quot;next&quot;: &quot;Next &amp;rarr;&quot;,
+        &quot;quiz_title&quot;: &quot;Quiz&quot;,
+    },
+    &quot;bilingual&quot;: {
+        &quot;lang&quot;: &quot;zh-CN&quot;, &quot;chapters&quot;: &quot;Chapters / 章节&quot;,
+        &quot;prev&quot;: &quot;&amp;larr; Prev / 上一章&quot;, &quot;next&quot;: &quot;Next / 下一章 &amp;rarr;&quot;,
+        &quot;quiz_title&quot;: &quot;Quiz / 知识测验&quot;,
+    },
+}</code></pre>
+<p>Each language mode defines sidebar labels, navigation button text, and regex patterns for skipping markdown navigation links.</p>
+<h2>Markdown-to-HTML Conversion</h2>
+<p>The <code>convert_md_to_html()</code> function is a line-by-line state machine that processes markdown elements in priority order:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:129-150
+def convert_md_to_html(md_text, nav_skip_re=None):
+    lines = md_text.split(&quot;\n&quot;)
+    out = []
+    i = 0
+    while i &lt; len(lines):
+        s = lines[i].strip()
+        if not s:
+            i += 1; continue
+
+        if s.startswith(&quot;#### &quot;):   out.append(f&quot;&lt;h4&gt;...&lt;/h4&gt;&quot;); i += 1
+        elif s.startswith(&quot;### &quot;):  out.append(f&quot;&lt;h3&gt;...&lt;/h3&gt;&quot;); i += 1
+        elif s.startswith(&quot;## &quot;):   out.append(f&quot;&lt;h2&gt;...&lt;/h2&gt;&quot;); i += 1
+        elif s.startswith(&quot;# &quot;):    out.append(f&quot;&lt;h1&gt;...&lt;/h1&gt;&quot;); i += 1
+        elif s.startswith(&quot;```&quot;):   # code blocks
+            ...
+        elif &quot;|&quot; in s and ...:      # tables
+            ...
+        elif s.startswith(&quot;&gt; &quot;):    # blockquotes
+            ...
+        elif s.startswith(&quot;&lt;details&quot;):  # expandable sections
+            ...
+        elif s.startswith(&quot;- &quot;) or s.startswith(&quot;* &quot;):  # unordered lists
+            ...
+        elif re.match(r&#x27;^\d+\.\s&#x27;, s):  # ordered lists
+            ...
+        elif nav_skip_re.search(s):  # skip .md navigation links
+            i += 1
+        else:                        # paragraphs
+            ...</code></pre>
+<p>Inline formatting (bold, italic, code, images, links) is handled by <code>process_inline()</code>, which applies HTML escaping first, then regex substitutions for markdown syntax.</p>
+<h2>XSS Protection</h2>
+<p>The <code>sanitize_url()</code> function blocks dangerous URL schemes:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:62-67
+def sanitize_url(url):
+    &quot;&quot;&quot;Block javascript:, data:, vbscript: etc.&quot;&quot;&quot;
+    scheme = re.match(r&#x27;^([a-zA-Z][a-zA-Z0-9+.-]*):&#x27;, url.strip())
+    if scheme and scheme.group(1).lower() not in (&#x27;http&#x27;, &#x27;https&#x27;, &#x27;mailto&#x27;, &#x27;tel&#x27;, &#x27;&#x27;):
+        return &#x27;#&#x27;
+    return url</code></pre>
+<p>Only <code>http</code>, <code>https</code>, <code>mailto</code>, and <code>tel</code> schemes are allowed. Everything else gets redirected to <code>#</code>.</p>
+<h2>Quiz System</h2>
+<p>The quiz subsystem has three stages:</p>
+<p><strong>1. Extract</strong> — <code>extract_quiz_section()</code> pulls the <code>## Quiz</code> section from a markdown file and returns both the quiz text and the remaining content.</p>
+<p><strong>2. Parse</strong> — <code>parse_quiz_md()</code> splits on <code><strong>Q&lt;N&gt;:</strong></code> patterns, extracts options (<code>A.</code> through <code>D.</code>), answer letter, and explanation:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:223-267
+def parse_quiz_md(quiz_md):
+    questions = []
+    parts = re.split(r&#x27;\*\*Q\d+[：:]\s*\*\*\s*&#x27;, quiz_md)
+    for part in parts[1:]:
+        ...
+        opt_match = re.match(r&#x27;^(?:[-*]\s+)?([A-D])[.)]\s+(.*)&#x27;, line)
+        if opt_match and state in (&quot;question&quot;, &quot;options&quot;):
+            opts.append(opt_match.group(2))
+        elif re.match(r&#x27;^\*\*Answer\s*[：:]\s*[A-D]\s*\*\*&#x27;, line):
+            answer = m.group(1).upper()
+        elif re.match(r&#x27;^\*\*Explanation\s*[：:]&#x27;, line):
+            explanation = ...</code></pre>
+<p><strong>3. Build</strong> — <code>build_quiz_section()</code> generates JavaScript that creates quiz DOM elements with click handlers for instant feedback (green for correct, red for incorrect, with explanation).</p>
+<h2>HTML Assembly</h2>
+<p>The <code>build_html()</code> function assembles the final page with all interactive features:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:358-367
+def build_html(chapters, accent, title, lang=&quot;zh&quot;, quiz_html=&quot;&quot;, watermark_html=&quot;&quot;):
+    l = I18N.get(lang, I18N[&quot;zh&quot;])
+    divs, links = [], []
+    for idx, ch in enumerate(chapters):
+        nav = &#x27;&lt;div class=&quot;nav-links&quot;&gt;&#x27;
+        nav += prev_link if idx &gt; 0 else &#x27;&lt;span&gt;&lt;/span&gt;&#x27;
+        nav += next_link if idx &lt; len(chapters)-1 else &#x27;&lt;span&gt;&lt;/span&gt;&#x27;
+        nav += &#x27;&lt;/div&gt;&#x27;
+        divs.append(f&#x27;&lt;div class=&quot;chapter&quot; id=&quot;ch{idx}&quot;&gt;{ch[&quot;html&quot;]}\n{nav}&lt;/div&gt;&#x27;)
+        links.append(sidebar_link)</code></pre>
+<p>The generated HTML includes:</p>
+<ul><li>CSS custom properties for light/dark theming</li><li>Sidebar with chapter navigation links</li><li>Theme toggle button (persists in localStorage)</li><li>Font size adjustment buttons (persists in localStorage)</li><li>Mobile responsive breakpoint at 768px</li><li>Print-friendly styles (hides sidebar, shows all chapters)</li></ul>
+<h2>Verification</h2>
+<p>The <code>verify_html()</code> function performs post-build validation:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:462-486
+def verify_html(html_path, expected_chapters=0, source_dir=None):
+    ...
+    # 1. Section count matches .md file count
+    # 2. Per-section content check (heading + content element)
+    # 3. HTML size &gt;= 80% of markdown size
+    # 4. No broken .md links
+    # 5. Navigation consistency
+    # 6. Quiz presence check</code></pre>
+<p>The verification result is written to <code>verify-result.json</code> alongside the HTML file, providing structured evidence of quality.</p>
+<h2>Safety Net: Broken Link Removal</h2>
+<p>After assembly, three regex passes remove any residual <code>.md</code> links that survived conversion:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:451-456
+# 1. Standalone &lt;p&gt; with dual nav link (prev | next)
+raw = re.sub(r&#x27;&lt;p&gt;\s*&lt;a href=&quot;[^&quot;]*\.md&quot;&gt;...&lt;/a&gt;\s*\|\s*&lt;a href=&quot;[^&quot;]*\.md&quot;&gt;...&lt;/a&gt;\s*&lt;/p&gt;&#x27;, &#x27;&#x27;, raw)
+# 2. Standalone &lt;p&gt; with single nav link
+raw = re.sub(r&#x27;&lt;p&gt;\s*&lt;a href=&quot;[^&quot;]*\.md&quot;&gt;...&lt;/a&gt;\s*&lt;/p&gt;&#x27;, &#x27;&#x27;, raw)
+# 3. Inline .md links: replace href=&quot;*.md&quot; with href=&quot;#&quot;
+raw = re.sub(r&#x27;href=&quot;[^&quot;]*\.md&quot;&#x27;, &#x27;href=&quot;#&quot;&#x27;, raw)</code></pre>
+<p>This belt-and-suspenders approach ensures the HTML never has broken internal links.</p>
+<div class="nav-links"><a href="#" onclick="showChapter(2);return false;">&larr; Previous</a><a href="#" onclick="showChapter(4);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch4"><h1>Accuracy System: Manifest-First Verification</h1>
+<p>The project&#x27;s most distinctive feature is its manifest-first accuracy system. Before any chapter content is written, every factual claim must be verified against the actual source code and recorded in <code>sources-manifest.json</code>. This chapter explains how that system works.</p>
+<h2>Why Manifest-First?</h2>
+<p>Early versions of the plugin produced walkthroughs with plausible-sounding but fabricated details — wrong line numbers, invented function names, incorrect directory structures. The root cause was that content was written first and verified after (or never).</p>
+<p>The manifest-first approach flips this: verification happens <strong>before</strong> writing. The manifest is a <strong>write permit</strong>, not an audit log. If a claim isn&#x27;t in the manifest with <code>verified: true</code>, it cannot appear in the walkthrough.</p>
+<h2>Sources Manifest Schema</h2>
+<p>The manifest follows a JSON Schema defined in <code>docs/sources-manifest.schema.json</code>:</p>
+<pre><code>// Simplified from: docs/sources-manifest.schema.json:1-7
+{
+  &quot;$schema&quot;: &quot;http://json-schema.org/draft-07/schema#&quot;,
+  &quot;title&quot;: &quot;SourcesManifest&quot;,
+  &quot;description&quot;: &quot;Maps walkthrough claims to source project locations...&quot;,
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [&quot;schema_version&quot;, &quot;source_project&quot;, &quot;generated_at&quot;, &quot;claims&quot;],
+  &quot;additionalProperties&quot;: false
+}</code></pre>
+<h3>Claim Types</h3>
+<p>Nine types of claims can be recorded:</p>
+<table><thead><tr><th>Type</th><th>What It Verifies</th><th>Example</th></tr></thead><tbody><tr><td><code>code_example</code></td><td>Code block from actual source</td><td>Function implementation</td></tr><tr><td><code>directory_structure</code></td><td>Directory listing</td><td><code>ls</code> output</td></tr><tr><td><code>api_signature</code></td><td>Function/method definition</td><td>Parameters, return type</td></tr><tr><td><code>version_number</code></td><td>Version from config file</td><td>package.json version</td></tr><tr><td><code>architecture_claim</code></td><td>Module interaction</td><td>&quot;X imports Y&quot;</td></tr><tr><td><code>dependency_claim</code></td><td>Import statement</td><td><code>from X import Y</code></td></tr><tr><td><code>config_claim</code></td><td>Configuration value</td><td>Default settings</td></tr><tr><td><code>feature_claim</code></td><td>Feature existence</td><td>CLI flag support</td></tr><tr><td><code>performance_claim</code></td><td>Performance characteristic</td><td>Benchmark results</td></tr></tbody></table>
+<h3>Claim Entry Structure</h3>
+<p>Each claim has required fields:</p>
+<pre><code>// Simplified from: docs/sources-manifest.schema.json:59-126
+{
+  &quot;id&quot;: &quot;claim-001&quot;,
+  &quot;type&quot;: &quot;code_example&quot;,
+  &quot;source_file&quot;: &quot;src/main.py&quot;,
+  &quot;source_lines&quot;: [10, 25],
+  &quot;claim_summary&quot;: &quot;Main entry point function&quot;,
+  &quot;verified&quot;: true,
+  &quot;verification_note&quot;: &quot;exact match&quot;,
+  &quot;doc_file&quot;: &quot;01-overview.md&quot;,
+  &quot;doc_line&quot;: 42
+}</code></pre>
+<p>The <code>source_lines</code> field is <code>[start, end]</code> (1-based, inclusive). For directory-level claims it can be <code>null</code>.</p>
+<h2>Verification Pipeline</h2>
+<p>The <code>verify_sources.py</code> script (315 lines) implements a three-stage validation:</p>
+<pre><code>// Simplified from: scripts/verify_sources.py:87-100
+def validate_basic(manifest, result, strict=False):
+    &quot;&quot;&quot;Basic validation: no jsonschema dependency needed.
+
+    strict=True: require doc_file/doc_line (final state)
+    strict=False: doc_file/doc_line optional (Phase 3A intermediate)
+    &quot;&quot;&quot;
+    for key in REQUIRED_TOP_KEYS:
+        if key not in manifest:
+            result.error(f&quot;Missing required top-level key: {key}&quot;)
+
+    if &quot;schema_version&quot; in manifest and manifest[&quot;schema_version&quot;] != &quot;1.0&quot;:
+        result.error(f&quot;Unsupported schema_version: ...&quot;)</code></pre>
+<h3>Stage 1: Basic Validation</h3>
+<p>Checks required keys, claim ID format (<code>claim-NNN</code> with 3+ digits), claim types, duplicate IDs, and line range validity (start &lt;= end, both &gt;= 1).</p>
+<h3>Stage 2: JSON Schema Validation</h3>
+<p>If the <code>jsonschema</code> package is installed, validates the full manifest against <code>docs/sources-manifest.schema.json</code>. This catches structural issues like unknown properties or missing required fields.</p>
+<h3>Stage 3: Source File Verification</h3>
+<pre><code>// Simplified from: scripts/verify_sources.py:177-206
+def validate_source_files(manifest, source_dir, result):
+    for claim in claims:
+        source_path = source_dir / source_file
+        if not source_path.exists():
+            result.error(f&quot;source file not found: {source_file}&quot;)
+            continue
+        source_lines = claim.get(&quot;source_lines&quot;)
+        if source_lines:
+            total_lines = sum(1 for _ in sf)
+            if source_lines[1] &gt; total_lines:
+                result.error(f&quot;source_lines exceeds file length&quot;)</code></pre>
+<p>This stage confirms that every referenced source file actually exists and that line ranges don&#x27;t exceed file bounds.</p>
+<h2>VerificationResult</h2>
+<p>The script uses a <code>VerificationResult</code> class to collect errors, warnings, and info messages:</p>
+<pre><code>// Simplified from: scripts/verify_sources.py:43-73
+class VerificationResult:
+    def __init__(self):
+        self.errors = []
+        self.warnings = []
+        self.info = []
+
+    @property
+    def ok(self):
+        return len(self.errors) == 0
+
+    def report(self):
+        if self.errors:
+            lines.append(f&quot;ERRORS ({len(self.errors)}):&quot;)
+            for e in self.errors:
+                lines.append(f&quot;  ✗ {e}&quot;)
+        if self.ok and not self.warnings:
+            lines.append(&quot;  ✓ All checks passed&quot;)</code></pre>
+<p>Errors block delivery. Warnings are informational. The <code>ok</code> property is <code>True</code> only when there are zero errors.</p>
+<h2>CLI Usage</h2>
+<pre><code># Verify a single manifest
+python scripts/verify_sources.py docs/sources-manifest.json --source-dir ../..
+
+# Verify all manifests in examples/
+python scripts/verify_sources.py --check-all examples/
+
+# Strict mode (requires doc_file/doc_line)
+python scripts/verify_sources.py docs/sources-manifest.json --strict</code></pre>
+<p>The <code>--strict</code> flag requires <code>doc_file</code> and <code>doc_line</code> fields on every claim, used in Phase 3C (final validation after content is written).</p>
+<div class="nav-links"><a href="#" onclick="showChapter(3);return false;">&larr; Previous</a><a href="#" onclick="showChapter(5);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch5"><h1>Dependency Graph Extraction</h1>
+<p>The <code>import_graph.py</code> script (239 lines) extracts module-level import dependencies from source code. It supports Python, TypeScript/JavaScript, and Rust, producing a text-based dependency graph that walkthrough authors use to draw accurate architecture diagrams.</p>
+<h2>Why It Exists</h2>
+<p>Architecture diagrams in walkthroughs must be grounded in actual imports, not guessed from directory structure. Two modules in the same directory might have no relationship, while modules in different directories might be tightly coupled. The script provides ground truth.</p>
+<h2>Usage</h2>
+<pre><code>// Simplified from: scripts/import_graph.py:1-11
+&quot;&quot;&quot;
+import_graph.py — Extract module-level import dependencies
+
+Usage:
+  python scripts/import_graph.py /path/to/source/project
+  python scripts/import_graph.py /path/to/source/project --lang python
+  python scripts/import_graph.py /path/to/source/project --lang typescript
+&quot;&quot;&quot;</code></pre>
+<h2>Multi-Language Support</h2>
+<p>Three extraction functions handle language-specific import syntax:</p>
+<h3>TypeScript/JavaScript</h3>
+<pre><code>// Simplified from: scripts/import_graph.py:36-55
+def extract_imports_ts(filepath: Path, _root: str) -&gt; set[str]:
+    patterns = [
+        r&#x27;&#x27;&#x27;import\s+.*?from\s+[&#x27;&quot;](\.[^&#x27;&quot;]+)[&#x27;&quot;]&#x27;&#x27;&#x27;,
+        r&#x27;&#x27;&#x27;import\s+[&#x27;&quot;](\.[^&#x27;&quot;]+)[&#x27;&quot;]&#x27;&#x27;&#x27;,
+        r&#x27;&#x27;&#x27;import\s*\(\s*[&#x27;&quot;](\.[^&#x27;&quot;]+)[&#x27;&quot;]\s*\)&#x27;&#x27;&#x27;,
+        r&#x27;&#x27;&#x27;require\s*\(\s*[&#x27;&quot;](\.[^&#x27;&quot;]+)[&#x27;&quot;]\s*\)&#x27;&#x27;&#x27;,
+        r&#x27;&#x27;&#x27;export\s+(?:\{[^}]*\}|\*)\s+from\s+[&#x27;&quot;](\.[^&#x27;&quot;]+)[&#x27;&quot;]&#x27;&#x27;&#x27;,
+    ]</code></pre>
+<p>Captures relative imports (<code>from &#x27;./...&#x27;</code>), dynamic imports, require calls, and re-exports.</p>
+<h3>Python</h3>
+<pre><code>// Simplified from: scripts/import_graph.py:58-84
+def extract_imports_python(filepath: Path, _root: str) -&gt; set[str]:
+    # Relative imports: from . import X / from ..sub import X
+    m = re.match(r&#x27;^from\s+(\.{1,}[a-zA-Z0-9_.]*)\s+import&#x27;, line)
+    # Absolute imports within project: from package.module import X
+    m = re.match(r&#x27;^from\s+([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)+)\s+import&#x27;, line)
+    if (Path(_root) / top_pkg).is_dir():
+        imports.add(m.group(1))</code></pre>
+<p>Distinguishes relative imports (<code>.</code>, <code>..</code>) from absolute imports by checking if the top-level package directory exists in the project.</p>
+<h3>Rust</h3>
+<pre><code>// Simplified from: scripts/import_graph.py:87-105
+def extract_imports_rust(filepath: Path, _root: str) -&gt; set[str]:
+    for m in re.finditer(r&#x27;use\s+(crate::[a-zA-Z0-9_:]+)&#x27;, content):
+        imports.add(m.group(1))
+    for m in re.finditer(r&#x27;use\s+(super::[a-zA-Z0-9_:]+)&#x27;, content):
+        imports.add(m.group(1))
+    for m in re.finditer(r&#x27;^\s*mod\s+([a-zA-Z0-9_]+)\s*;&#x27;, content, re.MULTILINE):
+        imports.add(f&quot;mod::{m.group(1)}&quot;)</code></pre>
+<p>Captures <code>crate::</code>, <code>super::</code>, <code>self::</code>, and module declarations.</p>
+<h2>Graph Construction</h2>
+<p>The <code>build_graph()</code> function maps files to modules at configurable depth:</p>
+<pre><code>// Simplified from: scripts/import_graph.py:108-181
+def build_graph(root: str, lang: str, depth: int = 2) -&gt; tuple[dict, dict]:
+    ...
+    for filepath in files:
+        rel = filepath.relative_to(root)
+        parts = list(rel.parts[:-1])
+        if len(parts) &gt; depth:
+            parts = parts[:depth]
+        module = &quot;/&quot;.join(parts) if parts else &quot;(root)&quot;
+
+        file_imports = extractor(filepath, root)
+        for imp in file_imports:
+            target = (file_dir / imp).resolve()
+            target_rel = target.relative_to(Path(root).resolve())
+            target_module = &quot;/&quot;.join(target_parts)
+            if target_module != module:
+                graph[module].add(target_module)</code></pre>
+<p>The <code>--depth</code> flag controls how many directory levels are used for module grouping. At depth 2, <code>src/services/auth/login.py</code> becomes <code>services/auth</code>.</p>
+<h2>Parallel Sibling Detection</h2>
+<p>A unique feature: the script detects modules that share a dependency without importing each other — &quot;parallel siblings&quot;:</p>
+<pre><code>// Simplified from: scripts/import_graph.py:214-235
+# Parallel modules (share a dependency, don&#x27;t import each other):
+common_deps: dict[str, list[str]] = defaultdict(list)
+for module, deps in graph.items():
+    for dep in deps:
+        common_deps[dep].append(module)
+
+for dep, dependents in sorted(common_deps.items()):
+    if len(dependents) &gt; 1:
+        mutual = False
+        for i, m1 in enumerate(dependents):
+            for m2 in dependents[i+1:]:
+                if m2 in graph.get(m1, set()) or m1 in graph.get(m2, set()):
+                    mutual = True
+        if not mutual:
+            print(f&quot;   {dep} ← {&#x27;, &#x27;.join(dependents)} (parallel siblings)&quot;)</code></pre>
+<p>This is useful for architecture diagrams — it identifies modules that are independently wired to the same dependency, which is often a sign of a shared abstraction layer.</p>
+<h2>Output Format</h2>
+<p>The script produces human-readable text output:</p>
+<pre><code># Import Dependency Graph: my-project
+# Modules found: 8
+# Files scanned: 23
+
+## services/
+   imports from: models, utils
+   dependency count: 2
+
+## handlers/
+   imports from: services, utils
+   dependency count: 2
+
+# Parallel modules (share a dependency, don&#x27;t import each other):
+   utils ← services, handlers (parallel siblings)</code></pre>
+<div class="nav-links"><a href="#" onclick="showChapter(4);return false;">&larr; Previous</a><a href="#" onclick="showChapter(6);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch6"><h1>Multi-Platform Distribution</h1>
+<p>The project generates platform-specific skill files from a single canonical source using <code>scripts/convert.sh</code> (272 lines). This ensures all AI coding platforms get identical content without manual duplication.</p>
+<h2>The Problem</h2>
+<p>Different AI coding tools use different file formats and locations for their skill/rule definitions:</p>
+<table><thead><tr><th>Platform</th><th>File Location</th><th>Format</th></tr></thead><tbody><tr><td>Claude Code</td><td><code>skills/project-walkthrough/SKILL.md</code></td><td>Frontmatter + Markdown</td></tr><tr><td>Cursor</td><td><code>cursor/project-walkthrough.mdc</code></td><td>Description header + body</td></tr><tr><td>Windsurf</td><td><code>.windsurf/rules/project-walkthrough.md</code></td><td>Trigger + description + condensed body</td></tr><tr><td>OpenCode</td><td><code>.opencode/skills/project-walkthrough/SKILL.md</code></td><td>Extended frontmatter + body</td></tr><tr><td>Gemini CLI</td><td><code>gemini skills install</code> format</td><td>Compatible with SKILL.md</td></tr></tbody></table>
+<p>Without automation, each platform file would need separate maintenance — a recipe for drift and inconsistency.</p>
+<h2>convert.sh Architecture</h2>
+<p>The script reads the canonical SKILL.md and generates platform-specific files using embedded Python:</p>
+<pre><code>// Simplified from: scripts/convert.sh:16-20
+SKILL=&quot;$ROOT/skills/ruyi-project-walkthrough/SKILL.md&quot;
+MAX_WINDSURF_CHARS=12000
+
+if [ ! -f &quot;$SKILL&quot; ]; then
+    echo &quot;ERROR: $SKILL not found&quot; &gt;&amp;2
+    exit 1
+fi</code></pre>
+<p>The embedded Python handles frontmatter parsing and format-specific generation:</p>
+<pre><code>// Simplified from: scripts/convert.sh:31-46
+def read_skill(path):
+    with open(path) as f:
+        text = f.read()
+    parts = re.split(r&#x27;^---\s*$&#x27;, text.strip(), maxsplit=2, flags=re.MULTILINE)
+    if len(parts) &gt;= 3:
+        frontmatter = parts[1].strip()
+        body = parts[2].strip() + &quot;\n&quot;
+    ...
+    return fm, body</code></pre>
+<h2>Platform Adapters</h2>
+<h3>Cursor (.mdc)</h3>
+<pre><code>// Simplified from: scripts/convert.sh:53-54
+def gen_cursor(body, trigger_desc):
+    return f&#x27;---\ndescription: &quot;{trigger_desc}&quot;\nglobs:\nalwaysApply: false\n---\n{body}&#x27;</code></pre>
+<p>Cursor uses <code>.mdc</code> files with a YAML header containing <code>description</code>, <code>globs</code>, and <code>alwaysApply</code>. The body is the full SKILL.md content unchanged.</p>
+<h3>OpenCode</h3>
+<pre><code>// Simplified from: scripts/convert.sh:56-61
+def gen_opencode(body, fm):
+    name = fm.get(&quot;name&quot;, &quot;project-walkthrough&quot;)
+    desc = fm.get(&quot;description&quot;, &quot;&quot;)
+    arg_hint = fm.get(&quot;argument-hint&quot;, &quot;&quot;)
+    return f&#x27;---\nname: {name}\ndescription: {desc}\nlicense: MIT\ncompatibility: opencode\nargument-hint: {arg_hint}\n---\n{body}&#x27;</code></pre>
+<p>OpenCode uses the same SKILL.md format but with extended frontmatter including <code>license</code> and <code>compatibility</code> fields.</p>
+<h3>Windsurf (Condensed)</h3>
+<p>Windsurf has a 12,000 character limit. The generator condenses the SKILL.md by removing verbose sections:</p>
+<pre><code>// Simplified from: scripts/convert.sh:62-89
+def gen_windsurf(body, trigger_desc, max_chars):
+    skip_sections = {
+        &quot;## Checklist&quot;, &quot;## Documentation Standards&quot;,
+    }
+    skip_subsections = {
+        &quot;#### Phase 3A: Verify&quot;,
+        &quot;#### Phase 3B: Write&quot;,
+        &quot;#### Phase 3C: Validate&quot;,
+        ...
+    }
+    ...
+    if len(condensed) &gt; max_chars:
+        # Further trim: remove examples section
+        ...</code></pre>
+<p>The condensation removes checklist, documentation standards, and detailed Phase 3 sub-phases — keeping the essential usage instructions and rules.</p>
+<h2>Sync Checking</h2>
+<p>The <code>--check</code> mode verifies all platform files are in sync with the canonical SKILL.md:</p>
+<pre><code>// Simplified from: scripts/convert.sh:211-252
+check_sync() {
+    local ok=true
+    # Cursor: compare body content
+    cursor_check=$(run_python check &quot;$SKILL&quot; &quot;$ROOT/cursor/ruyi-project-walkthrough.mdc&quot;)
+    # OpenCode: compare body content
+    opencode_check=$(run_python check &quot;$SKILL&quot; &quot;$ROOT/.opencode/skills/ruyi-project-walkthrough/SKILL.md&quot;)
+    # Windsurf: check char limit only (content is condensed)
+    windsurf_chars=$(wc -c &lt; &quot;$ROOT/.windsurf/rules/ruyi-project-walkthrough.md&quot;)
+}</code></pre>
+<p>Cursor and OpenCode are compared for exact body match. Windsurf is checked for character limit only (since its content is intentionally condensed).</p>
+<h2>CI Integration</h2>
+<p>The <code>make ci</code> target runs both tests and sync checking:</p>
+<pre><code>// Simplified from: Makefile:18-19
+ci: test check
+	@echo &quot;CI checks passed.&quot;</code></pre>
+<p>This ensures platform files never drift out of sync — CI fails if any platform file doesn&#x27;t match the canonical source.</p>
+<div class="nav-links"><a href="#" onclick="showChapter(5);return false;">&larr; Previous</a><a href="#" onclick="showChapter(7);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch7"><h1>Version Management &amp; Release</h1>
+<p>The project maintains version consistency across six locations using an automated release script. This chapter explains the synchronization system and the release workflow.</p>
+<h2>The Six-Location Problem</h2>
+<p>Every version bump must update six files:</p>
+<pre><code>// Simplified from: CLAUDE.md:9-18
+| # | File | Location | Purpose |
+|---|------|----------|---------|
+| 1 | skills/project-walkthrough/SKILL.md | frontmatter `version: &quot;X.Y.Z&quot;` | **Single source of truth** |
+| 2 | skills/project-walkthrough/SKILL.md | `--version` text (2 occurrences) | User-visible version |
+| 3 | .claude-plugin/plugin.json | `&quot;version&quot;: &quot;X.Y.Z&quot;` | Plugin metadata |
+| 4 | .claude-plugin/marketplace.json | `&quot;version&quot;: &quot;X.Y.Z&quot;` | Marketplace registration |
+| 5 | README.md | Badge URL | Visual version indicator |
+| 6 | CHANGELOG.md | Version heading | Change history |</code></pre>
+<p>Manual editing of any location except #1 is forbidden. The <code>release.sh</code> script handles synchronization.</p>
+<h2>release.sh</h2>
+<p>The 166-line script automates the full release workflow:</p>
+<pre><code>// Simplified from: scripts/release.sh:1-13
+#!/usr/bin/env bash
+# release.sh — Automate version release workflow
+#
+# Usage:
+#   ./scripts/release.sh 1.3.0              # Full release
+#   ./scripts/release.sh 1.3.0 --bump-only  # Only bump version files
+#   ./scripts/release.sh 1.3.0 --dry-run    # Validate only</code></pre>
+<h3>Version Bump (6 locations)</h3>
+<p>The script reads the current version from SKILL.md frontmatter and updates all six locations:</p>
+<pre><code>// Simplified from: scripts/release.sh:57-104
+# Read current version from SKILL.md frontmatter
+CURRENT_VERSION=$(grep &#x27;^version:&#x27; skills/project-walkthrough/SKILL.md | head -1 | sed &#x27;s/version: *&quot;//;s/&quot;//&#x27;)
+
+# 1. SKILL.md frontmatter
+sed -i.bak &quot;s/^version: \&quot;${CURRENT_VERSION}\&quot;/version: \&quot;${VERSION}\&quot;/&quot; skills/project-walkthrough/SKILL.md
+
+# 2. SKILL.md --version text (all occurrences)
+sed -i.bak &quot;s/project-walkthrough v${CURRENT_VERSION}/project-walkthrough v${VERSION}/g&quot; skills/project-walkthrough/SKILL.md
+sed -i.bak &quot;s/Project Walkthrough v${CURRENT_VERSION}/Project Walkthrough v${VERSION}/g&quot; skills/project-walkthrough/SKILL.md
+
+# 3. plugin.json
+sed -i.bak &quot;s/\&quot;version\&quot;: \&quot;[^\&quot;]*\&quot;/\&quot;version\&quot;: \&quot;$VERSION\&quot;/&quot; .claude-plugin/plugin.json
+
+# 4. marketplace.json
+sed -i.bak &quot;s/\&quot;version\&quot;: \&quot;[^\&quot;]*\&quot;/\&quot;version\&quot;: \&quot;$VERSION\&quot;/&quot; .claude-plugin/marketplace.json
+
+# 5. README badge
+sed -i.bak &quot;s/badge\/version-[^-]*-/badge\/version-${VERSION}-/&quot; README.md
+
+# 6. CHANGELOG header
+TODAY=$(date +%Y-%m-%d)
+sed -i.bak &quot;s/## \[Unreleased\]/## [$VERSION] - $TODAY/&quot; CHANGELOG.md</code></pre>
+<h3>Validation Guards</h3>
+<p>The script validates several preconditions before proceeding:</p>
+<pre><code>// Simplified from: scripts/release.sh:28-50
+# Version format validation
+if ! [[ &quot;$VERSION&quot; =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo &quot;ERROR: Version must be semver (e.g. 1.3.0), got: $VERSION&quot; &gt;&amp;2
+    exit 1
+fi
+
+# Branch check
+BRANCH=$(git branch --show-current)
+if [ &quot;$BRANCH&quot; != &quot;develop&quot; ]; then
+    echo &quot;ERROR: Must be on develop branch&quot; &gt;&amp;2
+    exit 1
+fi
+
+# Clean tree check
+if [ -n &quot;$(git status --porcelain)&quot; ]; then
+    echo &quot;ERROR: Working tree not clean&quot; &gt;&amp;2
+    exit 1
+fi</code></pre>
+<h3>Full Release Flow</h3>
+<p>When run without <code>--bump-only</code>, the script executes the complete release:</p>
+<ol><li>Run CI checks (<code>make ci</code>)</li><li>Bump version in all 6 locations</li><li>Commit version bump</li><li>Push to develop</li><li>Create PR to master via <code>gh pr create</code></li><li>Wait for CI to pass (up to 120 seconds)</li><li>Merge PR via <code>gh pr merge</code></li><li>Fetch master, tag with version</li><li>Push tag</li><li>Sync develop with master</li></ol>
+<pre><code>// Simplified from: scripts/release.sh:115-165
+echo &quot;==&gt; Pushing to develop...&quot;
+git push origin develop
+
+echo &quot;==&gt; Creating PR...&quot;
+PR_URL=$(gh pr create --base master --head develop --title &quot;chore: release v$VERSION&quot; ...)
+
+echo &quot;==&gt; Waiting for CI...&quot;
+MAX_WAIT=120
+while [ $ELAPSED -lt $MAX_WAIT ]; do
+    CHECKS=$(gh pr checks &quot;$PR_NUM&quot; 2&gt;&amp;1 || true)
+    if echo &quot;$CHECKS&quot; | grep -q &quot;pass&quot;; then break; fi
+    sleep 10
+done
+
+echo &quot;==&gt; Merging PR...&quot;
+gh pr merge &quot;$PR_NUM&quot; --merge --delete-branch
+
+echo &quot;==&gt; Tagging v$VERSION...&quot;
+git tag -a &quot;v$VERSION&quot; &quot;$MASTER_SHA&quot; -m &quot;v$VERSION&quot;
+git push origin &quot;v$VERSION&quot;</code></pre>
+<h2>Makefile Targets</h2>
+<p>The Makefile provides convenient shortcuts:</p>
+<pre><code>// Simplified from: Makefile:1-30
+test:       python -m pytest tests/ -v --tb=short
+test-quick: python -m pytest tests/ -q --tb=line
+check:      ./scripts/convert.sh --check
+generate:   ./scripts/convert.sh
+verify:     python scripts/verify_sources.py --check-all examples/ --strict
+ci:         test check
+release:    ./scripts/release.sh $(VERSION)
+clean:      find . -type d -name __pycache__ -exec rm -rf {} +</code></pre>
+<p>The <code>ci</code> target runs both pytest and convert.sh sync checking — ensuring tests pass AND platform files are current.</p>
+<h2>Version Verification Checklist</h2>
+<p>After any version bump, the CLAUDE.md requires verifying all six locations:</p>
+<pre><code>grep &#x27;^version:&#x27; skills/project-walkthrough/SKILL.md
+grep &#x27;project-walkthrough v&#x27; skills/project-walkthrough/SKILL.md
+grep &#x27;&quot;version&quot;&#x27; .claude-plugin/plugin.json
+grep &#x27;&quot;version&quot;&#x27; .claude-plugin/marketplace.json
+grep &#x27;badge/version-&#x27; README.md
+head -5 CHANGELOG.md</code></pre>
+<p>All six must output the same version number.</p>
+<div class="nav-links"><a href="#" onclick="showChapter(6);return false;">&larr; Previous</a><a href="#" onclick="showChapter(8);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch8"><h1>Test Suite Architecture</h1>
+<p>The project has 8 test files totaling ~2,778 lines, covering output structure, manifest validation, dependency graphs, adaptive scope, language modes, platform conversion, watermarks, and release scripts.</p>
+<h2>Test Files Overview</h2>
+<table><thead><tr><th>File</th><th>Lines</th><th>Focus Area</th></tr></thead><tbody><tr><td><code>test_walkthrough_output.py</code></td><td>861</td><td>Output structure validation</td></tr><tr><td><code>test_verify_sources.py</code></td><td>611</td><td>Manifest verification</td></tr><tr><td><code>test_import_graph.py</code></td><td>534</td><td>Dependency graph extraction</td></tr><tr><td><code>test_adaptive_scope.py</code></td><td>284</td><td>Phase 0 scope/depth logic</td></tr><tr><td><code>test_lang_output.py</code></td><td>170</td><td>Multi-language output</td></tr><tr><td><code>test_convert.py</code></td><td>152</td><td>Platform file generation</td></tr><tr><td><code>test_watermark.py</code></td><td>121</td><td>Watermark/promo page</td></tr><tr><td><code>test_release_sh.py</code></td><td>45</td><td>Release script validation</td></tr></tbody></table>
+<pre><code>// Simplified from: tests/test_walkthrough_output.py:1-11
+&quot;&quot;&quot;
+project-walkthrough skill output validation tests
+
+Based on SKILL.md spec, validates walkthrough output structure and quality.
+Test targets: tests/fixtures/ (CI) or examples/ (local dev)
+&quot;&quot;&quot;</code></pre>
+<h2>Test Categories</h2>
+<h3>Output Structure (test_walkthrough_output.py)</h3>
+<p>The largest test file validates that generated walkthroughs follow the SKILL.md output structure specification:</p>
+<pre><code>// Simplified from: tests/test_walkthrough_output.py:32-49
+class TestDirectoryStructure:
+    &quot;&quot;&quot;SKILL.md Output Structure spec validation&quot;&quot;&quot;
+
+    def test_examples_dir_exists(self):
+        assert EXAMPLES_DIR.is_dir()
+
+    def test_has_docs_dir(self, all_project_dir):
+        assert (all_project_dir / &quot;docs&quot;).is_dir()
+
+    def test_has_interactive_dir(self, all_project_dir):
+        assert (all_project_dir / &quot;interactive&quot;).is_dir()
+
+    def test_brief_docs_in_docs_flat(self, all_project_dir):
+        &quot;&quot;&quot;Brief level md files should be directly in docs/, not subdirectory&quot;&quot;&quot;
+        brief_files = [f for f in docs.iterdir() if f.is_file() and f.suffix == &quot;.md&quot;]
+        assert len(brief_files) &gt;= 5</code></pre>
+<p>Tests check directory layout, file naming (<code>NN-kebab-case.md</code>), navigation links between chapters, HTML structure, manifest presence, and quiz validity.</p>
+<h3>Manifest Verification (test_verify_sources.py)</h3>
+<p>Tests the <code>verify_sources.py</code> validation logic:</p>
+<pre><code>// Simplified from: tests/test_verify_sources.py:36-56
+def _make_minimal_manifest(**overrides):
+    &quot;&quot;&quot;Return a valid minimal manifest (non-strict mode).&quot;&quot;&quot;
+    manifest = {
+        &quot;schema_version&quot;: &quot;1.0&quot;,
+        &quot;source_project&quot;: {&quot;name&quot;: &quot;test-project&quot;, &quot;repo_url&quot;: &quot;https://example.com&quot;},
+        &quot;generated_at&quot;: &quot;2025-01-01T00:00:00Z&quot;,
+        &quot;claims&quot;: [
+            {
+                &quot;id&quot;: &quot;claim-001&quot;,
+                &quot;type&quot;: &quot;code_example&quot;,
+                &quot;source_file&quot;: &quot;src/main.py&quot;,
+                &quot;claim_summary&quot;: &quot;A claim.&quot;,
+                &quot;verified&quot;: True,
+            }
+        ],
+    }</code></pre>
+<p>Covers both strict mode (requires <code>doc_file</code>/<code>doc_line</code>) and non-strict mode (Phase 3A intermediate state).</p>
+<h3>Import Graph (test_import_graph.py)</h3>
+<p>534 lines testing multi-language import extraction:</p>
+<ul><li>Python relative and absolute imports</li><li>TypeScript <code>import</code>, <code>require</code>, dynamic imports</li><li>Rust <code>use</code>, <code>crate::</code>, <code>super::</code>, <code>mod</code> declarations</li><li>Module grouping with depth control</li><li>Parallel sibling detection</li></ul>
+<h3>Adaptive Scope (test_adaptive_scope.py)</h3>
+<p>284 lines testing Phase 0 logic:</p>
+<ul><li>Content type detection signals</li><li>Scope measurement and recommendations</li><li>YAML format validation for analysis.md</li><li>EXTEND.md preference loading</li></ul>
+<h3>Language Output (test_lang_output.py)</h3>
+<p>170 lines testing the 4 language modes:</p>
+<ul><li>Chinese body + English terms (<code>zh</code>)</li><li>Pure Chinese (<code>zh-pure</code>)</li><li>Pure English (<code>en</code>)</li><li>Bilingual side-by-side</li></ul>
+<h3>Platform Conversion (test_convert.py)</h3>
+<p>152 lines testing <code>convert.sh</code> output:</p>
+<ul><li>Cursor <code>.mdc</code> format generation</li><li>Windsurf condensed output under 12K chars</li><li>OpenCode SKILL.md generation</li><li>Sync checking between canonical and platform files</li></ul>
+<h2>Test Strategy</h2>
+<p>Tests use a dual-fixture approach:</p>
+<pre><code>// Simplified from: tests/test_walkthrough_output.py:19-27
+SKILL_ROOT = Path(__file__).parent.parent
+EXAMPLES_DIR = (SKILL_ROOT / &quot;tests&quot; / &quot;fixtures&quot;) if (SKILL_ROOT / &quot;tests&quot; / &quot;fixtures&quot;).is_dir() and any((SKILL_ROOT / &quot;tests&quot; / &quot;fixtures&quot;).iterdir()) else (SKILL_ROOT / &quot;examples&quot;)
+
+FULL_PROJECTS = [p for p in _CANDIDATE_FULL if (EXAMPLES_DIR / p).is_dir()]
+BRIEF_ONLY_PROJECTS = [p for p in _CANDIDATE_BRIEF if (EXAMPLES_DIR / p).is_dir()]</code></pre>
+<p>CI uses <code>tests/fixtures/</code> (if available), otherwise falls back to <code>examples/</code>. Projects are classified as &quot;full&quot; (brief + medium + deep) or &quot;brief only&quot; based on which output levels exist.</p>
+<h2>Running Tests</h2>
+<pre><code>pytest tests/ -v           # Verbose output
+pytest tests/ -q           # Quiet mode
+make test                  # Via Makefile
+make test-quick            # Quick mode
+make ci                    # Full CI: test + convert.sh --check</code></pre>
+<div class="nav-links"><a href="#" onclick="showChapter(7);return false;">&larr; Previous</a><a href="#" onclick="showChapter(9);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch9"><h1>Interactive HTML: UX &amp; Accessibility</h1>
+<p>The generated HTML files are self-contained interactive documents with sidebar navigation, theming, quiz interaction, and mobile responsiveness. All styling and behavior is embedded inline — no external dependencies.</p>
+<h2>CSS Architecture</h2>
+<p>The HTML uses CSS custom properties for a two-theme system:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:402-404
+:root {
+  --bg:#fff; --text:#1a1a2e; --sidebar-bg:#f0f0f5;
+  --card-bg:#f8f8fc; --card-border:#e0e0e8;
+  --accent:#4a6fa5; --code-bg:#f4f4f8;
+}
+[data-theme=&quot;dark&quot;] {
+  --bg:#1a1a2e; --text:#e0e0ea; --sidebar-bg:#16213e;
+  --card-bg:#1e2744; --card-border:#2a3555;
+}</code></pre>
+<p>Every color in the UI references a CSS variable, making the theme system automatic. Toggling between light and dark only requires setting <code>data-theme=&quot;dark&quot;</code> on the <code>&lt;html&gt;</code> element.</p>
+<h2>Theme Toggle</h2>
+<p>The toggle button persists the user&#x27;s preference in <code>localStorage</code>:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:441-442
+function toggleTheme() {
+  var d = document.documentElement,
+      isDark = d.getAttribute(&#x27;data-theme&#x27;) === &#x27;dark&#x27;;
+  d.setAttribute(&#x27;data-theme&#x27;, isDark ? &#x27;light&#x27; : &#x27;dark&#x27;);
+  localStorage.setItem(&#x27;theme&#x27;, isDark ? &#x27;light&#x27; : &#x27;dark&#x27;);
+  document.querySelector(&#x27;.theme-toggle&#x27;).textContent = isDark ? &#x27;☾&#x27; : &#x27;☀&#x27;;
+}</code></pre>
+<p>On page load, the saved theme is restored. If no preference exists, <code>prefers-color-scheme: dark</code> is respected:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:443
+(function() {
+  var s = localStorage.getItem(&#x27;theme&#x27;);
+  if (s) document.documentElement.setAttribute(&#x27;data-theme&#x27;, s);
+  else if (window.matchMedia(&#x27;(prefers-color-scheme:dark)&#x27;).matches)
+    document.documentElement.setAttribute(&#x27;data-theme&#x27;, &#x27;dark&#x27;);
+})();</code></pre>
+<h2>Font Size Controls</h2>
+<p>Two floating buttons (A- and A+) adjust the base font size:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:444-445
+function adjustFontSize(d) {
+  var b = document.body, s = parseFloat(getComputedStyle(b).fontSize);
+  b.style.fontSize = Math.max(12, Math.min(24, s + d)) + &#x27;px&#x27;;
+  localStorage.setItem(&#x27;fs&#x27;, b.style.fontSize);
+}
+(function() {
+  var f = localStorage.getItem(&#x27;fs&#x27;);
+  if (f) b.style.fontSize = f;
+})();</code></pre>
+<p>Font size is clamped between 12px and 24px, persisted in <code>localStorage</code>.</p>
+<h2>Sidebar Navigation</h2>
+<p>The sidebar is a fixed-position element on the left (280px wide) with chapter links:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:405
+.sidebar {
+  width: 280px; background: var(--sidebar-bg);
+  position: fixed; top: 0; left: 0;
+  height: 100vh; overflow-y: auto;
+  border-right: 1px solid var(--card-border);
+}</code></pre>
+<p>Active chapter is highlighted with a left border accent:</p>
+<pre><code>.sidebar a.active {
+  background: var(--sidebar-active);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}</code></pre>
+<h2>Chapter Navigation</h2>
+<p>Previous/next buttons at the bottom of each chapter:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:445
+function showChapter(i) {
+  document.querySelectorAll(&#x27;.chapter&#x27;).forEach(function(c) {
+    c.classList.remove(&#x27;active&#x27;);
+  });
+  document.querySelectorAll(&#x27;.sidebar a&#x27;).forEach(function(a) {
+    a.classList.remove(&#x27;active&#x27;);
+  });
+  document.querySelectorAll(&#x27;.chapter&#x27;)[i].classList.add(&#x27;active&#x27;);
+  document.querySelectorAll(&#x27;.sidebar a&#x27;)[i].classList.add(&#x27;active&#x27;);
+  window.scrollTo(0, 0);
+}</code></pre>
+<p>Only the active chapter is visible; all others are hidden via CSS <code>display: none</code>.</p>
+<h2>Quiz Interaction</h2>
+<p>Quiz questions are rendered as button groups with instant feedback:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:296-309
+btn.addEventListener(&#x27;click&#x27;, function() {
+  var buttons = wrap.querySelectorAll(&#x27;button&#x27;);
+  buttons.forEach(function(b) { b.disabled = true; b.style.cursor = &#x27;default&#x27;; });
+  if (oi === item.c) {
+    btn.style.background = &#x27;#059669&#x27;; btn.style.color = &#x27;#fff&#x27;;
+  } else {
+    btn.style.background = &#x27;#dc2626&#x27;; btn.style.color = &#x27;#fff&#x27;;
+    buttons[item.c].style.background = &#x27;#059669&#x27;;
+  }
+  var fb = document.createElement(&#x27;div&#x27;);
+  fb.textContent = item.e; // explanation
+  wrap.appendChild(fb);
+});</code></pre>
+<p>When clicked: all buttons are disabled, correct answer turns green, wrong selection turns red, and the explanation appears below.</p>
+<h2>Mobile Responsive</h2>
+<p>At 768px or narrower, the sidebar collapses off-screen and a hamburger menu appears:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:426
+@media(max-width:768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 60px 20px 40px; }
+  .topbar { display: flex; }
+}</code></pre>
+<p>The topbar provides a toggle button and compact font size controls.</p>
+<h2>Print-Friendly</h2>
+<p>Print styles hide interactive elements and show all chapters:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:427
+@media print {
+  .sidebar, .topbar, .theme-toggle, .font-btn { display: none !important; }
+  .main { margin-left: 0; padding: 20px; }
+  .chapter { display: block !important; page-break-after: always; }
+}</code></pre>
+<div class="nav-links"><a href="#" onclick="showChapter(8);return false;">&larr; Previous</a><a href="#" onclick="showChapter(10);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch10"><h1>Extensibility: EXTEND.md &amp; Preferences</h1>
+<p>The project supports user-configurable preferences through EXTEND.md files, an analysis framework for content detection, and a scope matrix that maps content signals to generation parameters.</p>
+<h2>EXTEND.md Preference System</h2>
+<p>Users can save their preferred settings to avoid specifying flags every time. The system checks two locations in priority order:</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/SKILL.md:147-159
+| Priority | Path | Scope |
+|----------|------|-------|
+| 1 | `.project-walkthrough/EXTEND.md` | Project |
+| 2 | `$HOME/.project-walkthrough/EXTEND.md` | User home |
+
+| Result | Action |
+|--------|--------|
+| Found | Read, parse, display summary → continue |
+| Found but invalid YAML | Display error, offer first-time setup |
+| Not found | Run first-time setup → save EXTEND.md → continue |</code></pre>
+<h3>EXTEND.md Format</h3>
+<p>The file uses YAML frontmatter in a Markdown file:</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/references/preferences-schema.md
+---
+scope: auto        # auto | full | focused | overview
+depth: auto        # auto | detailed | standard | summary
+language: zh       # zh | zh-pure | en | bilingual
+manifest_strictness: auto  # auto | required | optional | skip
+confirm_scope: true  # true | false
+---</code></pre>
+<p>CLI flags override EXTEND.md defaults. For example, <code>--depth medium --lang en</code> overrides <code>depth: auto</code> and <code>language: zh</code> from the preferences file.</p>
+<h3>First-Time Setup</h3>
+<p>When no EXTEND.md is found, the plugin runs an interactive setup:</p>
+<ol><li>Default scope? — auto / full / focused / overview</li><li>Default depth? — auto / detailed / standard / summary</li><li>Language? — zh / zh-pure / en / bilingual</li><li>Save location? — Project / User home</li></ol>
+<p>The schema is documented in <code>references/preferences-schema.md</code> with examples for common configurations.</p>
+<h2>Analysis Framework</h2>
+<p>The content analysis phase (Phase 0.2) follows the framework in <code>references/analysis-framework.md</code> (179 lines). It defines five analysis dimensions:</p>
+<h3>1. Content Type Detection</h3>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/references/analysis-framework.md
+Signals:
+- source code files present → software-project weight
+- package manifests → software-project weight
+- markdown chapters &gt; 3 → document-report weight
+- code/text ratio → distinguishes mixed from pure</code></pre>
+<p>Three possible types: <code>software-project</code>, <code>document-report</code>, <code>mixed</code>.</p>
+<h3>2. Input Scope Measurement</h3>
+<p>Quantifies the input:</p>
+<ul><li>File/chapter count</li><li>Total lines of content</li><li>Directory depth (nesting levels)</li><li>Number of distinct data types (code, tables, statistics, quotes)</li></ul>
+<h3>3. Content Structure Analysis</h3>
+<p>Identifies what kinds of data are present:</p>
+<table><thead><tr><th>Signal</th><th>Indicates</th></tr></thead><tbody><tr><td>Code blocks</td><td>Technical content requiring excerpts</td></tr><tr><td>Tables</td><td>Structured data requiring formatting</td></tr><tr><td>Statistics/numbers</td><td>Quantitative claims needing verification</td></tr><tr><td>Case studies</td><td>Narrative content needing preservation</td></tr><tr><td>Architecture diagrams</td><td>Complex relationships needing simplification</td></tr></tbody></table>
+<h3>4. Technical Density Assessment</h3>
+<p>Classifies the content as low, medium, or high technical density:</p>
+<ul><li><strong>Low</strong> — mostly prose, few code blocks</li><li><strong>Medium</strong> — mixed code and prose</li><li><strong>High</strong> — primarily code with dense technical references</li></ul>
+<p>Density affects manifest strictness and code example selection.</p>
+<h3>5. Recommendation Generation</h3>
+<p>Produces specific recommendations:</p>
+<ul><li>Scope (overview / focused / full)</li><li>Chapter count range</li><li>Per-chapter depth (standard / detailed)</li><li>Manifest strictness (required / optional / skip)</li></ul>
+<h2>Scope Matrix</h2>
+<p>The <code>references/scope-matrix.md</code> (125 lines) maps content signals to scope/depth recommendations:</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/references/scope-matrix.md
+| Content Signal | Recommended Scope | Chapter Guide |
+|---------------|-------------------|---------------|
+| &lt; 10 source files | overview | 5-8 chapters |
+| 10-30 source files | focused | 10-15 chapters |
+| &gt; 30 source files | full | No hard limit |
+| Document &lt; 10 chapters | full (1:1) | Match input |
+| Document 10-20 chapters | focused | Select key ones |
+| Document &gt; 20 chapters | overview | Thematic groups |</code></pre>
+<p>The matrix also considers technical density: high-density content gets more detailed per-chapter analysis even at overview scope.</p>
+<h2>Confirmation Gate Integration</h2>
+<p>Phase 0.3&#x27;s confirmation gate uses the analysis results to pre-select recommended options:</p>
+<ul><li>The <code>--depth</code> flag sets initial recommendations</li><li>Content analysis adjusts recommendations based on actual input</li><li>Users can override any recommendation at confirmation</li></ul>
+<p>This ensures users make informed decisions about scope trade-offs (e.g., warning when overview scope would discard &gt;50% of chapters).</p>
+<div class="nav-links"><a href="#" onclick="showChapter(9);return false;">&larr; Previous</a><a href="#" onclick="showChapter(11);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch11"><h1>Quality Assurance &amp; CI</h1>
+<p>The project enforces quality through automated verification at multiple levels: converter-level checks, manifest validation, and CI pipeline integration.</p>
+<h2>Quality Gates Overview</h2>
+<p>Quality enforcement happens at three points in the pipeline:</p>
+<pre><code>Phase 3C: Manifest validation (verify_sources.py)
+    ↓
+Phase 4:  Converter verification (md_to_html.py --verify)
+    ↓
+Phase 5:  Delivery gate (verify-result.json + spot checks)</code></pre>
+<p>No output reaches the user without passing all three.</p>
+<h2>Phase 5: Delivery Gate</h2>
+<p>Phase 5 is the final checkpoint with four steps:</p>
+<h3>Step 1: Automated Structural Verification</h3>
+<p>The converter automatically runs verification after HTML generation and writes <code>verify-result.json</code>:</p>
+<pre><code>// Simplified from: scripts/md_to_html.py:527-538
+result = {
+    &quot;passed&quot;: len(errors) == 0,
+    &quot;timestamp&quot;: datetime.now(timezone.utc).isoformat(),
+    &quot;html_file&quot;: str(html_path),
+    &quot;html_size&quot;: file_size,
+    &quot;markdown_size&quot;: total_md_size,
+    &quot;section_count&quot;: section_count,
+    &quot;expected_sections&quot;: expected_chapters,
+    &quot;ratio_pct&quot;: round(ratio_val * 100) if ratio_val else None,
+    &quot;sidebar_nav_count&quot;: sidebar_links,
+    &quot;errors&quot;: errors,
+}</code></pre>
+<p>Six verification checks:</p>
+<table><thead><tr><th>Check</th><th>What It Validates</th></tr></thead><tbody><tr><td>Section count</td><td>HTML chapters = .md file count</td></tr><tr><td>Per-section content</td><td>Each chapter has heading + content element</td></tr><tr><td>File size ratio</td><td>HTML &gt;= 80% of markdown total</td></tr><tr><td>No broken .md links</td><td>Zero <code>href=&quot;*.md&quot;</code> in HTML</td></tr><tr><td>Navigation integrity</td><td>Sidebar items = chapter count</td></tr><tr><td>Quiz presence</td><td>Quiz section exists if <code>--quiz-chapter</code> was used</td></tr></tbody></table>
+<h3>Step 2: Automated Content Verification</h3>
+<p>Additional programmatic checks:</p>
+<pre><code># No .md href links
+grep -c &#x27;href=&quot;[^&quot;]*\.md&quot;&#x27; &lt;output.html&gt;     # must be 0
+
+# Count code blocks vs manifest entries
+grep -c &#x27;&lt;pre&gt;&lt;code&gt;&#x27; &lt;output.html&gt;
+
+# File count in docs/ matches expectations
+ls &lt;docs_dir&gt;/*.md | wc -l</code></pre>
+<h3>Step 3: Error Recovery Loop</h3>
+<p>If verification fails, the system attempts up to 3 automated fixes:</p>
+<pre><code>// Simplified from: skills/ruyi-project-walkthrough/SKILL.md:709-719
+| Error pattern | Action |
+|--------------|--------|
+| &quot;Section count X != expected Y&quot; | Re-generate missing .md files |
+| &quot;Chapter N is empty&quot; | Re-read .md file, re-generate if empty |
+| &quot;HTML size ... below 80%&quot; | Compare sections to identify dropped content |
+| &quot;Found N broken .md links&quot; | Re-run converter (safety net strips these) |
+| &quot;Sidebar nav X &lt; chapter count Y&quot; | Re-run converter |</code></pre>
+<p>After each fix attempt, verification is re-run. If 3 retries are exhausted, markdown is delivered without HTML, with specific error messages and the manual converter command.</p>
+<h3>Step 4: Final Delivery Gate</h3>
+<p>The delivery gate requires:</p>
+<p><strong>Automated checks:</strong></p>
+<ul><li><code>verify-result.json</code> exists alongside HTML</li><li><code>verify-result.json</code> contains <code>&quot;passed&quot;: true</code></li><li>No broken <code>.md</code> links in HTML</li><li><code>sources-manifest.json</code> exists for each depth level</li><li>Every code block has a manifest entry</li></ul>
+<p><strong>Model-verified checks:</strong></p>
+<ul><li>2-3 chapters spot-checked for content completeness</li><li>No placeholder or TODO content</li><li>Quiz answers are correct</li></ul>
+<h2>CI Pipeline</h2>
+<p>GitHub Actions runs on push to master/develop and on PRs:</p>
+<pre><code>// Simplified from: Makefile:18-19
+ci: test check
+	@echo &quot;CI checks passed.&quot;</code></pre>
+<p>Two CI jobs:</p>
+<ol><li><strong><code>test</code></strong> — <code>pytest tests/ -v</code> runs all 8 test files</li><li><strong><code>check</code></strong> — <code>./scripts/convert.sh --check</code> verifies platform files are in sync</li></ol>
+<p>Both must pass for CI to succeed. The <code>release.sh</code> script waits for CI to pass before merging release PRs.</p>
+<h2>Quality Metrics Report</h2>
+<p>The final delivery report follows a structured template:</p>
+<pre><code>Walkthrough Generation Complete
+================================
+Output: &lt;output_directory&gt;
+├─ Markdown: &lt;N&gt; chapters in docs/
+├─ HTML: walkthrough-&lt;project&gt;-&lt;depth&gt;-&lt;timestamp&gt;.html
+├─ Manifest: sources-manifest.json (&lt;M&gt; verified claims)
+├─ Verification: verify-result.json
+└─ Verified at: &lt;timestamp&gt;
+
+Quality metrics (from verify-result.json):
+├─ Sections: &lt;count&gt; (expected: &lt;expected&gt;)
+├─ HTML size: &lt;size&gt;Kb (markdown: &lt;size&gt;Kb, ratio: &lt;%&gt;%)
+├─ Nav items: &lt;count&gt;
+├─ Code blocks: &lt;C&gt; (manifest entries: &lt;M&gt;)
+└─ Status: PASSED ✓</code></pre>
+<p>All metrics must be read from <code>verify-result.json</code> — fabrication of values is explicitly forbidden.</p>
+<h2>verify-result.json as Evidence</h2>
+<p>This file is the single source of truth for quality evidence:</p>
+<ul><li>It is auto-generated by the converter</li><li>It contains structured, machine-readable metrics</li><li>It cannot be claimed as PASSED without the file existing</li><li>It includes a UTC timestamp for audit purposes</li></ul>
+<p>If the file does not exist, the report must say &quot;Verification: NOT RUN&quot; — not claim PASSED.</p>
+<div class="nav-links"><a href="#" onclick="showChapter(10);return false;">&larr; Previous</a><a href="#" onclick="showChapter(12);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch12"><h1>Design Evolution &amp; Lessons Learned</h1>
+<p>The project-walkthrough-skill went through 12 rounds of accuracy verification and 7 version releases in roughly two weeks. This chapter traces the major design decisions, the most critical bug, and what we learned along the way.</p>
+<h2>Version Timeline</h2>
+<p>The project evolved rapidly from a basic concept to a production-quality tool:</p>
+<table><thead><tr><th>Version</th><th>Date</th><th>Theme</th></tr></thead><tbody><tr><td>1.0.0</td><td>2026-05-09</td><td>Manifest-first accuracy, import graph, 185 tests</td></tr><tr><td>1.1.0</td><td>2026-05-20</td><td>Adaptive scope, multi-platform, document support</td></tr><tr><td>1.2.0</td><td>2026-05-20</td><td>AGENTS.md, GitHub Actions CI</td></tr><tr><td>1.2.1</td><td>2026-05-20</td><td>CI timeout fix, LICENSE, issue templates</td></tr><tr><td>1.3.0</td><td>2026-05-20</td><td>Release automation script</td></tr><tr><td>1.4.0</td><td>2026-05-20</td><td>4 language modes (--lang), --version flag</td></tr><tr><td>1.5.0</td><td>2026-05-20</td><td>Deep HTML full-content conversion, file size gate</td></tr><tr><td>1.6.0</td><td>2026-05-22</td><td>Converter-first HTML, i18n in converter, quiz, XSS protection</td></tr><tr><td>1.6.1</td><td>2026-05-22</td><td>verify-result.json, delivery gate hardening</td></tr></tbody></table>
+<p>The CHANGELOG follows <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a> format with Added/Changed/Fixed/Docs sections.</p>
+<pre><code>// Simplified from: CHANGELOG.md:1-9
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## [1.6.1] - 2026-05-22</code></pre>
+<h2>The 16-Hour Sprint: v1.0.0 → v1.2.1</h2>
+<p>The dev log from 2026-05-19 to 2026-05-20 records an intense development session:</p>
+<ul><li>25 non-merge commits across 15 PRs</li><li>+3,161 / -135 lines of code changes</li><li>185 → 309 tests (+124 new tests)</li><li>4 version releases</li></ul>
+<p>This sprint introduced the three most important architectural additions:</p>
+<ol><li><strong>Adaptive scope system</strong> (Phase 0) — solved the problem of data loss when processing large documents. A 19-chapter research report that was being crushed to 10 chapters now gets 1:1 chapter preservation.</li></ol>
+<ol><li><strong>Multi-platform compatibility</strong> — Cursor, Windsurf, OpenCode, and Gemini CLI all get platform-specific files generated from a single SKILL.md source.</li></ol>
+<ol><li><strong>Automated toolchain</strong> — <code>convert.sh</code> for platform generation, <code>release.sh</code> for version management, Makefile for standard commands.</li></ol>
+<pre><code>// Simplified from: docs/dev-log-20260519-20260520.md:10-17
+| 指标 | 数据 |
+|------|------|
+| 提交数 | 25 个非合并提交 |
+| PR 数 | 15 个（#2 ~ #16），全部合并到 master |
+| 新增文件 | 19 个 |
+| 修改文件 | 12 个 |
+| 代码变更 | +3,161 / -135 行 |
+| 测试数 | 185 → 309（+124 个新测试） |</code></pre>
+<h2>The Empty HTML Bug: A Case Study</h2>
+<p>The most critical bug in the project&#x27;s history was the <strong>empty HTML sections</strong> issue discovered in v1.5.0.</p>
+<h3>What Happened</h3>
+<p>When generating a walkthrough, the output HTML had 11 navigation items in the sidebar — but only the quiz section had any visible content. All chapter sections were empty.</p>
+<h3>Root Cause</h3>
+<p>Phase 4 required generating inline HTML using the DOM API (<code>createElement</code>, <code>textContent</code>) — no <code>innerHTML</code> allowed. This was a deliberate security choice to prevent XSS. But for rich walkthrough content (paragraphs, code blocks, tables, blockquotes, expandable sections), manually constructing DOM elements via <code>createElement</code> calls was impractical at scale. The model silently dropped chapter content rather than attempt the massive DOM construction.</p>
+<h3>The Fix: Converter-First HTML</h3>
+<p>The solution was a fundamental architectural shift documented in <code>docs/fix-proposal-empty-html.md</code>:</p>
+<pre><code>// Simplified from: docs/fix-proposal-empty-html.md:1-9
+# Fix Proposal v3 (Final): Prevent Empty HTML + Delivery Quality Gates
+
+**Bug:** v1.5.0 produced walkthrough HTML with empty chapter sections
+**Root cause:** Phase 4 requires inline HTML via Write tool with DOM API (no innerHTML).
+              Impractical for rich content. Model silently dropped chapter content.
+**Fix strategy:** Make md_to_html.py the canonical HTML generator for ALL depth levels.</code></pre>
+<p>Instead of the model manually constructing HTML, <code>md_to_html.py</code> became the single HTML generation engine. The Python script reads markdown files, converts every element to styled HTML, and produces a self-contained interactive page. Phase 4 went from &quot;model writes HTML&quot; to &quot;model runs a script.&quot;</p>
+<p>This fix introduced:</p>
+<ul><li><strong>Converter-first generation</strong> — all depths use <code>md_to_html.py</code></li><li><strong>Automated verification</strong> — <code>--verify</code> flag checks section count, content density, broken links</li><li><strong>Delivery quality gates</strong> — Phase 5 is now a hard gate with <code>verify-result.json</code> as evidence</li><li><strong>3-retry error recovery</strong> — automated fixes for common failures before reporting to user</li></ul>
+<h3>What We Learned</h3>
+<ol><li><strong>Security constraints can cause silent failures.</strong> The innerHTML ban was correct for security, but the alternative (manual DOM construction) was impractical. The fix preserved security while moving complexity to a script.</li></ol>
+<ol><li><strong>Content parity is a hard requirement.</strong> The 80% file-size gate ensures HTML preserves markdown content. A 30K HTML from 160K markdown is a sign something was silently dropped.</li></ol>
+<ol><li><strong>Automated verification prevents silent regressions.</strong> The <code>verify-result.json</code> file is now the authoritative quality evidence. No output is delivered without it.</li></ol>
+<ol><li><strong>Separation of concerns.</strong> Phase 3 (markdown content) and Phase 4 (HTML conversion) are now cleanly separated. Phase 4 never modifies content — it only converts.</li></ol>
+<h2>Key Design Decisions</h2>
+<h3>Why <code>// Simplified from:</code> not <code>// Source:</code></h3>
+<p>Early versions used <code>// Source: path:lines</code> for code citations. This caused accuracy problems because &quot;source&quot; implies character-for-character reproduction. But walkthrough code is always simplified — indentation changes, comments removed, surrounding context stripped. <code>Simplified from:</code> is always honest. This decision eliminated the most common accuracy issue in testing.</p>
+<h3>Why Manifest-First (Not Manifest-After)</h3>
+<p>The original approach was to write content first, then build a manifest of claims. This led to fabricated claims being written before they could be caught. The manifest-first approach (Phase 3A → Phase 3B) structurally prevents this: you cannot write a claim that isn&#x27;t in the manifest with <code>verified: true</code>.</p>
+<h3>Why Six Locations for Version Numbers</h3>
+<p>Plugin metadata (<code>plugin.json</code>), marketplace registration (<code>marketplace.json</code>), README badge, CHANGELOG header, SKILL.md frontmatter, and <code>--version</code> output text. Six places that must stay in sync. The <code>release.sh</code> script automates this — editing one source (<code>SKILL.md</code> frontmatter) propagates to all six. Manual editing of any location except the source is forbidden.</p>
+<h3>Why Multi-Platform from Day One</h3>
+<p>Different AI coding tools use different skill/rule formats. Rather than maintaining separate copies, the project uses <code>convert.sh</code> to generate platform-specific files from the canonical <code>SKILL.md</code>. This ensures all platforms get the same content and updates.</p>
+<div class="nav-links"><a href="#" onclick="showChapter(11);return false;">&larr; Previous</a><a href="#" onclick="showChapter(14);return false;">Next &rarr;</a></div></div>
+<div class="chapter" id="ch-quiz">
+<h1>Quiz</h1>
+<div id="quiz-container"></div>
+<div class="nav-links"><span></span><span></span></div>
+</div>
+<script>
+(function(){
+var data=[{q:'What was the root cause of the empty HTML sections bug in v1.5.0?',o:['The markdown files were empty','The DOM API approach for rich content was impractical, causing silent content drops','The quiz parser was consuming all chapter content','The sidebar navigation was hiding chapter content'],c:0,e:'Phase 4 required manual DOM API construction (createElement, textContent) without innerHTML. For rich walkthrough content at scale, this was impractical, and the model silently dropped chapter content. The fix was to use Python\'s md_to_html.py as the canonical converter. ---'},{q:'Why was `// Simplified from:` chosen over `// Source:` for code citations?',o:['It\'s shorter to type','"Source" implies exact reproduction, but walkthrough code is always simplified','The parser only supports "Simplified from:" syntax','It matches the markdown standard'],c:0,e:'"Source" implies character-for-character accuracy, which is impractical for walkthroughs where code is always simplified (indentation changed, comments removed, context stripped). "Simplified from:" is always honest and eliminated the most common accuracy issue. ---'},{q:'How many locations must version numbers stay synchronized across?',o:['2','4','6','8'],c:0,e:'Six locations: SKILL.md frontmatter (source of truth), SKILL.md --version text, plugin.json, marketplace.json, README badge, and CHANGELOG header. The release.sh script automates synchronization from the single source. ---'},{q:'What does the manifest-first approach (Phase 3A → 3B) prevent?',o:['Slow HTML generation','Fabricated claims being written before verification','Quiz questions with wrong answers','Version number mismatches'],c:0,e:'By requiring all claims to be verified and recorded in sources-manifest.json before any chapter content is written, the manifest-first approach structurally prevents unverified or fabricated claims from appearing in the walkthrough. ---'},{q:'What is the file size gate for deep-mode HTML?',o:['HTML must be exactly equal to markdown size','HTML must be at least 50% of markdown size','HTML must be at least 80% of markdown size','There is no file size requirement'],c:0,e:'Deep-mode HTML must be >= 80% of total markdown size. A significantly smaller HTML indicates content was silently dropped during conversion. This gate catches regressions like the empty HTML bug. ---'},{q:'How many language modes does `--lang` support?',o:['1 (Chinese only)','2 (Chinese and English)','4 (zh, zh-pure, en, bilingual)','6 (including Japanese and Korean)'],c:0,e:'Four language modes: `zh` (Chinese body + English technical terms, default), `zh-pure` (pure Chinese), `en` (pure English), and `bilingual` (side-by-side Chinese-English). ---'},{q:'What file serves as the single source of truth for all platform adapters?',o:['README.md','plugin.json','skills/ruyi-project-walkthrough/SKILL.md','convert.sh'],c:0,e:'`skills/ruyi-project-walkthrough/SKILL.md` is the canonical source. `convert.sh` generates Cursor (.mdc), Windsurf (.md), and OpenCode (SKILL.md) files from it. Platform files should never be manually edited. ---'},{q:'What does `verify-result.json` contain?',o:['Only a pass/fail boolean','Section count, file size ratio, nav count, errors list, and UTC timestamp','The full HTML content for comparison','Test suite results'],c:0,e:'`verify-result.json` contains `passed` (boolean), `section_count`, `expected_sections`, `html_size`, `markdown_size`, `ratio_pct`, `sidebar_nav_count`, `errors` (list), and `timestamp`. It is the authoritative evidence of HTML quality — no output is delivered without it. ---'},{q:'What was the adaptive scope system designed to solve?',o:['Projects with too many test files','Data loss when large documents were forced into too few chapters','Slow HTML generation for deep mode','Version number synchronization issues'],c:0,e:'The adaptive scope system (Phase 0) was created when a 19-chapter research report was being compressed to 10 chapters, losing 67% of the data. The system analyzes input, recommends scope, and gets user confirmation before generation. ---'},{q:'How many rounds of accuracy verification did the project undergo?',o:['3','6','12','20'],c:0,e:'The project went through 12 rounds of accuracy verification, with rounds 10-12 achieving consecutive zero issues. This iterative process established the manifest-first verification system. --- [Previous: Quality Assurance & CI](12-quality-assurance-ci.md)'}];
+var container=document.getElementById('quiz-container');
+data.forEach(function(item,idx){
+  var wrap=document.createElement('div');wrap.style.cssText='margin:24px 0;padding:20px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px';
+  var qTitle=document.createElement('div');qTitle.style.cssText='font-weight:600;margin-bottom:12px;font-size:16px';
+  qTitle.textContent=(idx+1)+'. '+item.q;wrap.appendChild(qTitle);
+  item.o.forEach(function(opt,oi){
+    var btn=document.createElement('button');
+    btn.style.cssText='display:block;width:100%;text-align:left;padding:10px 16px;margin:6px 0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;cursor:pointer;font-size:14px;color:var(--text)';
+    btn.textContent=String.fromCharCode(65+oi)+'. '+opt;
+    btn.addEventListener('click',function(){
+      var buttons=wrap.querySelectorAll('button');buttons.forEach(function(b){b.disabled=true;b.style.cursor='default'});
+      if(oi===item.c){btn.style.background='#059669';btn.style.color='#fff'}
+      else{btn.style.background='#dc2626';btn.style.color='#fff';buttons[item.c].style.background='#059669';buttons[item.c].style.color='#fff'}
+      var fb=document.createElement('div');fb.style.cssText='margin-top:12px;padding:12px;background:var(--quote-bg);border-left:4px solid var(--quote-border);font-size:14px;line-height:1.6';
+      fb.textContent=item.e;wrap.appendChild(fb);
+    });
+    wrap.appendChild(btn);
+  });
+  container.appendChild(wrap);
+});
+})();
+</script>
+<div class="chapter" id="ch-watermark">
+<h1>About This Report</h1>
+<div style="text-align:center;padding:40px 20px;">
+<p style="font-size:15px;color:var(--text);opacity:0.85;">Generated on 2026-05-29 10:50 UTC</p>
+<p style="font-size:15px;color:var(--text);margin-top:16px;">Built with <strong>project-walkthrough</strong></p>
+<p style="margin-top:12px;"><a href="https://github.com/zwyin/project-walkthrough-skill" target="_blank">https://github.com/zwyin/project-walkthrough-skill</a></p>
+<p style="font-size:14px;color:var(--text);opacity:0.7;margin-top:24px;">Feedback and contributions are welcome!</p>
+</div>
+<div class="nav-links"><span></span><span></span></div>
+</div>
+</main>
+<script>
+function toggleTheme(){var d=document.documentElement,isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'light':'dark');localStorage.setItem('theme',isDark?'light':'dark');document.querySelector('.theme-toggle').textContent=isDark?'☀':'☾'}
+(function(){var s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀':'☾'})();
+function adjustFontSize(d){var b=document.body,s=parseFloat(getComputedStyle(b).fontSize);b.style.fontSize=Math.max(12,Math.min(24,s+d))+'px';localStorage.setItem('fs',b.style.fontSize)}
+(function(){var f=localStorage.getItem('fs');if(f)document.body.style.fontSize=f})();
+function showChapter(i){document.querySelectorAll('.chapter').forEach(function(c){c.classList.remove('active')});document.querySelectorAll('.sidebar a').forEach(function(a){a.classList.remove('active')});if(document.querySelectorAll('.chapter')[i])document.querySelectorAll('.chapter')[i].classList.add('active');if(document.querySelectorAll('.sidebar a')[i])document.querySelectorAll('.sidebar a')[i].classList.add('active');window.scrollTo(0,0);document.getElementById('sidebar').classList.remove('open')}
+showChapter(0);
+</script>
+</body></html>
