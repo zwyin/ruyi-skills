@@ -12,6 +12,7 @@ project-walkthrough Phase 0 自适应内容分析测试
   pytest tests/test_adaptive_scope.py -v
 """
 
+import os
 import re
 import pytest
 from pathlib import Path
@@ -250,9 +251,9 @@ class TestContentTypeDetection:
 
     def test_stanford_detected_as_document(self):
         """Stanford AI playbook 应被检测为 document-report"""
-        stanford = Path("/Users/zhiweiyin/repo_ds1600/study_enterprise_AI_playbook_stanford")
+        stanford = Path(os.environ.get("STANFORD_TEST_PATH", str(SKILL_ROOT / "tests" / "fixtures" / "stanford")))
         if not stanford.is_dir():
-            pytest.skip("Stanford test data not available")
+            pytest.skip("Stanford test data not available (set STANFORD_TEST_PATH env var to enable)")
         result = self._detect_type(stanford)
         assert result == "document-report", f"Stanford 项目应检测为 document-report，实际: {result}"
 

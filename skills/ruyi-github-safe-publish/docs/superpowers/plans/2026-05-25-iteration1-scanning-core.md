@@ -331,7 +331,7 @@ def test_skill_has_step_headings(skill_text):
 - [ ] **Step 2: 运行测试验证失败**
 
 ```bash
-cd /Users/zhiweiyin/repo_skillforge/github-safe-publish && pip install -q pytest && pytest tests/test_skill_structure.py -v
+cd <repo>/github-safe-publish && pip install -q pytest && pytest tests/test_skill_structure.py -v
 ```
 
 Expected: PASS（骨架中已有占位步骤标题）。frontmatter 测试应通过。
@@ -892,7 +892,7 @@ git commit -m "chore: add validate_skill.sh one-click validation script"
 - [ ] **Step 1: 运行所有测试**
 
 ```bash
-cd /Users/zhiweiyin/repo_skillforge/github-safe-publish && pytest tests/ -v
+cd <repo>/github-safe-publish && pytest tests/ -v
 ```
 
 Expected: ALL PASS
