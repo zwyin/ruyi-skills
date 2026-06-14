@@ -172,6 +172,40 @@ Project walkthrough generator — multi-depth, multi-audience, multi-language, o
 
 ---
 
+## Version & Update
+
+### Check Installed Version
+
+Look for the `version` field in the SKILL.md frontmatter:
+
+```bash
+# macOS / Linux
+cat ~/.claude/plugins/cache/ruyi-skills/*/skills/*/skills/*/SKILL.md | grep version
+```
+
+Or ask Claude directly:
+
+```
+What version of ruyi-skills do I have installed?
+```
+
+### Update to Latest Version
+
+Re-install to get the latest version:
+
+```bash
+/plugin install ruyi-skills@ruyi-skills
+/reload-plugins
+```
+
+Or via npx:
+
+```bash
+npx skills add zwyin/ruyi-skills
+```
+
+---
+
 ## License
 
 [MIT](LICENSE)
