@@ -118,6 +118,8 @@ Safely publish to GitHub — two-layer desensitization scanning (135 rules + AI)
 | `--scan` | Scan only, output report | Cannot combine with `--seo` / `--ci` / `--dry-run` |
 | `--dry-run` | Dry run: scan + suggestions, no changes | Cannot combine with `--seo` / `--ci` / `--scan` |
 
+[→ Full documentation](skills/ruyi-github-safe-publish/README.md)
+
 ---
 
 ### ruyi-project-walkthrough
@@ -169,6 +171,8 @@ Project walkthrough generator — multi-depth, multi-audience, multi-language, o
 | `--lang` | Output language | `zh` / `zh-pure` / `en` / `bilingual` | `zh` |
 | `--no-confirm` | Skip confirmation | (flag, no value) | — |
 | `--version` | Print version | (flag, no value) | — |
+
+[→ Full documentation](skills/ruyi-project-walkthrough/README.md)
 
 ---
 

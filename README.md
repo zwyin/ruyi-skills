@@ -118,6 +118,8 @@ claude --plugin-dir ./ruyi-skills
 | `--scan` | 只扫描输出报告，不修复不发布 | 不可与 `--seo` / `--ci` / `--dry-run` 组合 |
 | `--dry-run` | 模拟运行：扫描 + 修复建议，但不执行 | 不可与 `--seo` / `--ci` / `--scan` 组合 |
 
+[→ 查看完整文档](skills/ruyi-github-safe-publish/docs/README_zh.md)
+
 ---
 
 ### ruyi-project-walkthrough
@@ -169,6 +171,8 @@ claude --plugin-dir ./ruyi-skills
 | `--lang` | 输出语言 | `zh` / `zh-pure` / `en` / `bilingual` | `zh` |
 | `--no-confirm` | 跳过确认 | (flag, 无值) | — |
 | `--version` | 打印版本号 | (flag, 无值) | — |
+
+[→ 查看完整文档](skills/ruyi-project-walkthrough/README.md)
 
 ---
 
