@@ -69,6 +69,27 @@ Safely publish to GitHub — two-layer desensitization scanning (135 rules + AI)
 
 **Covers 6 dimensions**: Secrets & Credentials (100 rules), Database Connections (5 rules), PII (8 rules), Internal Infrastructure (6 rules), File Blacklist (12 rules), Git History (4 rules).
 
+**Competitor Comparison**:
+
+| Feature | GitHub Safe Publish | Gitleaks | TruffleHog | git-secrets |
+|------|:-:|:-:|:-:|:-:|
+| Price | **Free / Open Source** | Free | Free | Free |
+| Detection Method | Rules + AI (two layers) | Rules only | Rules only | Rules only |
+| Rule Count | **135 rules** | ~120 rules | 800+ detectors | ~20 rules |
+| Auto-fix | **Yes** | No | No | No |
+| Publishing Flow | **End-to-end** | No | No | No |
+| Backup & Rollback | **Yes** | No | No | No |
+| PII Detection | **Yes (email/phone/national ID)** | No | No | No |
+| Internal Infra | **Yes (internal IP/domain/path)** | No | No | No |
+| AI Semantic Analysis | **Yes** | No | No | No |
+| File Blacklist | **Yes (.env/.pem/.key etc.)** | No | Partial | No |
+| Git History Scan | **Yes** | Yes | Yes | No |
+| Platform | Claude Code | CLI | CLI | CLI |
+| SEO Optimization | **Yes** | No | No | No |
+| CI Generation | **Yes** | No | No | No |
+
+> **Positioning difference**: Gitleaks/TruffleHog are pure secret detection tools, ideal for CI integration. GitHub Safe Publish is an end-to-end publishing assistant — scan, fix, create repo, and push in one shot, with AI covering semantic leaks that regex rules can't catch.
+
 ```bash
 # Full workflow: scan → fix → publish to GitHub
 /ruyi-github-safe-publish
