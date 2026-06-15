@@ -224,11 +224,11 @@ Summary: 1 passed, 1 failed, 2 total
 ### 6.1 插件安装验证
 
 ```bash
-# 1. 添加 marketplace
-/plugin marketplace add zwyin/ruyi-skills
+# 1. 添加 marketplace（用你的合集仓库）
+/plugin marketplace add <org>/<collection>-skills
 
 # 2. 安装插件
-/plugin install project-walkthrough@ruyi-skills
+/plugin install project-walkthrough@<collection>-skills
 
 # 3. 验证 skill 可用
 /project-walkthrough --help    # 应显示 argument-hint
