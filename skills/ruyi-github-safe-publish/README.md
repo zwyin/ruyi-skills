@@ -6,7 +6,7 @@ Safely publish local Git projects to GitHub public repositories with two-layer d
 
 A [Claude Code](https://claude.ai/code) skill / plugin.
 
-[中文文档](docs/README_zh.md)
+[← Back to ruyi-skills collection](https://github.com/zwyin/ruyi-skills#readme) · [中文文档](docs/README_zh.md)
 
 ## Why
 

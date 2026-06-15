@@ -2,7 +2,7 @@
 
 [![version](https://img.shields.io/badge/version-0.7.0-blue)](../skills/ruyi-github-safe-publish/SKILL.md) [![license](https://img.shields.io/badge/license-MIT-green)](../LICENSE) [![tests](https://img.shields.io/badge/tests-235%20passing-brightgreen)](../tests/) [![platform](https://img.shields.io/badge/platform-Claude%20Code-purple)](https://claude.ai/code)
 
-[English](../README.md)
+[English](../README.md) · [← 返回 ruyi-skills 合集](https://github.com/zwyin/ruyi-skills#readme)
 
 安全地将本地 Git 项目发布到 GitHub 公开仓库——两层脱敏扫描（135 条确定性规则 + AI 语义分析）、自动修复、备份回滚、端到端发布流程。
 
