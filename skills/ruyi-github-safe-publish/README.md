@@ -27,12 +27,12 @@ GitHub Safe Publish combines **deterministic rule scanning** (135 regex rules ac
 ## Usage
 
 ```
-/github-safe-publish                    # Full flow: scan → fix → publish
-/github-safe-publish --scan-only        # Scan only, output report, no fix/publish
-/github-safe-publish --dry-run          # Scan + show fix suggestions, no actual changes
-/github-safe-publish --seo              # Full flow + SEO optimization
-/github-safe-publish --ci               # Full flow + CI workflow generation
-/github-safe-publish --seo --ci         # Everything
+/ruyi-github-safe-publish               # Full flow: scan → fix → publish
+/ruyi-github-safe-publish --scan-only   # Scan only, output report, no fix/publish
+/ruyi-github-safe-publish --dry-run     # Scan + show fix suggestions, no actual changes
+/ruyi-github-safe-publish --seo         # Full flow + SEO optimization
+/ruyi-github-safe-publish --ci          # Full flow + CI workflow generation
+/ruyi-github-safe-publish --seo --ci    # Everything
 ```
 
 ### Flow Control
@@ -84,41 +84,41 @@ The real differentiator isn't rule count — it's what happens **after** detecti
 
 ### Option 1: Browse UI
 
-Select **Browse and install plugins** → Select **github-safe-publish** → Select **Install now**
+Select **Browse and install plugins** → Select **ruyi-skills** → Select **Install now**
 
 ### Option 2: Marketplace Install
 
 ```bash
 # 1. Add marketplace
-/plugin marketplace add zwyin/github-safe-publish
+/plugin marketplace add zwyin/ruyi-skills
 
 # 2. Install plugin
-/plugin install github-safe-publish@github-safe-publish
+/plugin install ruyi-skills@ruyi-skills
 ```
 
 ### Option 3: Ask the Agent
 
 ```
-Please install github-safe-publish from github.com/zwyin/github-safe-publish
+Please install ruyi-skills from github.com/zwyin/ruyi-skills
 ```
 
 ### Option 4: Quick Install (npx)
 
 ```bash
-npx skills add zwyin/github-safe-publish
+npx skills add zwyin/ruyi-skills
 ```
 
 ### Option 5: ClawHub
 
 ```bash
-clawhub install github-safe-publish
+clawhub install ruyi-skills
 ```
 
 ### Option 6: Manual
 
 ```bash
-git clone https://github.com/zwyin/github-safe-publish.git
-claude --plugin-dir ./github-safe-publish
+git clone https://github.com/zwyin/ruyi-skills.git
+claude --plugin-dir ./ruyi-skills
 ```
 
 Or copy `skills/ruyi-github-safe-publish/SKILL.md` to your project's skill directory.
@@ -147,10 +147,10 @@ bash scripts/validate_skill.sh
 ## Project Structure
 
 ```
-github-safe-publish/
+ruyi-github-safe-publish/
 ├── .claude-plugin/          # Plugin metadata
 ├── skills/                  # Skill definitions
-│   └── github-safe-publish/
+│   └── ruyi-github-safe-publish/
 │       └── SKILL.md         # Single source of truth
 ├── docs/
 │   ├── scanning-rules.md    # Complete regex reference (135 rules)
