@@ -6,7 +6,7 @@
 
 为任意软件项目生成分层技术走读文档的 Claude Code skill。输出 markdown 文档 + 交互式 HTML。
 
-[← 返回 ruyi-skills 合集](../../README.md)
+[← 返回 ruyi-skills 合集](https://github.com/zwyin/ruyi-skills#readme)
 
 ## 功能
 
