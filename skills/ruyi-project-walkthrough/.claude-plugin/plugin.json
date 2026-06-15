@@ -5,8 +5,8 @@
   "author": {
     "name": "zwyin"
   },
-  "homepage": "https://github.com/zwyin/project-walkthrough-skill",
-  "repository": "https://github.com/zwyin/project-walkthrough-skill",
+  "homepage": "https://github.com/zwyin/ruyi-skills",
+  "repository": "https://github.com/zwyin/ruyi-skills",
   "license": "MIT",
   "keywords": ["walkthrough", "documentation", "code-analysis", "architecture", "learning"],
   "skills": "./skills/"

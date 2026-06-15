@@ -30,7 +30,7 @@
 /plugin marketplace add zwyin/ruyi-skills
 
 # 2. 安装插件
-/plugin install project-walkthrough@project-walkthrough-skill
+/plugin install project-walkthrough@ruyi-skills
 ```
 
 安装后直接在任意项目中使用 `/project-walkthrough` 命令。
@@ -41,7 +41,7 @@
 
 ```bash
 git clone https://github.com/zwyin/ruyi-skills.git
-claude --plugin-dir ./project-walkthrough-skill  # 保留完整目录结构，路径引用不会断裂
+claude --plugin-dir ./ruyi-skills  # 保留完整目录结构，路径引用不会断裂
 ```
 
 ### 其他平台

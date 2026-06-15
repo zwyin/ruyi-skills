@@ -225,10 +225,10 @@ Summary: 1 passed, 1 failed, 2 total
 
 ```bash
 # 1. 添加 marketplace
-/plugin marketplace add zwyin/project-walkthrough-skill
+/plugin marketplace add zwyin/ruyi-skills
 
 # 2. 安装插件
-/plugin install project-walkthrough@project-walkthrough-skill
+/plugin install project-walkthrough@ruyi-skills
 
 # 3. 验证 skill 可用
 /project-walkthrough --help    # 应显示 argument-hint
