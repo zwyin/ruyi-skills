@@ -1,5 +1,5 @@
 {
-  "name": "project-walkthrough",
+  "name": "ruyi-project-walkthrough",
   "description": "Generate structured technical walkthroughs of any software project at configurable depth and audience levels. Outputs markdown docs + interactive HTML.",
   "version": "1.6.1",
   "author": {
