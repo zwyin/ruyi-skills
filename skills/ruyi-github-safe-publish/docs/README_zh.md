@@ -75,12 +75,12 @@ GitHub Safe Publish 用 **确定性规则扫描**（135 条正则，覆盖 6 个
 ## 使用方法
 
 ```
-/github-safe-publish                    # 完整流程：扫描 → 修复 → 发布
-/github-safe-publish --scan-only        # 只做脱敏扫描，输出报告，不修复不发布
-/github-safe-publish --dry-run          # 扫描 + 展示修复建议，不做任何实际修改
-/github-safe-publish --seo              # 完整流程 + SEO 优化
-/github-safe-publish --ci               # 完整流程 + CI 工作流生成
-/github-safe-publish --seo --ci         # 全部功能
+/ruyi-github-safe-publish               # 完整流程：扫描 → 修复 → 发布
+/ruyi-github-safe-publish --scan-only   # 只做脱敏扫描，输出报告，不修复不发布
+/ruyi-github-safe-publish --dry-run     # 扫描 + 展示修复建议，不做任何实际修改
+/ruyi-github-safe-publish --seo         # 完整流程 + SEO 优化
+/ruyi-github-safe-publish --ci          # 完整流程 + CI 工作流生成
+/ruyi-github-safe-publish --seo --ci    # 全部功能
 ```
 
 ### 流程控制
@@ -119,41 +119,41 @@ Step 6: 验证 + 输出报告
 
 ### 方式 1：Browse UI
 
-选择 **Browse and install plugins** → 选择 **github-safe-publish** → 选择 **Install now**
+选择 **Browse and install plugins** → 选择 **ruyi-skills** → 选择 **Install now**
 
 ### 方式 2：Marketplace 安装
 
 ```bash
 # 1. 添加 marketplace
-/plugin marketplace add zwyin/github-safe-publish
+/plugin marketplace add zwyin/ruyi-skills
 
 # 2. 安装插件
-/plugin install github-safe-publish@github-safe-publish
+/plugin install ruyi-skills@ruyi-skills
 ```
 
 ### 方式 3：让 Agent 安装
 
 ```
-Please install github-safe-publish from github.com/zwyin/github-safe-publish
+Please install ruyi-skills from github.com/zwyin/ruyi-skills
 ```
 
 ### 方式 4：npx 快速安装
 
 ```bash
-npx skills add zwyin/github-safe-publish
+npx skills add zwyin/ruyi-skills
 ```
 
 ### 方式 5：ClawHub
 
 ```bash
-clawhub install github-safe-publish
+clawhub install ruyi-skills
 ```
 
 ### 方式 6：手动安装
 
 ```bash
-git clone https://github.com/zwyin/github-safe-publish.git
-claude --plugin-dir ./github-safe-publish
+git clone https://github.com/zwyin/ruyi-skills.git
+claude --plugin-dir ./ruyi-skills
 ```
 
 或将 `skills/ruyi-github-safe-publish/SKILL.md` 复制到你的项目 skill 目录。
@@ -195,10 +195,10 @@ bash scripts/validate_skill.sh
 ## 项目结构
 
 ```
-github-safe-publish/
+ruyi-github-safe-publish/
 ├── .claude-plugin/          # 插件元数据
 ├── skills/                  # Skill 定义
-│   └── github-safe-publish/
+│   └── ruyi-github-safe-publish/
 │       └── SKILL.md         # 唯一事实源
 ├── docs/
 │   ├── README_zh.md         # 中文文档
