@@ -14,7 +14,7 @@
 | L2 | 单元测试 | 产出文件的格式、内容模式、引用完整性 | CI / 手动 `pytest` |
 | L3 | Manifest 验证 | 每个 claim 的源文件存在性、行号范围、内容匹配 | 每次 walkthrough 生成后 |
 | L4 | 子 agent 抽检 | 独立 reviewer 逐项验证代码/目录/API/版本/架构 5 维度 | walkthrough 迭代后 |
-| L5 | 端到端验证 | 从 `/project-walkthrough` 调用到最终产出的完整流程 | 发版前 |
+| L5 | 端到端验证 | 从 `/ruyi-project-walkthrough` 调用到最终产出的完整流程 | 发版前 |
 
 ---
 
@@ -47,7 +47,7 @@ python scripts/verify_sources.py --check-all examples/
 |------|--------|
 | `.claude-plugin/plugin.json` | `name`、`description`、`version`、`author.name`、`skills` 字段存在 |
 | `.claude-plugin/marketplace.json` | `name`、`owner.name`、`plugins` 数组，每项含 `name`、`source`、`description` |
-| `skills/project-walkthrough/SKILL.md` | YAML frontmatter：`name`、`description`、`argument-hint` |
+| `skills/ruyi-project-walkthrough/SKILL.md` | YAML frontmatter：`name`、`description`、`argument-hint` |
 
 ### 2.3 文件命名规范
 
@@ -228,13 +228,13 @@ Summary: 1 passed, 1 failed, 2 total
 /plugin marketplace add <org>/<collection>-skills
 
 # 2. 安装插件
-/plugin install project-walkthrough@<collection>-skills
+/plugin install <collection>-skills@<collection>-skills
 
 # 3. 验证 skill 可用
-/project-walkthrough --help    # 应显示 argument-hint
+/ruyi-project-walkthrough --help    # 应显示 argument-hint
 
 # 4. 实际生成 walkthrough
-/project-walkthrough /path/to/some/project --depth brief
+/ruyi-project-walkthrough /path/to/some/project --depth brief
 
 # 5. 检查产出
 ls <prefix>_project_study_<name>-<depth>-<lang>-<audience>/docs/

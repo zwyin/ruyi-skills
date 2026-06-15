@@ -7,13 +7,13 @@ Generate a structured technical walkthrough of any software project — codebase
 Ask your AI assistant to run:
 
 ```
-/project-walkthrough
+/ruyi-project-walkthrough
 ```
 
 Or with options:
 
 ```
-/project-walkthrough /path/to/project --depth deep --audience dev --lang en
+/ruyi-project-walkthrough /path/to/project --depth deep --audience dev --lang en
 ```
 
 ## Options
@@ -32,10 +32,10 @@ Or with options:
 | Platform | Install |
 |----------|---------|
 | **Claude Code** | `/plugin marketplace add zwyin/ruyi-skills` |
-| **Cursor** | Copy `cursor/project-walkthrough.mdc` → `.cursor/rules/` |
-| **Windsurf** | Copy `.windsurf/rules/project-walkthrough.md` → `.windsurf/rules/` |
+| **Cursor** | Copy `cursor/ruyi-project-walkthrough.mdc` → `.cursor/rules/` |
+| **Windsurf** | Copy `.windsurf/rules/ruyi-project-walkthrough.md` → `.windsurf/rules/` |
 | **OpenCode** | Copy `.opencode/skills/ruyi-project-walkthrough/` → `.opencode/skills/` |
-| **Gemini CLI** | `gemini skills install https://github.com/zwyin/ruyi-skills.git --path skills/project-walkthrough` |
+| **Gemini CLI** | `gemini skills install https://github.com/zwyin/ruyi-skills.git --path skills/ruyi-project-walkthrough` |
 
 ## Output
 
