@@ -3,8 +3,8 @@
 ## Development Setup
 
 ```bash
-git clone https://github.com/zwyin/project-walkthrough-skill.git
-cd project-walkthrough-skill
+git clone https://github.com/zwyin/ruyi-skills.git
+cd ruyi-skills
 pip install pytest jsonschema pyyaml
 ```
 
