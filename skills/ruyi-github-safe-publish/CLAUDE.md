@@ -58,4 +58,4 @@ scripts/validate_skill.sh
 - **SKILL.md 是唯一事实源**：所有扫描规则、步骤流程、修复逻辑都定义在 `skills/ruyi-github-safe-publish/SKILL.md` 中
 - **scanning-rules.md 是规则参考**：`docs/scanning-rules.md` 是第 1 层规则的完整正则定义，供维护者参考，SKILL.md 引用但不重复全部正则
 - **convert.sh 多平台转换**：`scripts/convert.sh` 将 SKILL.md 转换为 Cursor (.mdc)、Windsurf (.windsurfrules)、OpenCode (AGENTS.md) 格式，输出到 `dist/`
-- **已发布**：https://github.com/zwyin/github-safe-publish
+- **已发布**：https://github.com/zwyin/ruyi-skills
