@@ -132,6 +132,6 @@ class TestWatermarkCLI:
         # Derive expected brand prefix from directory name: skills/<brand>-project-walkthrough/scripts/md_to_html.py
         parts = Path(SCRIPT).resolve().parts
         skill_dir = parts[-3]  # e.g. "ruyi-project-walkthrough"
-        brand = skill_dir.split("-")[0]  # e.g. "ruyi"
+        brand = skill_dir.split("-")[0]  # brand prefix (first segment)
         assert f"{brand}-project-walkthrough" in html
         assert f"zwyin/{brand}-skills" in html
