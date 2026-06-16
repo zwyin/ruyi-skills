@@ -266,7 +266,7 @@ The output directory name follows this deterministic pattern:
 <prefix>_project_study_<project-name>-<depth>-<lang>-<audience>/
 ```
 
-- `<prefix>` — from the `name` field in frontmatter (e.g., `ruyi` from `ruyi-project-walkthrough`)
+- `<prefix>` — the brand prefix, first segment of the `name` field in frontmatter (e.g., derived from `ruyi-project-walkthrough`)
 - `<project-name>` — sanitized project directory name (lowercase, hyphens for spaces/special chars)
 - `<depth>` — `brief`, `medium`, or `deep`
 - `<lang>` — `zh` or `en`
