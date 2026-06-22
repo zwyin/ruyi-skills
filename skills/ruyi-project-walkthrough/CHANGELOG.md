@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.6.3] - 2026-06-22
+
+### Added
+
+- **SessionStart auto update-check hook**: new `hooks/hooks.json` + `hooks/session-start` at the collection root run `scripts/check_update.sh` on every session start (and after clear/compact). When a newer version is published, the upgrade reminder is injected as SessionStart `additionalContext` so Claude surfaces it in its first reply. `check_update.sh` already has a 24h cache + network fallback, so this adds no per-session latency. Works across ruyi/paoding/davinci/doraemon with no per-brand edits (the hook has no brand strings; `check_update.sh`'s REPO/PLUGIN_KEY is brand-replaced by brand-sync as before). Previously `check_update.sh` only ran when a skill agent manually invoked it mid-walkthrough, so installed users never saw update prompts.
+
 ## [1.6.2] - 2026-06-22
 
 ### Fixed

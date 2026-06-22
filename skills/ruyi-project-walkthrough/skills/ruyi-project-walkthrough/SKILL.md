@@ -1,6 +1,6 @@
 ---
 name: ruyi-project-walkthrough
-version: "1.6.2"
+version: "1.6.3"
 description: Generate a structured walkthrough of any project — software codebase, research report, or document collection. Analyzes input, recommends scope, confirms with user, then generates markdown docs + interactive HTML. Use when user wants to study, document, or share analysis of any project.
 argument-hint: "[path] [--depth brief|medium|deep|all] [--audience general|dev] [--lang zh|zh-pure|en|bilingual] [--no-confirm]"
 ---
@@ -41,13 +41,13 @@ When this skill prompts the user, follow this tool-selection rule (priority orde
    - If the same flag appears multiple times, the **last** occurrence wins
    - Unknown `--` flags are ignored along with their immediately following token
    - `--no-confirm` is a standalone flag (no value consumed)
-   - `--version` is a standalone flag (no value consumed); when present, print `project-walkthrough v1.6.2` and exit immediately
+   - `--version` is a standalone flag (no value consumed); when present, print `project-walkthrough v1.6.3` and exit immediately
    - If a recognized flag receives an invalid value (not in the allowed set), discard the value and use the default
 3. The first non-flag token that is not consumed as a flag value is the `path`
 4. Additional non-flag tokens are ignored
 5. Flags can appear before or after the path
 6. Defaults: path → current working directory, depth → `brief`, audience → `general`, lang → `zh`, confirm → `true`
-7. If `--version` is present, print `project-walkthrough v1.6.2` and stop — ignore all other flags and path
+7. If `--version` is present, print `project-walkthrough v1.6.3` and stop — ignore all other flags and path
 
 **Parameters:**
 - `path` (positional, optional) — Project directory. Defaults to current working directory.
@@ -55,7 +55,7 @@ When this skill prompts the user, follow this tool-selection rule (priority orde
 - `--audience` (optional) — One of: `general`, `dev`. Defaults to `general`.
 - `--lang` (optional) — One of: `zh`, `zh-pure`, `en`, `bilingual`. Defaults to `zh`.
 - `--no-confirm` (optional) — Skip Phase 0 confirmation gate.
-- `--version` (optional) — Print version (`project-walkthrough v1.6.2`) and exit.
+- `--version` (optional) — Print version (`project-walkthrough v1.6.3`) and exit.
 
 Invalid or missing flag values fall back to defaults. If a flag is repeated, the last occurrence wins.
 
@@ -328,7 +328,7 @@ The check has a 24-hour cache and won't query the network every time. Silently s
 
 **Skip condition:** `--no-confirm` flag or EXTEND.md `confirm_scope: false`.
 
-**Startup:** Print `Project Walkthrough v1.6.2` before any analysis. This lets users confirm which version they're running.
+**Startup:** Print `Project Walkthrough v1.6.3` before any analysis. This lets users confirm which version they're running.
 
 #### Phase 0.1: Load Preferences
 

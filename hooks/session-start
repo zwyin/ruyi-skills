@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# session-start — SessionStart hook that surfaces skill update availability.
+#
+# Runs scripts/check_update.sh (git SHA compare + 24h cache + network fallback).
+# When a new version is available, emits the reminder as SessionStart
+# additionalContext so Claude relays it to the user in its first reply.
+# When up-to-date, check_update.sh is silent and this hook emits nothing.
+#
+# This script contains no brand strings — check_update.sh carries the
+# REPO/PLUGIN_KEY and is brand-replaced by brand-sync, so the same hook works
+# for ruyi/paoding/davinci/doraemon without per-brand edits.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+MSG="$("${PLUGIN_ROOT}/scripts/check_update.sh" 2>/dev/null || true)"
+
+if [ -n "$MSG" ]; then
+  python3 -c "import json, sys; print(json.dumps({'hookSpecificOutput': {'hookEventName': 'SessionStart', 'additionalContext': sys.argv[1]}}))" "$MSG"
+fi
+
+exit 0
