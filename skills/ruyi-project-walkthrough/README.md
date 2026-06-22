@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/zwyin/ruyi-skills/actions/workflows/test.yml/badge.svg)](https://github.com/zwyin/ruyi-skills/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.6.3-blue.svg)]
+[![Version](https://img.shields.io/badge/version-1.6.4-blue.svg)]
 
 为任意软件项目生成分层技术走读文档的 Claude Code skill。输出 markdown 文档 + 交互式 HTML。
 

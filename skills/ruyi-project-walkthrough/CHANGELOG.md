@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.6.4] - 2026-06-22
+
+### Fixed
+
+- **check_update.sh false "new version" prompt after upgrade**: the 24h cache replayed the stored `remoteSha` whenever it differed from the local SHA, without noticing the local SHA had changed. So right after `claude plugin update`, users saw one bogus "🔄 有新版本可用" prompt pointing backwards (new local SHA → older cached remote SHA), which self-healed only after 24h. The cache now also stores `localShaAtCheck`; if the current local SHA differs from it (user upgraded), the cache is treated as stale and the script re-checks the remote instead of replaying. Backward compatible (old caches without the field are treated as stale → re-check).
+
 ## [1.6.3] - 2026-06-22
 
 ### Added

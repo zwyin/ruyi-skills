@@ -45,15 +45,21 @@ now = datetime.now(timezone.utc)
 print(int((now - last).total_seconds() / 3600))
 " 2>/dev/null || echo "999")
         if [ "$HOURS_SINCE" -lt "$CHECK_INTERVAL_HOURS" ]; then
-            # Already checked recently — replay cached result if it was an update
-            CACHE_SHA=$(python3 -c "import json; print(json.load(open('$CACHE_FILE')).get('remoteSha',''))" 2>/dev/null || true)
-            if [ -n "$CACHE_SHA" ] && [ "$CACHE_SHA" != "$LOCAL_SHA" ]; then
-                LOCAL_SHORT="${LOCAL_SHA:0:7}"
-                REMOTE_SHORT="${CACHE_SHA:0:7}"
-                echo "🔄 有新版本可用（${LOCAL_SHORT} → ${REMOTE_SHORT}）"
-                echo "   升级命令：claude plugin update ${PLUGIN_KEY}"
+            # Already checked recently — replay cached result, but only if the
+            # local SHA hasn't changed since. If the user upgraded in the
+            # meantime, the cached remoteSha is stale (would falsely show
+            # "new version" pointing backwards) → fall through and re-check.
+            CACHE_LOCAL=$(python3 -c "import json; print(json.load(open('$CACHE_FILE')).get('localShaAtCheck',''))" 2>/dev/null || true)
+            if [ "$CACHE_LOCAL" = "$LOCAL_SHA" ]; then
+                CACHE_SHA=$(python3 -c "import json; print(json.load(open('$CACHE_FILE')).get('remoteSha',''))" 2>/dev/null || true)
+                if [ -n "$CACHE_SHA" ] && [ "$CACHE_SHA" != "$LOCAL_SHA" ]; then
+                    LOCAL_SHORT="${LOCAL_SHA:0:7}"
+                    REMOTE_SHORT="${CACHE_SHA:0:7}"
+                    echo "🔄 有新版本可用（${LOCAL_SHORT} → ${REMOTE_SHORT}）"
+                    echo "   升级命令：claude plugin update ${PLUGIN_KEY}"
+                fi
+                exit 0
             fi
-            exit 0
         fi
     fi
 fi
@@ -76,7 +82,7 @@ fi
 if [ -n "$REMOTE_SHA" ]; then
     python3 -c "
 import json
-json.dump({'remoteSha': '$REMOTE_SHA', 'lastCheck': '$(date -u +%Y-%m-%dT%H:%M:%SZ)'}, open('$CACHE_FILE', 'w'))
+json.dump({'remoteSha': '$REMOTE_SHA', 'lastCheck': '$(date -u +%Y-%m-%dT%H:%M:%SZ)', 'localShaAtCheck': '$LOCAL_SHA'}, open('$CACHE_FILE', 'w'))
 " 2>/dev/null || true
     if [ "$REMOTE_SHA" != "$LOCAL_SHA" ]; then
         LOCAL_SHORT="${LOCAL_SHA:0:7}"
