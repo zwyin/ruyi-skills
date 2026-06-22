@@ -1,7 +1,7 @@
 {
   "name": "ruyi-project-walkthrough",
   "description": "Structured technical walkthrough generator for any software project",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "owner": {
     "name": "zwyin"
   },
