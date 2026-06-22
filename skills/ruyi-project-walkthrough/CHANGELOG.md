@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- **Quiz correct-answer index always collapsed to 0 (option A)**: `parse_quiz_md` extracted the answer letter with `re.search(r'([A-D])', '**Answer: B**')`, which matched the `A` inside the literal word "Answer" instead of the real answer letter. Every quiz question's correct index became `0` regardless of the actual answer, so picking A was always judged correct and picking the real answer was judged wrong. The search regex is now anchored to "after the colon, before the closing `**`" (`r'[：:]\s*([A-D])\s*\*\*'`), so the correct option is honored. Affected every report generated with `--quiz-chapter` since 2026-05-27 (commit ca1f371); existing reports need regenerating.
+- **Quiz explanation no longer trailing with `---`**: the inter-question `---` separator was being appended to the preceding question's explanation text. The parser now stops collecting explanation at a standalone `---` line.
+
 ## [1.6.1] - 2026-05-22
 
 ### Added
