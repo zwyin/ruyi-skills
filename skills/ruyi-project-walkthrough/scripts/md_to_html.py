@@ -244,13 +244,22 @@ def parse_quiz_md(quiz_md):
                 state = "options"
                 opts.append(opt_match.group(2))
             elif re.match(r'^\*\*Answer\s*[：:]\s*[A-D]\s*\*\*', line, re.IGNORECASE):
-                m = re.search(r'([A-D])', line, re.IGNORECASE)
+                # Anchor the letter search to "after the colon, before the
+                # closing **" so we capture the answer letter, not the 'A' in
+                # the literal word "Answer". re.search(r'([A-D])', ...) on the
+                # whole line always matched that 'A' first → every c collapsed
+                # to 0 regardless of the real answer.
+                m = re.search(r'[：:]\s*([A-D])\s*\*\*', line, re.IGNORECASE)
                 if m: answer = m.group(1).upper()
                 state = "answer"
             elif re.match(r'^\*\*Explanation\s*[：:]', line, re.IGNORECASE):
                 explanation = re.sub(r'^\*\*Explanation\s*[：:]\s*\*\*\s*', '', line)
                 state = "explanation"
             elif state == "explanation":
+                # `---` is the inter-question separator; stop collecting so it
+                # does not get appended to the explanation text.
+                if line.strip() == "---":
+                    break
                 explanation += " " + line
             elif state == "question":
                 q_lines.append(line)
