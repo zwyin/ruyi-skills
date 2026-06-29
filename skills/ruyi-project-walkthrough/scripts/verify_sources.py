@@ -195,6 +195,11 @@ def validate_source_files(manifest, source_dir, result):
             missing += 1
             continue
 
+        # directory_structure claims legitimately point at a directory; skip the
+        # line-count check (open()-ing a directory raises IsADirectoryError).
+        if source_path.is_dir():
+            continue
+
         source_lines = claim.get("source_lines")
         if source_lines:
             with open(source_path, "r", encoding="utf-8", errors="replace") as sf:
