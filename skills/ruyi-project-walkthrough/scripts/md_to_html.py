@@ -532,6 +532,38 @@ def verify_html(html_path, expected_chapters=0, source_dir=None):
     if quiz_in_source and not quiz_in_html:
         errors.append("Quiz section in source markdown but not in HTML (quiz parsing may have failed)")
 
+    # 7. Code-block citation coverage (Phase 3C visibility).
+    # Count fenced blocks that carry a source-code language tag and check how
+    # many cite their source (// Simplified from: / // Derived from:). Untagged
+    # or ```text/ascii blocks (diagrams, console output) are exempt. Reported as
+    # metadata + a WARNING (not a hard error): synthesized blocks can legitimately
+    # lack a citation, so auto-detection can't judge intent. Escalate to an error
+    # once examples are fully compliant.
+    CODE_LANGS = {"python", "py", "js", "javascript", "typescript", "ts", "jsx",
+                  "tsx", "json", "bash", "sh", "shell", "go", "rust", "rs", "java",
+                  "c", "cpp", "ruby", "sql", "yaml", "yml", "toml", "html", "css"}
+    code_blocks = 0
+    code_blocks_cited = 0
+    warnings = []
+    if source_dir:
+        for md_f in sorted(Path(source_dir).glob("*.md")):
+            md_text = md_f.read_text("utf-8")
+            for m in re.finditer(r'```(\w*)\n(.*?)```', md_text, re.DOTALL):
+                lang = m.group(1).lower()
+                body = m.group(2)
+                if lang not in CODE_LANGS:
+                    continue
+                code_blocks += 1
+                if re.search(r'(simplified|derived)\s+from:', body, re.IGNORECASE):
+                    code_blocks_cited += 1
+        code_blocks_uncited = code_blocks - code_blocks_cited
+        if code_blocks_uncited > 0:
+            warnings.append(
+                f"{code_blocks_uncited} of {code_blocks} source-code block(s) lack a "
+                f"// Simplified/Derived from: citation (Phase 3C) — review for missed citations")
+    else:
+        code_blocks_uncited = None
+
     # Build result dict
     result = {
         "passed": len(errors) == 0,
@@ -540,9 +572,14 @@ def verify_html(html_path, expected_chapters=0, source_dir=None):
         "html_size": file_size,
         "markdown_size": total_md_size,
         "section_count": section_count,
+        "chapter_count": expected_chapters,
         "expected_sections": expected_chapters,
         "ratio_pct": round(ratio_val * 100) if ratio_val else None,
         "sidebar_nav_count": sidebar_links,
+        "code_blocks": code_blocks,
+        "code_blocks_cited": code_blocks_cited,
+        "code_blocks_uncited": code_blocks_uncited,
+        "warnings": warnings,
         "errors": errors,
     }
 

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- **Phase 3C code-block citation coverage now surfaced (was silently unenforced)**: `verify_html` had no check that code blocks carried a `// Simplified from:` citation, so chapters with uncited source-derived code (e.g. a "build your own" reimplementation) passed verification with zero signal. The converter now counts source-code fenced blocks (```` ```python ````, ```` ```json ````, ```` ```bash ````, … — ```` ```text ````/untagged diagram blocks are exempt) and reports `code_blocks`, `code_blocks_cited`, `code_blocks_uncited` in `verify-result.json`, emitting a warning when uncited blocks exist. Reported as a warning rather than a hard error because the shipped `examples/self-demo-*` currently contain uncited blocks; escalate to an error once those are brought into compliance.
+- **`verify_sources.py` crash on directory claims with `source_lines`**: `validate_source_files` called `open()` on the `source_file` of every claim to count lines. A `directory_structure` claim whose `source_file` is a real directory (and carries `source_lines`) raised `IsADirectoryError`, aborting the whole verification. Directories are now detected and skip the line-count check; file claims are still line-checked.
+- **`sources-manifest.schema.json` rejected `source_project.version`**: `additionalProperties: false` allowed only `name`/`repo_url`/`commit_or_tag`/`local_path`, so a natural `version` field failed schema validation with `'version' was unexpected`. `version` is now an accepted optional string under `source_project`.
+- **Confusing `expected_sections` in `verify-result.json`**: `section_count` includes the quiz + promo chapters while `expected_sections` counted only `.md` files, so a passing report showed e.g. `20 != 18`. Added an explicit `chapter_count` field (=`expected_sections`, the `.md` count) so the two are unambiguous.
+
 ## [1.6.4] - 2026-06-22
 
 ### Fixed

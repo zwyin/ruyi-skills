@@ -483,6 +483,33 @@ class TestValidateSourceFiles:
         assert r.ok is True
         assert len(r.errors) == 0
 
+    def test_directory_claim_with_source_lines_does_not_crash(self, tmp_path):
+        """Regression: a directory_structure claim whose source_file is a real
+        directory must not raise IsADirectoryError when source_lines is present.
+        (Bug 2 — the verifier open()-ed the directory to count lines.)
+        """
+        (tmp_path / "src").mkdir()  # a directory, not a file
+        manifest = _make_minimal_manifest(claims=[
+            {**_make_full_claim(), "type": "directory_structure",
+             "source_file": "src", "source_lines": [1, 1]}
+        ])
+        r = VerificationResult()
+        validate_source_files(manifest, tmp_path, r)  # must not raise
+        assert r.ok is True
+        assert len(r.errors) == 0
+
+    def test_file_claim_still_line_checked_after_dir_fix(self, tmp_path):
+        """Sanity: the directory-skip fix must not disable line checks for real
+        files. A file claim with out-of-range source_lines still errors."""
+        (tmp_path / "main.py").write_text("line1\nline2\n", encoding="utf-8")
+        manifest = _make_minimal_manifest(claims=[
+            {**_make_full_claim(), "source_file": "main.py", "source_lines": [1, 99]}
+        ])
+        r = VerificationResult()
+        validate_source_files(manifest, tmp_path, r)
+        assert r.ok is False
+        assert any("exceeds file length" in e for e in r.errors)
+
     def test_info_recorded_when_files_checked(self, tmp_path):
         src_file = tmp_path / "src"
         src_file.mkdir()
@@ -585,6 +612,17 @@ class TestValidateManifest:
         path = _write_manifest(tmp_path, manifest)
         result = validate_manifest(path, strict=True)
         assert result.ok is True
+
+    def test_source_project_version_is_allowed(self, tmp_path):
+        """Regression: source_project.version must be accepted by the schema
+        (Bug 3 — additionalProperties:false rejected it with 'version unexpected')."""
+        pytest.importorskip("jsonschema")
+        manifest = _make_minimal_manifest()
+        manifest["source_project"]["version"] = "1.6.4"
+        path = _write_manifest(tmp_path, manifest)
+        result = validate_manifest(path)
+        assert result.ok is True
+        assert not any("version" in e for e in result.errors)
 
 
 # ─── load_schema ────────────────────────────────────────────────

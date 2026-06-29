@@ -30,6 +30,10 @@
         "local_path": {
           "type": "string",
           "description": "Local path to source project for verification"
+        },
+        "version": {
+          "type": "string",
+          "description": "Source project version (optional; e.g. the package version under analysis)"
         }
       }
     },
