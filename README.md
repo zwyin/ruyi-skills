@@ -126,7 +126,7 @@ claude --plugin-dir ./ruyi-skills
 
 项目技术走读——多深度、多受众、多语言，输出 markdown + 交互式 HTML。
 
-[![version](https://img.shields.io/badge/version-1.6.1-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
+[![version](https://img.shields.io/badge/version-1.6.5-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
 
 ```bash
 # 自动分析当前目录，推荐深度

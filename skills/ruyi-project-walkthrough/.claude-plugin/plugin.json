@@ -1,7 +1,7 @@
 {
   "name": "ruyi-project-walkthrough",
   "description": "Generate structured technical walkthroughs of any software project at configurable depth and audience levels. Outputs markdown docs + interactive HTML.",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "author": {
     "name": "zwyin"
   },

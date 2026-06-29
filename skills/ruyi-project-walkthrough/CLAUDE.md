@@ -11,7 +11,7 @@
 | # | 文件 | 位置 | 说明 |
 |---|------|------|------|
 | 1 | `skills/ruyi-project-walkthrough/SKILL.md` | frontmatter `version: "X.Y.Z"` | **唯一版本源**，手动修改 |
-| 2 | `skills/ruyi-project-walkthrough/SKILL.md` | `--version` flag 文档 | `ruyi-project-walkthrough vX.Y.Z`（2 处） |
+| 2 | `skills/ruyi-project-walkthrough/SKILL.md` | `--version` flag 文档 + Phase 0 启动横幅 | `ruyi-project-walkthrough vX.Y.Z`（2 处）、`> **Version X.Y.Z**`（1 处，Phase 0 横幅） |
 | 3 | `.claude-plugin/plugin.json` | `"version": "X.Y.Z"` | Claude Code 插件元数据 |
 | 4 | `.claude-plugin/marketplace.json` | `"version": "X.Y.Z"` | Marketplace 注册信息 |
 | 5 | `README.md` | version badge URL | `badge/version-X.Y.Z-blue` |
@@ -31,6 +31,7 @@
 
 - 用户无法自动更新已安装的插件，需要重新安装（`/plugin install`）或 `git pull`
 - `--version` 输出是硬编码字符串，不是从 plugin.json 动态读取
+- `release.sh --bump-only` 的 sed 模式（`project-walkthrough v` / `Project Walkthrough v`）匹配不到 Phase 0 横幅（格式为 `> **Version X.Y.Z**`，无 `v` 前缀）→ 横幅需手动同步，或后续扩展 release.sh 增加 `Version X.Y.Z` 模式
 
 ### 版本同步检查清单
 
@@ -42,6 +43,9 @@ grep '^version:' skills/ruyi-project-walkthrough/SKILL.md
 
 # 位置 2: --version 输出文本（2处）
 grep 'ruyi-project-walkthrough v' skills/ruyi-project-walkthrough/SKILL.md
+
+# 位置 2b: Phase 0 启动横幅（1处）
+grep '> \*\*Version' skills/ruyi-project-walkthrough/SKILL.md
 
 # 位置 3: plugin.json
 grep '"version"' .claude-plugin/plugin.json

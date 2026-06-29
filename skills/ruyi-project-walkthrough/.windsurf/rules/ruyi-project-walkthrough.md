@@ -6,7 +6,7 @@ description: "Use when the user wants to study, document, understand, or share a
 
 Generate a structured walkthrough of any project — software codebase, research report, or document collection. Adapts output scope to input size and content type.
 
-> **Version 1.6.0** — Shown at Phase 0 startup. Use `--version` to print version and exit.
+> **Version 1.6.5** — Shown at Phase 0 startup. Use `--version` to print version and exit.
 
 ## User Input Tools
 
@@ -38,13 +38,13 @@ When this skill prompts the user, follow this tool-selection rule (priority orde
    - If the same flag appears multiple times, the **last** occurrence wins
    - Unknown `--` flags are ignored along with their immediately following token
    - `--no-confirm` is a standalone flag (no value consumed)
-   - `--version` is a standalone flag (no value consumed); when present, print `project-walkthrough v1.6.1` and exit immediately
+   - `--version` is a standalone flag (no value consumed); when present, print `project-walkthrough v1.6.5` and exit immediately
    - If a recognized flag receives an invalid value (not in the allowed set), discard the value and use the default
 3. The first non-flag token that is not consumed as a flag value is the `path`
 4. Additional non-flag tokens are ignored
 5. Flags can appear before or after the path
 6. Defaults: path → current working directory, depth → `brief`, audience → `general`, lang → `zh`, confirm → `true`
-7. If `--version` is present, print `project-walkthrough v1.6.1` and stop — ignore all other flags and path
+7. If `--version` is present, print `project-walkthrough v1.6.5` and stop — ignore all other flags and path
 
 **Parameters:**
 - `path` (positional, optional) — Project directory. Defaults to current working directory.
@@ -52,6 +52,6 @@ When this skill prompts the user, follow this tool-selection rule (priority orde
 - `--audience` (optional) — One of: `general`, `dev`. Defaults to `general`.
 - `--lang` (optional) — One of: `zh`, `zh-pure`, `en`, `bilingual`. Defaults to `zh`.
 - `--no-confirm` (optional) — Skip Phase 0 confirmation gate.
-- `--version` (optional) — Print version (`project-walkthrough v1.6.1`) and exit.
+- `--version` (optional) — Print version (`project-walkthrough v1.6.5`) and exit.
 
 Invalid or missing flag values fall back to defaults. If a flag is repeated, the last occurrence wins.

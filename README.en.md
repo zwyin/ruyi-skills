@@ -126,7 +126,7 @@ Safely publish to GitHub — two-layer desensitization scanning (135 rules + AI)
 
 Project walkthrough generator — multi-depth, multi-audience, multi-language, outputs markdown + interactive HTML.
 
-[![version](https://img.shields.io/badge/version-1.6.1-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
+[![version](https://img.shields.io/badge/version-1.6.5-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
 
 ```bash
 # Auto-analyze current directory, recommend depth
