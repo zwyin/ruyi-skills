@@ -65,7 +65,7 @@ claude --plugin-dir ./ruyi-skills
 
 安全发布到 GitHub——两层脱敏扫描（135 条规则 + AI）、自动修复、备份回滚、端到端发布。
 
-[![version](https://img.shields.io/badge/version-0.7.0-blue)](skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish/SKILL.md)
+[![version](https://img.shields.io/badge/version-0.7.1-blue)](skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish/SKILL.md)
 
 **扫描覆盖 6 大维度**：密钥凭证（100 rules）、数据库连接（5 rules）、个人隐私（8 rules）、内部基础设施（6 rules）、文件黑名单（12 rules）、Git 历史（4 rules）。
 
@@ -126,7 +126,7 @@ claude --plugin-dir ./ruyi-skills
 
 项目技术走读——多深度、多受众、多语言，输出 markdown + 交互式 HTML。
 
-[![version](https://img.shields.io/badge/version-1.6.5-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
+[![version](https://img.shields.io/badge/version-1.6.6-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
 
 ```bash
 # 自动分析当前目录，推荐深度
@@ -178,7 +178,7 @@ claude --plugin-dir ./ruyi-skills
 
 版本一致性检查器——发版前体检，核对合集里每一处版本号（frontmatter / manifest / Phase 0 banner / badge / CHANGELOG / dist）是否一致。开发维护工具，非面向终端用户的功能 skill。
 
-[![version](https://img.shields.io/badge/version-0.1.1-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
+[![version](https://img.shields.io/badge/version-0.1.2-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
 
 ```bash
 python3 skills/ruyi-version-check/scripts/validate_versions.py --root .

@@ -4,6 +4,12 @@ All notable changes to ruyi-version-check are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.2] - 2026-10-26
+
+### Changed
+
+- Cross-agent portability: description now leads with an English one-liner containing `Use when` trigger scenarios (existing Chinese detail line kept verbatim below); frontmatter adds a `license: MIT` field. Both satisfy the collection's `scripts/check_portability.py` lint gate.
+
 ## [0.1.1] - 2026-10-26
 
 ### Changed

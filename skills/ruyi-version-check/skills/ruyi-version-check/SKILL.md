@@ -1,7 +1,9 @@
 ---
 name: ruyi-version-check
-version: "0.1.1"
+version: "0.1.2"
+license: MIT
 description: |
+  Check version consistency across a skill collection (marketplace, CHANGELOG, frontmatter, dist copies). Use when: pre-release version audit, version drift, badge mismatch, stale CHANGELOG.
   版本一致性检查器（ruyi-version-check，也叫版本检查 / 版本一致性检查）：核对 skill 合集里每一处版本号是否与 canonical（SKILL.md frontmatter）一致，发版前体检或版本错乱排查时用。覆盖合集层（marketplace.json vs CHANGELOG）和每个 skill 的 frontmatter / plugin.json / marketplace.json / Phase 0 banner / --version 文档 / README badge / CHANGELOG / dist 平台副本 / 测试里的硬编码字面量。产出 PASS/WARN/FAIL 报告，每条带 file:line + 期望值 + 修复提示，纯只读不改文件。触发场景：发版前体检、版本号对不上、badge 跟实际版本不一致、CHANGELOG 落后于 marketplace、dist 漂移、用户报告显示旧版本、接入新 skill 后核对。不要用于：升级依赖版本（npm/pip）、git log 查 commit 历史、bump 版本号这个发版动作本身、Python/Node 运行时版本、node_modules 版本冲突。
 argument-hint: "[--root <path>] [--skill <name>] [--format text|json] [--strict]"
 ---

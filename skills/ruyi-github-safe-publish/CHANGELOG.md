@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.7.1] - 2026-10-26
+
+### Changed
+
+- Cross-agent portability: description first line is now an English sentence with `Use when` trigger phrases (Chinese trigger words and summary moved to the lines below, kept verbatim); frontmatter adds a `license: MIT` field. Both satisfy the collection's `scripts/check_portability.py` lint gate.
+
 ## [0.7.0] - 2026-05-26
 
 ### Added

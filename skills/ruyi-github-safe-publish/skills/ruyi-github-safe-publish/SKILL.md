@@ -1,11 +1,12 @@
 ---
 name: ruyi-github-safe-publish
-version: "0.7.0"
+version: "0.7.1"
+license: MIT
 description: |
+  Safely publish a local Git project to a public GitHub repo. Use when: "push to github", "publish to github", "create github repo".
+  中文触发词："开源"、"推送到 GitHub"、"发布到 github"。
   将本地 Git 项目安全地发布到 GitHub 公开仓库。包含两层脱敏扫描
   （确定性规则 + AI 语义）、自动修复、备份回滚、仓库创建、SEO 优化。
-  Use when: "push to github", "publish to github", "开源", "推送到 GitHub",
-  "create github repo", "发布到 github"。
 argument-hint: "[--scan] [--dry-run] [--seo] [--ci]"
 triggers:
   - push to github

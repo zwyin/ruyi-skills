@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.6.6] - 2026-10-26
+
+### Changed
+
+- Cross-agent portability: frontmatter adds a `license: MIT` field, satisfying the collection's `scripts/check_portability.py` lint gate (description first line already compliant). Version strings synced across all surfaces (Phase 0 banner, `--version` docs, startup print, manifests, README badges, platform copies).
+
 ## [1.6.5] - 2026-06-29
 
 ### Fixed

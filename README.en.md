@@ -65,7 +65,7 @@ claude --plugin-dir ./ruyi-skills
 
 Safely publish to GitHub — two-layer desensitization scanning (135 rules + AI), auto-fix, backup & rollback, end-to-end workflow.
 
-[![version](https://img.shields.io/badge/version-0.7.0-blue)](skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish/SKILL.md)
+[![version](https://img.shields.io/badge/version-0.7.1-blue)](skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish/SKILL.md)
 
 **Covers 6 dimensions**: Secrets & Credentials (100 rules), Database Connections (5 rules), PII (8 rules), Internal Infrastructure (6 rules), File Blacklist (12 rules), Git History (4 rules).
 
@@ -126,7 +126,7 @@ Safely publish to GitHub — two-layer desensitization scanning (135 rules + AI)
 
 Project walkthrough generator — multi-depth, multi-audience, multi-language, outputs markdown + interactive HTML.
 
-[![version](https://img.shields.io/badge/version-1.6.5-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
+[![version](https://img.shields.io/badge/version-1.6.6-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
 
 ```bash
 # Auto-analyze current directory, recommend depth
@@ -178,7 +178,7 @@ Project walkthrough generator — multi-depth, multi-audience, multi-language, o
 
 Version-consistency checker — a pre-release health check that verifies every version surface in the collection (frontmatter / manifests / Phase 0 banner / badges / CHANGELOG / dist) agrees. A maintainer tooling skill, not an end-user feature.
 
-[![version](https://img.shields.io/badge/version-0.1.1-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
+[![version](https://img.shields.io/badge/version-0.1.2-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
 
 ```bash
 python3 skills/ruyi-version-check/scripts/validate_versions.py --root .

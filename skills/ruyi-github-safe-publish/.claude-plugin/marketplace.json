@@ -1,7 +1,7 @@
 {
   "name": "ruyi-github-safe-publish",
   "description": "Safely publish local Git projects to GitHub with two-layer secret scanning (135 rules + AI), auto-fix, backup, and optional SEO/CI modules",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "owner": {
     "name": "zwyin"
   },
