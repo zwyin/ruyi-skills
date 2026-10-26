@@ -81,6 +81,44 @@ def test_missing_unreleased_section_exits_1_and_leaves_file_untouched(tmp_path):
     assert "## [0.9.4]" in cl.read_text()  # 文件未被改动
 
 
+def test_crlf_file_untouched_bytes_stay_crlf(tmp_path):
+    cl = tmp_path / "CHANGELOG.md"
+    original = (
+        "# Changelog\r\n"
+        "\r\n"
+        "## [Unreleased]\r\n"
+        "\r\n"
+        "### Added\r\n"
+        "- pending\r\n"
+        "\r\n"
+        "## [0.9.4] - 2026-06-29\r\n"
+        "\r\n"
+        "### Fixed\r\n"
+        "- old fix\r\n"
+    )
+    cl.write_bytes(original.encode("utf-8"))
+    r = _run([str(cl), "0.9.5"])
+    assert r.returncode == 0, r.stderr
+    out = cl.read_bytes()
+    # Untouched tail block survives byte-for-byte with CRLF endings.
+    tail = b"## [0.9.4] - 2026-06-29\r\n\r\n### Fixed\r\n- old fix\r\n"
+    assert tail in out
+    # Renamed heading keeps the file's CRLF convention too.
+    renamed = next(
+        line for line in out.splitlines(keepends=True) if line.startswith(b"## [0.9.5]")
+    )
+    assert renamed.endswith(b"\r\n")
+
+
+def test_non_padded_date_rejected(tmp_path):
+    cl = tmp_path / "CHANGELOG.md"
+    cl.write_text(FIXTURE)
+    r = _run([str(cl), "0.9.5", "--date", "2026-1-1"])
+    assert r.returncode == 1
+    assert "date" in r.stderr.lower()
+    assert "## [Unreleased]" in cl.read_text()  # 文件未被改动
+
+
 def test_date_flag_uses_custom_date(tmp_path):
     cl = tmp_path / "CHANGELOG.md"
     cl.write_text(FIXTURE)

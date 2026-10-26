@@ -73,7 +73,10 @@ def main(argv=None):
 
     if args.release_date is not None:
         try:
-            datetime.strptime(args.release_date, "%Y-%m-%d")
+            # Round-trip check: strptime alone accepts non-padded forms
+            # (e.g. "2026-1-1"); require canonical YYYY-MM-DD.
+            if datetime.strptime(args.release_date, "%Y-%m-%d").date().isoformat() != args.release_date:
+                raise ValueError
         except ValueError:
             print(
                 "error: --date must be YYYY-MM-DD, got: {!r}".format(args.release_date),
@@ -84,7 +87,10 @@ def main(argv=None):
 
     path = Path(args.changelog)
     try:
-        text = path.read_text(encoding="utf-8")
+        # Byte-exact IO: read_bytes/decode + write_bytes/encode avoids
+        # universal-newlines translation, so \r\n / \r endings in the
+        # untouched parts of the file survive byte-for-byte.
+        text = path.read_bytes().decode("utf-8")
     except OSError as exc:
         print("error: cannot read {}: {}".format(path, exc), file=sys.stderr)
         return 1
@@ -99,7 +105,7 @@ def main(argv=None):
         )
         return 1
 
-    path.write_text(new_text, encoding="utf-8")
+    path.write_bytes(new_text.encode("utf-8"))
     print(
         "Renamed '[Unreleased]' to '[{}] - {}' and inserted a fresh skeleton.".format(
             args.next_version, release_date
