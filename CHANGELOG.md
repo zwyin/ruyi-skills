@@ -4,6 +4,12 @@
 
 ### Added
 
+### Fixed
+
+## [0.9.5] - 2026-10-26
+
+### Added
+
 - **ruyi-version-check skill v0.1.0 入库** (`skills/ruyi-version-check/`, pilot promoted to an in-repo skill): deterministic version-consistency checker — `validate_versions.py` verifies skill frontmatter (canonical), plugin.json, marketplace.json, README badges, Phase 0 banner, per-skill CHANGELOG, dist copies, and hardcoded version literals in tests all agree before a release. PASS/WARN/FAIL report with file:line, expected/actual, remediation hint; exit codes 0 consistent / 1 warnings / 2 failures; `--format json` supported. Registered in the collection marketplace.json.
 - **`make check-versions` target**: runs `validate_versions.py --root .` across the collection, so version drift is checkable with one command instead of a manual agent invocation.
 - **`test-version-check` CI job**: rebuilds the eval fixtures to verify determinism, runs the pytest suite, then `evals/validate.py` structural regression.
