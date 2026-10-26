@@ -95,6 +95,21 @@ class TestConvertAll:
             fm, _ = read_frontmatter(path)
             assert fm.get("name") == name
 
+    def test_each_skill_has_codex_copy(self):
+        """Codex natively reads SKILL.md, so --all emits dist/codex/<name>/SKILL.md."""
+        for name in _skill_names():
+            skill_dir = DIST / "codex" / name
+            assert skill_dir.is_dir(), f"Missing codex dir for {name}"
+            assert (skill_dir / "SKILL.md").is_file(), f"Missing SKILL.md for {name}"
+
+    def test_codex_copy_matches_canonical_skillmd(self):
+        for name in _skill_names():
+            out = DIST / "codex" / name / "SKILL.md"
+            canonical = Path(find_skill_md(ROOT / "skills" / name))
+            assert canonical, f"No canonical SKILL.md resolved for {name}"
+            assert out.read_text() == canonical.read_text(), \
+                f"codex SKILL.md differs from canonical for {name}"
+
 
 class TestIdempotency:
     def test_double_run_produces_same_output(self):
@@ -128,6 +143,17 @@ class TestSinglePlatform:
         assert r.returncode == 0
         for name in _skill_names():
             assert f"OpenCode: {name}" in r.stdout
+
+    def test_codex_only(self):
+        r = run_convert("--codex")
+        assert r.returncode == 0, f"--codex failed:\n{r.stdout}\n{r.stderr}"
+        for name in _skill_names():
+            assert f"Codex: {name}" in r.stdout
+            out = DIST / "codex" / name / "SKILL.md"
+            assert out.is_file(), f"Missing codex SKILL.md for {name}"
+            canonical = Path(find_skill_md(ROOT / "skills" / name))
+            assert out.read_text() == canonical.read_text(), \
+                f"codex SKILL.md differs from canonical for {name}"
 
 
 class TestInvalidArgs:

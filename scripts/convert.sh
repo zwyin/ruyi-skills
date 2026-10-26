@@ -5,6 +5,7 @@
 #   ./scripts/convert.sh --cursor     # Generate .cursor/rules/*.mdc per skill
 #   ./scripts/convert.sh --windsurf   # Generate .windsurfrules per skill
 #   ./scripts/convert.sh --opencode   # Generate AGENTS.md per skill
+#   ./scripts/convert.sh --codex      # Copy SKILL.md to dist/codex/<skill-name>/
 #   ./scripts/convert.sh --all        # Generate all formats
 #   ./scripts/convert.sh --check      # Verify all skills are convertible (CI)
 
@@ -147,6 +148,25 @@ _convert_opencode() {
     wc -l "$oc_dir/SKILL.md"
 }
 
+# --- Codex ---
+# Codex CLI natively parses SKILL.md (same open agent skills standard as
+# Claude Code) — no AGENTS.md wrapping needed. See docs/portability/codex.md
+# §2 and §6: emit the resolved SKILL.md as dist/codex/<skill-name>/SKILL.md.
+_convert_codex() {
+    local skill_dir="$1"
+    local skill_md
+    skill_md=$(_find_skill_md "$skill_dir") || { echo "  No SKILL.md in $skill_dir"; return; }
+    local name
+    name=$(_skill_name "$skill_md")
+
+    local codex_dir="$OUT_DIR/codex/${name}"
+    mkdir -p "$codex_dir"
+
+    cp "$skill_md" "$codex_dir/SKILL.md"
+
+    wc -l "$codex_dir/SKILL.md"
+}
+
 # --- Check ---
 _do_check() {
     local errors=0
@@ -186,19 +206,26 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
                 _convert_opencode "$skill_dir"
             done
             ;;
+        --codex)
+            for skill_dir in "$SKILLS_DIR"/*/; do
+                echo "Codex: $(basename "$skill_dir")"
+                _convert_codex "$skill_dir"
+            done
+            ;;
         --all)
             for skill_dir in "$SKILLS_DIR"/*/; do
                 echo "=== $(basename "$skill_dir") ==="
                 _convert_cursor "$skill_dir"
                 _convert_windsurf "$skill_dir"
                 _convert_opencode "$skill_dir"
+                _convert_codex "$skill_dir"
             done
             ;;
         --check)
             _do_check
             ;;
         *)
-            echo "Usage: $0 [--cursor|--windsurf|--opencode|--all|--check]"
+            echo "Usage: $0 [--cursor|--windsurf|--opencode|--codex|--all|--check]"
             exit 1
             ;;
     esac
