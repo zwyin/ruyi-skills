@@ -10,9 +10,10 @@ Pure read-only: produces a report and exits non-zero on mismatch. Never mutates
 files. Designed to run before release, on suspected version drift, and in CI.
 
 Usage:
-    validate_versions.py [--root <collection-root>] [--skill <name>] [--format text|json]
+    validate_versions.py [--root <collection-root>] [--skill <name>] [--format text|json] [--strict]
 
-Exit codes: 0 = all consistent | 1 = warnings only | 2 = one or more failures.
+Exit codes: 2 = one or more failures. Default mode: 0 = consistent or warnings only
+(WARNs never block CI). --strict (pre-release checks): 1 = warnings only, 0 = clean.
 """
 
 from __future__ import annotations
@@ -33,6 +34,7 @@ SEMVER_RE = re.compile(SEMVER)
 SKILL_BODY_PATTERNS = [
     ("Phase 0 banner", re.compile(r""">\s*\*\*Version\s+(""" + SEMVER + r""")\*\*""")),
     ("version-flag doc", re.compile(r"""--version\b[^\n]*?\bv(""" + SEMVER + r""")\b""")),
+    ("startup version print", re.compile(r"""Project Walkthrough\s+v(""" + SEMVER + r""")\b""")),
 ]
 
 _QUOTED = r"""["']?"""
@@ -75,11 +77,15 @@ class Report:
     def passes(self):
         return sum(1 for f in self.findings if f.status == "PASS")
 
-    @property
-    def exit_code(self):
+    def exit_code(self, strict: bool = False) -> int:
+        """Single source of truth for the exit code (main/render_text/render_json all call this).
+
+        FAIL always exits 2. WARN exits 1 only under --strict (pre-release checks);
+        in default mode WARNs are reported but never affect the exit code.
+        """
         if self.fails:
             return 2
-        if self.warns:
+        if strict and self.warns:
             return 1
         return 0
 
@@ -298,7 +304,7 @@ def run(root, skill_filter=None):
     return report
 
 
-def render_text(report):
+def render_text(report, strict: bool = False):
     out = ["=== ruyi-version-check ===", f"root: {report.root}"]
     if report.collection_version:
         out.append(f"collection version: {report.collection_version}")
@@ -313,17 +319,17 @@ def render_text(report):
         if f.hint:
             out.append(f"      -> {f.hint}")
     out.append("")
-    exit_disp = 2 if report.fails else 1 if report.warns else 0
-    out.append(f"Summary: {report.fails} FAIL, {report.warns} WARN, {report.passes} PASS (exit {exit_disp})")
+    out.append(f"Summary: {report.fails} FAIL, {report.warns} WARN, {report.passes} PASS "
+               f"(exit {report.exit_code(strict)})")
     return "\n".join(out)
 
 
-def render_json(report):
+def render_json(report, strict: bool = False):
     return json.dumps({
         "root": report.root,
         "collection_version": report.collection_version,
         "summary": {"fail": report.fails, "warn": report.warns, "pass": report.passes},
-        "exit_code": report.exit_code,
+        "exit_code": report.exit_code(strict),
         "findings": [asdict(f) for f in report.findings if f.status != "PASS"],
     }, indent=2, ensure_ascii=False)
 
@@ -333,6 +339,9 @@ def main(argv=None):
     parser.add_argument("--root", default=".", help="collection root (default: cwd)")
     parser.add_argument("--skill", default=None, help="check a single skill by name")
     parser.add_argument("--format", choices=("text", "json"), default="text")
+    parser.add_argument("--strict", action="store_true",
+                        help="warnings-only exits 1 (pre-release strict mode); "
+                             "default mode never lets WARNs affect the exit code")
     args = parser.parse_args(argv)
 
     root = Path(args.root).resolve()
@@ -341,8 +350,9 @@ def main(argv=None):
         return 2
 
     report = run(root, args.skill)
-    print(render_json(report) if args.format == "json" else render_text(report))
-    return report.exit_code
+    print(render_json(report, args.strict) if args.format == "json"
+          else render_text(report, args.strict))
+    return report.exit_code(args.strict)
 
 
 if __name__ == "__main__":

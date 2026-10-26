@@ -1,7 +1,7 @@
 {
   "name": "ruyi-version-check",
   "description": "Deterministic version-consistency checker — verifies every version surface in a skill collection agrees with the canonical frontmatter before release",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "owner": {
     "name": "zwyin"
   },

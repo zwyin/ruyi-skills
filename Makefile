@@ -11,7 +11,7 @@ test:
 		fi; \
 	done
 
-ci: test check test-collection
+ci: test check check-versions test-collection
 	@echo "=== All checks passed ==="
 
 check:

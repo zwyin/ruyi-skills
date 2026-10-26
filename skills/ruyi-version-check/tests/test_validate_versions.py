@@ -8,6 +8,7 @@ the corresponding evals.json expectations. Together with evals/validate.py
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 import tempfile
 from pathlib import Path
@@ -55,7 +56,7 @@ def _findings(report, status=None, surface_contains=None):
 
 def test_fixture1_banner_mismatch_reports_fail():
     report = _run("fixture-1-phase0-banner-mismatch")
-    assert report.exit_code == 2
+    assert report.exit_code() == 2
     banner_fails = _findings(report, status="FAIL", surface_contains="banner")
     assert banner_fails, "expected a FAIL on the Phase 0 banner"
     assert any(f.expected == "1.6.5" and f.actual == "1.6.0" for f in banner_fails)
@@ -68,7 +69,7 @@ def test_fixture1_banner_mismatch_reports_fail():
 
 def test_fixture2_all_consistent_clean():
     report = _run("fixture-2-all-consistent")
-    assert report.exit_code == 0
+    assert report.exit_code() == 0
     assert report.fails == 0
     assert report.warns == 0
     assert all(f.status == "PASS" for f in report.findings)
@@ -78,7 +79,7 @@ def test_fixture2_all_consistent_clean():
 
 def test_fixture3_changelog_lag_reports_fail():
     report = _run("fixture-3-changelog-lag")
-    assert report.exit_code == 2
+    assert report.exit_code() == 2
     cl_fails = _findings(report, status="FAIL", surface_contains="collection CHANGELOG")
     assert cl_fails, "expected a FAIL on the collection CHANGELOG"
     assert cl_fails[0].expected == "0.9.4"
@@ -90,7 +91,8 @@ def test_fixture3_changelog_lag_reports_fail():
 
 def test_fixture4_dist_drift_reports_warn_not_fail():
     report = _run("fixture-4-dist-drift")
-    assert report.exit_code == 1  # WARN only, not FAIL
+    assert report.exit_code() == 0  # WARN only: default mode no longer blocks (decision 3)
+    assert report.exit_code(strict=True) == 1  # --strict restores WARN -> 1
     assert report.fails == 0
     dist_warns = _findings(report, status="WARN", surface_contains="dist")
     assert dist_warns, "expected WARN on dist copies"
@@ -105,11 +107,61 @@ def test_fixture4_dist_drift_reports_warn_not_fail():
 
 def test_fixture5_multi_skill_no_false_positive():
     report = _run("fixture-5-multi-skill-consistent")
-    assert report.exit_code == 0
+    assert report.exit_code() == 0
     assert report.fails == 0
     assert report.warns == 0
     skill_md_findings = [f for f in report.findings if "SKILL.md" in f.file]
     assert len({f.file for f in skill_md_findings}) >= 2, "both skills must be checked"
+
+
+# --- exit-code semantics: default vs --strict (decision 3) ---
+
+def test_warn_only_default_exit_zero_and_report_agrees(capsys):
+    """WARN-only fixture: default mode exits 0 AND the text Summary shows (exit 0).
+
+    Both assertions together pin "report display agrees with process exit code".
+    """
+    code = vc.main(["--root", str(FIXTURES / "fixture-4-dist-drift")])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "(exit 0)" in out, "text report must display the same exit code the process returns"
+
+
+def test_warn_only_strict_exit_one_and_report_agrees(capsys):
+    code = vc.main(["--root", str(FIXTURES / "fixture-4-dist-drift"), "--strict"])
+    assert code == 1
+    assert "(exit 1)" in capsys.readouterr().out
+
+
+def test_fail_exits_two_in_both_modes():
+    for extra in ([], ["--strict"]):
+        assert vc.main(["--root", str(FIXTURES / "fixture-1-phase0-banner-mismatch")] + extra) == 2
+
+
+def test_clean_exits_zero_in_both_modes():
+    for extra in ([], ["--strict"]):
+        assert vc.main(["--root", str(FIXTURES / "fixture-2-all-consistent")] + extra) == 0
+
+
+def test_json_exit_code_field_agrees_with_process_exit(capsys):
+    """render_json must derive exit_code from the same computation as main()."""
+    for extra, expected in (([], 0), (["--strict"], 1)):
+        code = vc.main(["--root", str(FIXTURES / "fixture-4-dist-drift"),
+                        "--format", "json"] + extra)
+        payload = json.loads(capsys.readouterr().out)
+        assert payload["exit_code"] == code == expected
+        assert payload["summary"]["warn"] > 0
+
+
+# --- SKILL_BODY_PATTERNS regression: walkthrough startup version print ---
+
+def test_pattern_catches_walkthrough_startup_version_print():
+    """`Print Project Walkthrough v1.6.5` (no --version prefix, not **Version** form) must be caught."""
+    by_label = dict(vc.SKILL_BODY_PATTERNS)
+    pat = by_label["startup version print"]
+    m = pat.search("Some header says Print Project Walkthrough v1.6.5 in the docs")
+    assert m and m.group(1) == "1.6.5"
+    assert not pat.search("Some header says Print Project Walkthrough v without semver")
 
 
 # --- contract: description trigger markers ---

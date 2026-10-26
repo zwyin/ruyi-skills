@@ -1,7 +1,7 @@
 {
   "name": "ruyi-version-check",
   "description": "Deterministic version-consistency checker for a ruyi-skills collection — verifies frontmatter, manifests, Phase 0 banner, README badges, CHANGELOG, dist copies, and test literals all agree before release",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "zwyin"
   },

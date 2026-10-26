@@ -44,10 +44,11 @@
       "id": 4,
       "name": "detect-dist-drift",
       "prompt": "检查这个 demo-collection 的版本一致性",
-      "expected_output": "检出 dist/opencode 副本漂移和 test 硬编码字面量，报 WARN（非 FAIL），提示重跑 convert.sh。",
+      "expected_output": "检出 dist/opencode 副本漂移和 test 硬编码字面量，报 WARN（非 FAIL），提示重跑 convert.sh。默认模式退出码 0（WARN 不阻塞）；--strict 下退出码 1。",
       "files": ["evals/fixtures/fixture-4-dist-drift"],
       "expectations": [
-        "exit code = 1 (只有 WARN，无 FAIL)",
+        "exit code = 0（默认模式：只有 WARN 无 FAIL 不阻塞）",
+        "加 --strict 时 exit code = 1（只有 WARN）",
         "fail = 0",
         "报告含 WARN 级别的 dist drift finding（frontmatter 和/或 banner）",
         "dist finding hint 含 convert.sh 重跑提示",

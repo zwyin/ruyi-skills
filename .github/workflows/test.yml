@@ -52,9 +52,8 @@ jobs:
         run: python3 -c "import json; json.load(open('.claude-plugin/marketplace.json'))"
       - name: Check skill self-containment
         run: python3 scripts/check_self_contained.py
-      - name: Check version consistency (pilot, non-blocking until release bugs fixed)
+      - name: Check version consistency
         run: python3 skills/ruyi-version-check/scripts/validate_versions.py --root .
-        continue-on-error: true
 
   test-version-check:
     runs-on: ubuntu-latest

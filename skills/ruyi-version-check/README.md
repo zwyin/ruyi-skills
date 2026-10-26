@@ -1,6 +1,6 @@
 # ruyi-version-check
 
-[![version](https://img.shields.io/badge/version-0.1.0-blue)](./CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-0.1.1-blue)](./CHANGELOG.md)
 
 版本一致性检查器——核对 ruyi-skills 合集里每一处版本号是否与 canonical（SKILL.md frontmatter）一致。
 
@@ -15,9 +15,12 @@ python3 skills/ruyi-version-check/scripts/validate_versions.py --root . --skill 
 
 # JSON 输出（CI 用）
 python3 skills/ruyi-version-check/scripts/validate_versions.py --root . --format json
+
+# 严格模式（发版前建议）：WARN 也算不通过
+python3 skills/ruyi-version-check/scripts/validate_versions.py --root . --strict
 ```
 
-退出码：`0` 全一致 | `1` 只有 WARN | `2` 有 FAIL。
+退出码：`2` 有 FAIL；默认模式只有 WARN 时 `0`（WARN 不阻塞 CI）；`--strict` 时只有 WARN → `1`。
 
 ## 检查范围
 
