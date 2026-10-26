@@ -10,11 +10,34 @@ Claude Code skill 合集——化繁为简，如意随心。把复杂的耗时�
 
 ## Install Skills
 
-### Option 1: Via Browse UI
+### 快捷安装（推荐）
+
+```bash
+git clone https://github.com/zwyin/ruyi-skills.git
+cd ruyi-skills && bash scripts/install.sh
+```
+
+`install.sh` 自动检测本机 agent（存在 `~/.claude` → Claude Code，存在 `~/.codex` → Codex CLI），把全部 skills 复制到对应技能目录，幂等可重跑。常用参数：`--agent claude|codex`、`--skill <name>`、`--list`、`--uninstall`。
+
+### 安装矩阵（多 Agent）
+
+| Agent | 安装 | 验证方法 |
+|-------|------|----------|
+| Claude Code（GLM 等 Anthropic 兼容端点用户同路径） | 上方快捷安装默认装入 `~/.claude/skills/<name>/`；或用下方 Plugin 方式 | `ls ~/.claude/skills/`，新开会话调用技能命令 |
+| Codex CLI | 上方快捷安装自动装入 `~/.codex/skills/<name>/`（可 `--agent codex` 强制）；项目级：`bash scripts/convert.sh --all` 后把 `dist/codex/<name>/` 复制到 `<repo>/.agents/skills/`（SKILL.md 原生识别，无需改格式） | `codex debug prompt-input "hi" 2>/dev/null \| grep <name>`（免登录，见 [docs/portability/codex.md](docs/portability/codex.md)） |
+| Cursor（社区路径，未实测加载） | `bash scripts/convert.sh --all` 后复制 `dist/cursor/.cursor/rules/` 到 `~/.cursor/rules/` | 重启 Cursor，Settings → Rules 出现对应条目 |
+| Windsurf（社区路径，未实测加载） | `bash scripts/convert.sh --all` 后把 `dist/windsurf/.windsurfrules/` 中文件并入项目根 `.windsurfrules`（或全局 rules） | Windsurf 中 Rules 生效提示 |
+| OpenCode（社区路径，未实测加载） | `bash scripts/convert.sh --all` 后复制 `dist/opencode/.opencode/skills/` 到项目 `.opencode/skills/` | `opencode` 启动后技能列表可见 |
+
+> Codex 行的路径与验证命令以官方文档 + 二进制实测为准（`docs/portability/codex.md`）；Cursor / Windsurf / OpenCode 三行为社区通用做法，本合集未实测加载。
+
+### Plugin 方式（Claude Code）
+
+**Via Browse UI**
 
 Select **Browse and install plugins** → Select **ruyi-skills** → Select **Install now**
 
-### Option 2: Direct Install
+**Direct Install**
 
 ```bash
 # 1. Add marketplace
@@ -27,7 +50,7 @@ Select **Browse and install plugins** → Select **ruyi-skills** → Select **In
 /reload-plugins
 ```
 
-### Option 3: Ask the Agent
+**Ask the Agent**
 
 Simply tell the Agent:
 
@@ -35,13 +58,13 @@ Simply tell the Agent:
 Please install Skills from github.com/zwyin/ruyi-skills
 ```
 
-### Option 4: Quick Install (npx)
+**Quick Install (npx)**
 
 ```bash
 npx skills add zwyin/ruyi-skills
 ```
 
-### Option 5: ClawHub (coming soon)
+**ClawHub (coming soon)**
 
 > Not yet published to ClawHub registry. Track progress at [github.com/zwyin/ruyi-skills](https://github.com/zwyin/ruyi-skills).
 
@@ -50,7 +73,7 @@ clawhub install ruyi-github-safe-publish
 clawhub install ruyi-project-walkthrough
 ```
 
-### Option 6: Manual Install
+**Manual Install**
 
 ```bash
 git clone https://github.com/zwyin/ruyi-skills.git
@@ -65,7 +88,7 @@ claude --plugin-dir ./ruyi-skills
 
 安全发布到 GitHub——两层脱敏扫描（135 条规则 + AI）、自动修复、备份回滚、端到端发布。
 
-[![version](https://img.shields.io/badge/version-0.7.0-blue)](skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish/SKILL.md)
+[![version](https://img.shields.io/badge/version-0.7.1-blue)](skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish/SKILL.md)
 
 **扫描覆盖 6 大维度**：密钥凭证（100 rules）、数据库连接（5 rules）、个人隐私（8 rules）、内部基础设施（6 rules）、文件黑名单（12 rules）、Git 历史（4 rules）。
 
@@ -126,7 +149,7 @@ claude --plugin-dir ./ruyi-skills
 
 项目技术走读——多深度、多受众、多语言，输出 markdown + 交互式 HTML。
 
-[![version](https://img.shields.io/badge/version-1.6.5-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
+[![version](https://img.shields.io/badge/version-1.6.6-blue)](skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough/SKILL.md)
 
 ```bash
 # 自动分析当前目录，推荐深度
@@ -178,7 +201,7 @@ claude --plugin-dir ./ruyi-skills
 
 版本一致性检查器——发版前体检，核对合集里每一处版本号（frontmatter / manifest / Phase 0 banner / badge / CHANGELOG / dist）是否一致。开发维护工具，非面向终端用户的功能 skill。
 
-[![version](https://img.shields.io/badge/version-0.1.1-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
+[![version](https://img.shields.io/badge/version-0.1.2-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
 
 ```bash
 python3 skills/ruyi-version-check/scripts/validate_versions.py --root .

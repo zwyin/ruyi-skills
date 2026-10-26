@@ -1,6 +1,6 @@
 # ruyi-version-check
 
-[![version](https://img.shields.io/badge/version-0.1.1-blue)](./CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-0.1.2-blue)](./CHANGELOG.md)
 
 版本一致性检查器——核对 ruyi-skills 合集里每一处版本号是否与 canonical（SKILL.md frontmatter）一致。
 

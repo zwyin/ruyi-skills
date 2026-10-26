@@ -19,6 +19,8 @@ check:
 	@python3 -c "import json; json.load(open('.claude-plugin/marketplace.json'))"
 	@echo "Checking skill self-containment..."
 	@python3 scripts/check_self_contained.py
+	@echo "Checking portability..."
+	@python3 scripts/check_portability.py
 
 check-versions:
 	@echo "Checking version consistency across the collection..."
