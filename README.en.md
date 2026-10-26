@@ -10,11 +10,34 @@ Claude Code skills that simplify complex tasks — one command to rule them all.
 
 ## Install Skills
 
-### Option 1: Via Browse UI
+### Quick Install (recommended)
+
+```bash
+git clone https://github.com/zwyin/ruyi-skills.git
+cd ruyi-skills && bash scripts/install.sh
+```
+
+`install.sh` auto-detects local agents (`~/.claude` → Claude Code, `~/.codex` → Codex CLI) and copies every skill into the matching skill roots. Idempotent — rerun anytime. Flags: `--agent claude|codex`, `--skill <name>`, `--list`, `--uninstall`.
+
+### Install Matrix (multi-agent)
+
+| Agent | Install | Verify |
+|-------|---------|--------|
+| Claude Code (same paths for GLM and other Anthropic-compatible endpoints) | Quick Install above copies into `~/.claude/skills/<name>/` by default; or use the plugin options below | `ls ~/.claude/skills/`, then invoke the skill in a new session |
+| Codex CLI | Quick Install above copies into `~/.codex/skills/<name>/` (force with `--agent codex`); project-level: `bash scripts/convert.sh --all`, then copy `dist/codex/<name>/` into `<repo>/.agents/skills/` (SKILL.md is natively recognized, no format change) | `codex debug prompt-input "hi" 2>/dev/null \| grep <name>` (no login needed, see [docs/portability/codex.md](docs/portability/codex.md)) |
+| Cursor (community path, not load-tested) | `bash scripts/convert.sh --all`, then copy `dist/cursor/.cursor/rules/` into `~/.cursor/rules/` | Restart Cursor, check Settings → Rules |
+| Windsurf (community path, not load-tested) | `bash scripts/convert.sh --all`, then merge `dist/windsurf/.windsurfrules/` files into the project `.windsurfrules` (or global rules) | Rules activation prompt in Windsurf |
+| OpenCode (community path, not load-tested) | `bash scripts/convert.sh --all`, then copy `dist/opencode/.opencode/skills/` into the project `.opencode/skills/` | Skill listed once `opencode` starts |
+
+> Codex paths and verification follow official docs plus binary testing (`docs/portability/codex.md`); the Cursor / Windsurf / OpenCode rows are community conventions, not load-tested by this collection.
+
+### Plugin options (Claude Code)
+
+**Via Browse UI**
 
 Select **Browse and install plugins** → Select **ruyi-skills** → Select **Install now**
 
-### Option 2: Direct Install
+**Direct Install**
 
 ```bash
 # 1. Add marketplace
@@ -27,7 +50,7 @@ Select **Browse and install plugins** → Select **ruyi-skills** → Select **In
 /reload-plugins
 ```
 
-### Option 3: Ask the Agent
+**Ask the Agent**
 
 Simply tell the Agent:
 
@@ -35,13 +58,13 @@ Simply tell the Agent:
 Please install Skills from github.com/zwyin/ruyi-skills
 ```
 
-### Option 4: Quick Install (npx)
+**Quick Install (npx)**
 
 ```bash
 npx skills add zwyin/ruyi-skills
 ```
 
-### Option 5: ClawHub (coming soon)
+**ClawHub (coming soon)**
 
 > Not yet published to ClawHub registry. Track progress at [github.com/zwyin/ruyi-skills](https://github.com/zwyin/ruyi-skills).
 
@@ -50,7 +73,7 @@ clawhub install ruyi-github-safe-publish
 clawhub install ruyi-project-walkthrough
 ```
 
-### Option 6: Manual Install
+**Manual Install**
 
 ```bash
 git clone https://github.com/zwyin/ruyi-skills.git
