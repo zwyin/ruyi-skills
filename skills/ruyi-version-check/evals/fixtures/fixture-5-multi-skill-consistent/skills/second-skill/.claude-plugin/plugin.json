@@ -1,0 +1,6 @@
+{
+  "name": "second-skill",
+  "version": "0.7.0",
+  "description": "Demo skill",
+  "skills": "./skills/"
+}

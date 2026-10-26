@@ -52,6 +52,27 @@ jobs:
         run: python3 -c "import json; json.load(open('.claude-plugin/marketplace.json'))"
       - name: Check skill self-containment
         run: python3 scripts/check_self_contained.py
+      - name: Check version consistency (pilot, non-blocking until release bugs fixed)
+        run: python3 skills/ruyi-version-check/scripts/validate_versions.py --root .
+        continue-on-error: true
+
+  test-version-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skills/ruyi-version-check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pytest
+      - name: Rebuild fixtures (verify determinism)
+        run: python3 evals/build_fixtures.py
+      - name: Run unit tests
+        run: python3 -m pytest tests/ -v --tb=short
+      - name: Structural regression
+        run: python3 evals/validate.py
 
   collection-scripts:
     runs-on: ubuntu-latest

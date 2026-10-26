@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.9.4] - 2026-06-29
+
+### Fixed
+
+- **Hardened manifest/verify accuracy pipeline (4 bugs)** in ruyi-project-walkthrough (skill 1.6.4 → 1.6.5, PR#11):
+  - `verify_html` now surfaces code-block citation coverage (`code_blocks` / `code_blocks_cited` / `code_blocks_uncited`) in `verify-result.json`, so Phase 3C uncited source-derived code blocks are no longer silently passed (Bug 1).
+  - `verify_sources.py` no longer aborts with `IsADirectoryError` on `directory_structure` claims whose `source_file` is a real directory; directories now skip the line-count check (Bug 2).
+  - `sources-manifest.schema.json` now accepts an optional `source_project.version` field (was rejected by `additionalProperties:false` as `'version' was unexpected`) (Bug 3).
+  - `verify-result.json` adds an explicit `chapter_count` field to disambiguate `expected_sections` (`.md` count) from `section_count` (includes quiz + promo) (Bug 4).
+  - Tests: +8 (2 dir-handling, 1 schema version, 5 code-block coverage); suite 300 passed, 23 skipped.
+
+## [0.9.3] - 2026-06-22
+
+### Fixed
+
+- **`check_update.sh` false "new version" prompt after upgrade**: the 24h cache replayed the stored `remoteSha` whenever it differed from the local SHA, without noticing the local SHA had changed. Right after `claude plugin update`, users saw one bogus "🔄 有新版本可用" prompt pointing backwards (new local SHA → older cached remote SHA), self-healing only after 24h. The cache now also stores `localShaAtCheck`; if the current local SHA differs (user upgraded), the cache is treated as stale and the script re-checks the remote. Backward compatible (old caches are treated as stale → re-check).
+- ruyi-project-walkthrough skill 1.6.3 → 1.6.4.
+
+## [0.9.2] - 2026-06-22
+
+### Added
+
+- **SessionStart auto update-check hook**: new `hooks/hooks.json` + `hooks/session-start` at the collection root run `scripts/check_update.sh` on every session start (and after clear/compact). When a newer version is published, the upgrade reminder is injected as SessionStart `additionalContext` so Claude surfaces it in its first reply. Works across ruyi/paoding/davinci/doraemon with no per-brand edits. Previously `check_update.sh` only ran when a skill agent manually invoked it mid-walkthrough, so installed users never saw update prompts.
+- ruyi-project-walkthrough skill 1.6.2 → 1.6.3.
+
+## [0.9.1] - 2026-06-22
+
+### Fixed
+
+- **Quiz correct-answer index always collapsed to option A** in ruyi-project-walkthrough: `parse_quiz_md` extracted the answer letter with `re.search(r'([A-D])', '**Answer: B**')`, which matched the `A` inside the literal word "Answer" instead of the real answer letter. Every quiz question's correct index became `0`, so picking A was always judged correct and picking the real answer was judged wrong. The regex is now anchored to "after the colon, before the closing `**`" (`r'[：:]\s*([A-D])\s*\*\*'`). Also fixes the inter-question `---` separator being appended to the preceding explanation. Affected every report generated with `--quiz-chapter` since 2026-05-27 (commit ca1f371). Added `test_quiz_parsing.py` regression coverage.
+- ruyi-project-walkthrough skill 1.6.1 → 1.6.2.
+
 ## [0.9.0] - 2026-06-16
 
 ### Added

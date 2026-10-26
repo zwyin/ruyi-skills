@@ -10,3 +10,8 @@ build/
 .claude/
 .project-walkthrough/
 project_study_*/
+.superpowers/
+.zread/
+**/.playwright-mcp/
+**/ruyi_project_study_*/
+docs/superpowers/

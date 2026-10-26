@@ -1,0 +1,1 @@
+skills/ruyi-version-check/SKILL.md

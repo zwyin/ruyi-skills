@@ -1,0 +1,14 @@
+{
+  "name": "demo-skill",
+  "version": "1.6.5",
+  "owner": {
+    "name": "tester"
+  },
+  "plugins": [
+    {
+      "name": "demo-skill",
+      "source": "./",
+      "category": "tooling"
+    }
+  ]
+}
