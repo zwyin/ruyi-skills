@@ -13,8 +13,8 @@
 #             repo metadata excluded — top level of the skill dir:
 #             tests/ evals/ debug/ cursor/ dist/; at any depth (dirs):
 #             __pycache__/ .playwright-mcp/ ruyi_project_study_*/ project_study_*/
-#             .pytest_cache/ .codegraph/ .claude/ .opencode/ .windsurf/ .github/;
-#             at any depth (files): .DS_Store .gitignore.
+#             .pytest_cache/ .codegraph/ .claude/ .opencode/ .windsurf/ .github/
+#             .project-walkthrough/; at any depth (files): .DS_Store .gitignore.
 #   Idempotency: content diff ignoring the .ruyi-install marker ->
 #             "installed:" / "skip (up-to-date):" / "updated:"
 #   --uninstall: only removes targets that carry the .ruyi-install marker AND
@@ -55,6 +55,7 @@ DEPTH_EXCLUDE_DIRS=(
     '.opencode'
     '.windsurf'
     '.github'
+    '.project-walkthrough'
 )
 # Any-depth file name patterns to strip after copy.
 DEPTH_EXCLUDE_FILES=('.DS_Store' '.gitignore')

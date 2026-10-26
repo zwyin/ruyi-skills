@@ -92,6 +92,7 @@ def sandbox(tmp_path):
         ".opencode",
         ".windsurf",
         ".github",
+        ".project-walkthrough",
     ):
         (alpha / junk).mkdir()
         (alpha / junk / "artifact.txt").write_text("dev artifact\n")
@@ -174,7 +175,7 @@ class TestRealRepoInstall:
         assert not (pw / ".playwright-mcp").exists()
         # local tool artifacts / repo metadata (round-1 fix): source has these
         for artifact in (".codegraph", ".github", ".pytest_cache", ".claude",
-                         ".opencode", ".windsurf"):
+                         ".opencode", ".windsurf", ".project-walkthrough"):
             assert not (pw / artifact).exists(), f"{artifact}/ must not ship"
         assert not list(pw.rglob(".DS_Store")), "no .DS_Store at any depth"
         assert not list(pw.rglob(".gitignore")), "no .gitignore at any depth"
@@ -244,7 +245,7 @@ class TestSandboxInstallLifecycle:
         assert r.returncode == 0, r.stderr
         tgt = sandbox["home"] / ".claude" / "skills" / "alpha"
         for top in (".pytest_cache", ".codegraph", ".claude", ".opencode",
-                    ".windsurf", ".github"):
+                    ".windsurf", ".github", ".project-walkthrough"):
             assert not (tgt / top).exists(), f"{top}/ leaked into target"
         assert not list(tgt.rglob(".DS_Store")), ".DS_Store leaked (any depth)"
         assert not list(tgt.rglob(".gitignore")), ".gitignore leaked (any depth)"
