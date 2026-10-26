@@ -174,6 +174,16 @@ Project walkthrough generator — multi-depth, multi-audience, multi-language, o
 
 [→ Full documentation](skills/ruyi-project-walkthrough/README.md)
 
+### ruyi-version-check
+
+Version-consistency checker — a pre-release health check that verifies every version surface in the collection (frontmatter / manifests / Phase 0 banner / badges / CHANGELOG / dist) agrees. A maintainer tooling skill, not an end-user feature.
+
+[![version](https://img.shields.io/badge/version-0.1.1-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
+
+```bash
+python3 skills/ruyi-version-check/scripts/validate_versions.py --root .
+```
+
 ---
 
 ## Version & Update

@@ -1,0 +1,17 @@
+{
+  "name": "ruyi-version-check",
+  "description": "Deterministic version-consistency checker — verifies every version surface in a skill collection agrees with the canonical frontmatter before release",
+  "version": "0.1.1",
+  "owner": {
+    "name": "zwyin"
+  },
+  "plugins": [
+    {
+      "name": "ruyi-version-check",
+      "source": "./",
+      "description": "Reads the canonical version from each skill's SKILL.md frontmatter and checks every surface — manifests, Phase 0 banner, README badges, CHANGELOG, dist platform copies, and test literals — agrees with it. Pure read-only; exits non-zero on mismatch. Run before release, on suspected drift, or in CI.",
+      "category": "tooling",
+      "tags": ["version", "consistency", "release", "lint", "drift", "ci"]
+    }
+  ]
+}

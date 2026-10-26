@@ -1,0 +1,71 @@
+{
+  "skill_name": "ruyi-version-check",
+  "evals": [
+    {
+      "id": 1,
+      "name": "detect-phase0-banner-mismatch",
+      "prompt": "检查这个 demo-collection 的版本一致性",
+      "expected_output": "检出 SKILL.md Phase 0 banner (1.6.0) 与 frontmatter canonical (1.6.5) 不符，报 FAIL 并提示 release.sh sed 模式问题。",
+      "files": ["evals/fixtures/fixture-1-phase0-banner-mismatch"],
+      "expectations": [
+        "exit code = 2 (has FAIL)",
+        "报告含 FAIL 级别的 Phase 0 banner finding",
+        "finding 的 expected=1.6.5, actual=1.6.0",
+        "finding 含 file:line 指向 SKILL.md 的 banner 行",
+        "finding hint 提示 release.sh sed 模式或手动同步"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "no-false-positive-all-consistent",
+      "prompt": "检查这个 demo-collection 的版本一致性",
+      "expected_output": "全一致时 0 FAIL 0 WARN，exit code = 0，不产生任何噪声。",
+      "files": ["evals/fixtures/fixture-2-all-consistent"],
+      "expectations": [
+        "exit code = 0",
+        "fail = 0 且 warn = 0",
+        "所有 finding 状态为 PASS"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "detect-changelog-lag",
+      "prompt": "检查这个 demo-collection 的版本一致性",
+      "expected_output": "检出合集 CHANGELOG 最新条目 (0.9.0) 落后于 marketplace.json (0.9.4)，报 FAIL。",
+      "files": ["evals/fixtures/fixture-3-changelog-lag"],
+      "expectations": [
+        "exit code = 2",
+        "报告含 FAIL 级别的 collection CHANGELOG latest finding",
+        "finding 的 expected=0.9.4, actual=0.9.0",
+        "finding hint 提示 release.sh 只能改写已有条目、需 insert"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "detect-dist-drift",
+      "prompt": "检查这个 demo-collection 的版本一致性",
+      "expected_output": "检出 dist/opencode 副本漂移和 test 硬编码字面量，报 WARN（非 FAIL），提示重跑 convert.sh。默认模式退出码 0（WARN 不阻塞）；--strict 下退出码 1。",
+      "files": ["evals/fixtures/fixture-4-dist-drift"],
+      "expectations": [
+        "exit code = 0（默认模式：只有 WARN 无 FAIL 不阻塞）",
+        "加 --strict 时 exit code = 1（只有 WARN）",
+        "fail = 0",
+        "报告含 WARN 级别的 dist drift finding（frontmatter 和/或 banner）",
+        "dist finding hint 含 convert.sh 重跑提示",
+        "报告含 WARN 级别的 test version literal finding"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "detect-multi-skill-no-false-positive",
+      "prompt": "检查这个有两个 skill 的 demo-collection 的版本一致性",
+      "expected_output": "两个 skill 全一致时 0 FAIL 0 WARN，exit code = 0，多 skill 遍历不产生误报。",
+      "files": ["evals/fixtures/fixture-5-multi-skill-consistent"],
+      "expectations": [
+        "exit code = 0",
+        "fail = 0 且 warn = 0",
+        "两个 skill 都被检查到（PASS 数量反映两个 skill 的全部检查项）"
+      ]
+    }
+  ]
+}

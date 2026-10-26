@@ -1,0 +1,25 @@
+[
+  {"query": "用 ruyi-version-check 检查一下版本一致性", "should_trigger": true},
+  {"query": "跑一下版本检查", "should_trigger": true},
+  {"query": "做个版本一致性检查再发版", "should_trigger": true},
+  {"query": "/check-versions", "should_trigger": true},
+  {"query": "发版前帮我做个版本体检，确认各处版本都对着", "should_trigger": true},
+  {"query": "版本号好像对不上，帮我查查哪里漂了", "should_trigger": true},
+  {"query": "README badge 跟实际版本不一致了", "should_trigger": true},
+  {"query": "CHANGELOG 落后于 marketplace 版本，排查一下", "should_trigger": true},
+  {"query": "dist 副本是不是漂移了，跟源对不上", "should_trigger": true},
+  {"query": "有用户反馈装上后显示旧版本，帮我查版本一致性", "should_trigger": true},
+  {"query": "新接了个 skill，核对下版本各处都挂对没", "should_trigger": true},
+
+  {"query": "版本", "should_trigger": false},
+  {"query": "升级一下 npm 依赖版本", "should_trigger": false},
+  {"query": "pip install 更新一下包", "should_trigger": false},
+  {"query": "git log 看看最近的提交历史", "should_trigger": false},
+  {"query": "帮我 bump 到 1.0.0 然后发版", "should_trigger": false},
+  {"query": "node_modules 版本冲突怎么解决", "should_trigger": false},
+  {"query": "Python 3.1 版本太低了吗", "should_trigger": false},
+  {"query": "跑一下 release 发版", "should_trigger": false},
+  {"query": "检查代码版本", "should_trigger": false},
+  {"query": "看看 commit 历史里这个 bug 啥时候引入的", "should_trigger": false},
+  {"query": "切换一下 node 版本", "should_trigger": false}
+]

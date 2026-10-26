@@ -16,9 +16,27 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT_DIR="$ROOT/dist"
 SKILLS_DIR="$ROOT/skills"
 
-# Find SKILL.md — may be at skill_dir/SKILL.md or nested (subtree import)
+# Find SKILL.md — prefer the canonical nested path (subtree import)
+# skills/<name>/skills/<name>/SKILL.md, else the outer skills/<name>/SKILL.md.
+# Never descend into evals/, tests/, or dist/: evals/fixtures contain demo
+# SKILL.md files that must not shadow the real skill (or leak into dist/).
 _find_skill_md() {
-    find "$1" -name "SKILL.md" -not -path "*/dist/*" -not -path "*/.opencode/*" 2>/dev/null | head -n 1 || true
+    local skill_dir="$1"
+    local name
+    name="$(basename "$skill_dir")"
+    local nested="$skill_dir/skills/$name/SKILL.md"
+    if [ -f "$nested" ]; then
+        echo "$nested"
+        return 0
+    fi
+    local outer="$skill_dir/SKILL.md"
+    if [ -f "$outer" ]; then
+        echo "$outer"
+        return 0
+    fi
+    find "$skill_dir" -name "SKILL.md" \
+        -not -path "*/evals/*" -not -path "*/tests/*" \
+        -not -path "*/dist/*" -not -path "*/.opencode/*" 2>/dev/null | head -n 1 || true
 }
 
 # Extract SKILL.md body (everything after YAML frontmatter)
@@ -145,41 +163,43 @@ _do_check() {
     [ "$errors" -eq 0 ] || exit 1
 }
 
-# --- Main ---
-ACTION="${1:---all}"
+# --- Main (guarded so tests can source this file and call functions directly) ---
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+    ACTION="${1:---all}"
 
-case "$ACTION" in
-    --cursor)
-        for skill_dir in "$SKILLS_DIR"/*/; do
-            echo "Cursor: $(basename "$skill_dir")"
-            _convert_cursor "$skill_dir"
-        done
-        ;;
-    --windsurf)
-        for skill_dir in "$SKILLS_DIR"/*/; do
-            echo "Windsurf: $(basename "$skill_dir")"
-            _convert_windsurf "$skill_dir"
-        done
-        ;;
-    --opencode)
-        for skill_dir in "$SKILLS_DIR"/*/; do
-            echo "OpenCode: $(basename "$skill_dir")"
-            _convert_opencode "$skill_dir"
-        done
-        ;;
-    --all)
-        for skill_dir in "$SKILLS_DIR"/*/; do
-            echo "=== $(basename "$skill_dir") ==="
-            _convert_cursor "$skill_dir"
-            _convert_windsurf "$skill_dir"
-            _convert_opencode "$skill_dir"
-        done
-        ;;
-    --check)
-        _do_check
-        ;;
-    *)
-        echo "Usage: $0 [--cursor|--windsurf|--opencode|--all|--check]"
-        exit 1
-        ;;
-esac
+    case "$ACTION" in
+        --cursor)
+            for skill_dir in "$SKILLS_DIR"/*/; do
+                echo "Cursor: $(basename "$skill_dir")"
+                _convert_cursor "$skill_dir"
+            done
+            ;;
+        --windsurf)
+            for skill_dir in "$SKILLS_DIR"/*/; do
+                echo "Windsurf: $(basename "$skill_dir")"
+                _convert_windsurf "$skill_dir"
+            done
+            ;;
+        --opencode)
+            for skill_dir in "$SKILLS_DIR"/*/; do
+                echo "OpenCode: $(basename "$skill_dir")"
+                _convert_opencode "$skill_dir"
+            done
+            ;;
+        --all)
+            for skill_dir in "$SKILLS_DIR"/*/; do
+                echo "=== $(basename "$skill_dir") ==="
+                _convert_cursor "$skill_dir"
+                _convert_windsurf "$skill_dir"
+                _convert_opencode "$skill_dir"
+            done
+            ;;
+        --check)
+            _do_check
+            ;;
+        *)
+            echo "Usage: $0 [--cursor|--windsurf|--opencode|--all|--check]"
+            exit 1
+            ;;
+    esac
+fi

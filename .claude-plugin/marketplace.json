@@ -21,7 +21,8 @@
       ],
       "skills": [
         "./skills/ruyi-github-safe-publish/skills/ruyi-github-safe-publish",
-        "./skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough"
+        "./skills/ruyi-project-walkthrough/skills/ruyi-project-walkthrough",
+        "./skills/ruyi-version-check/skills/ruyi-version-check"
       ]
     }
   ]

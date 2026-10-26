@@ -1,0 +1,16 @@
+{
+  "name": "demo-collection",
+  "version": "0.9.4",
+  "owner": {
+    "name": "tester"
+  },
+  "plugins": [
+    {
+      "name": "demo-collection",
+      "source": "./",
+      "skills": [
+        "./skills/demo-skill/skills/demo-skill"
+      ]
+    }
+  ]
+}

@@ -32,26 +32,28 @@ NEXT="${MAJOR}.${MINOR}.${PATCH}"
 
 echo "Bumping $CURRENT → $NEXT"
 
+# Guard: CHANGELOG must have an [Unreleased] section before we touch anything.
+# Runs BEFORE the marketplace.json edit so a failed release leaves it untouched.
+grep -q '^## \[Unreleased\]' "$CHANGELOG" || { echo "ERROR: CHANGELOG.md 缺 ## [Unreleased] 段；先写 Unreleased 再发版"; exit 1; }
+
 # Update marketplace.json version
 perl -pi -e "s/\"version\": \"$CURRENT\"/\"version\": \"$NEXT\"/" "$MARKETPLACE"
 
-# Update CHANGELOG.md
-if [ -f "$CHANGELOG" ]; then
-    perl -pi -e "s/## \\[$CURRENT\\]/## [$NEXT] - $(date +%Y-%m-%d)/" "$CHANGELOG"
-fi
+# Update CHANGELOG.md: rotate [Unreleased] → [$NEXT] and insert a fresh skeleton
+python3 scripts/update_changelog.py "$CHANGELOG" "$NEXT"
 
 # Update README badges
 perl -pi -e "s/version-$CURRENT/version-$NEXT/g" README.md README.en.md 2>/dev/null || true
 
-git add -A
+git add "$MARKETPLACE" "$CHANGELOG" README.md README.en.md
 git commit -m "release: v$NEXT"
 
 # Tag
 git tag "v$NEXT" -m "v$NEXT"
 
-# Push to main remote
+# Push to main remote (bypass local HTTPS-intercepting proxy explicitly)
 MAIN_REMOTE=$(git remote | grep -v github | head -1 || echo "origin")
-git push "$MAIN_REMOTE" main --tags
+git -c http.proxy="" -c https.proxy="" push "$MAIN_REMOTE" main --tags
 
 echo "Released v$NEXT"
 echo "To sync brand repos, run: cd brand-sync-tool && bash sync.sh"

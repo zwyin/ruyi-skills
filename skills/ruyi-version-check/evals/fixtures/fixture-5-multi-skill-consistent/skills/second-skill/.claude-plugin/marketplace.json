@@ -1,0 +1,14 @@
+{
+  "name": "second-skill",
+  "version": "0.7.0",
+  "owner": {
+    "name": "tester"
+  },
+  "plugins": [
+    {
+      "name": "second-skill",
+      "source": "./",
+      "category": "tooling"
+    }
+  ]
+}

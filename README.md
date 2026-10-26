@@ -174,6 +174,16 @@ claude --plugin-dir ./ruyi-skills
 
 [→ 查看完整文档](skills/ruyi-project-walkthrough/README.md)
 
+### ruyi-version-check
+
+版本一致性检查器——发版前体检，核对合集里每一处版本号（frontmatter / manifest / Phase 0 banner / badge / CHANGELOG / dist）是否一致。开发维护工具，非面向终端用户的功能 skill。
+
+[![version](https://img.shields.io/badge/version-0.1.1-blue)](skills/ruyi-version-check/skills/ruyi-version-check/SKILL.md)
+
+```bash
+python3 skills/ruyi-version-check/scripts/validate_versions.py --root .
+```
+
 ---
 
 ## Version & Update

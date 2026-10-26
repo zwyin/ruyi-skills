@@ -1,4 +1,4 @@
-.PHONY: test ci release convert clean check test-collection
+.PHONY: test ci release convert clean check check-versions test-collection
 
 SKILLS := $(shell ls -d skills/*/)
 
@@ -11,7 +11,7 @@ test:
 		fi; \
 	done
 
-ci: test check test-collection
+ci: test check check-versions test-collection
 	@echo "=== All checks passed ==="
 
 check:
@@ -19,6 +19,10 @@ check:
 	@python3 -c "import json; json.load(open('.claude-plugin/marketplace.json'))"
 	@echo "Checking skill self-containment..."
 	@python3 scripts/check_self_contained.py
+
+check-versions:
+	@echo "Checking version consistency across the collection..."
+	@python3 skills/ruyi-version-check/scripts/validate_versions.py --root .
 
 test-collection:
 	@python3 -m pytest tests/ -v --tb=short
