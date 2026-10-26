@@ -4,6 +4,12 @@
 
 ### Added
 
+### Fixed
+
+## [0.10.0] - 2026-10-26
+
+### Added
+
 - **Portability lint gate** (`scripts/check_portability.py`): deterministic pre-release lint that every skill SKILL.md carries a `license:` field, an English Use-when trigger line as description first line (cross-agent discoverability), platform mirrors (`dist/` copies: opencode/windsurf/cursor/codex) in sync with the canonical source, SKILL.md size budget, and resolvable script paths. Wired into `make check` and CI (`test.yml` "Check portability" step) — blocking.
 - **English Use-when trigger lines + `license: MIT` frontmatter** on all 3 skills so non-Claude agents (Codex/OpenCode/Windsurf/Cursor) can match skills by English trigger text; Chinese trigger words kept below the first line. ruyi-github-safe-publish 0.7.0 → 0.7.1, ruyi-version-check 0.1.1 → 0.1.2, ruyi-project-walkthrough 1.6.5 → 1.6.6; platform mirror copies regenerated via `scripts/convert.sh`, all version surfaces synced per `make check-versions`.
 - **Codex channel research** (`docs/portability/codex.md`): verified Codex CLI skill-loading mechanism (0.164.0 binary + official docs) — skill roots (`~/.codex/skills`, `~/.agents/skills`, project `.agents/skills`), native SKILL.md frontmatter parsing (no AGENTS.md wrapper needed), auth-free discovery verification via `codex debug prompt-input`. Basis for the `--codex` distribution and installer below.
