@@ -9,10 +9,12 @@
 #             ~/.codex exists -> codex) x --skill all
 #   Targets:  ~/.claude/skills/<name>/ and ~/.codex/skills/<name>/
 #   Copy range: outer skills/<name>/ whole dir (nested skills/<n>/ preserved for
-#             marketplace-layout compat), dev artifacts excluded:
-#             tests/ evals/ debug/ cursor/ dist/ at the skill-dir top level;
+#             marketplace-layout compat). Dev artifacts, local tool state and
+#             repo metadata excluded — top level of the skill dir:
+#             tests/ evals/ debug/ cursor/ dist/; at any depth (dirs):
 #             __pycache__/ .playwright-mcp/ ruyi_project_study_*/ project_study_*/
-#             at any depth.
+#             .pytest_cache/ .codegraph/ .claude/ .opencode/ .windsurf/ .github/;
+#             at any depth (files): .DS_Store .gitignore.
 #   Idempotency: content diff ignoring the .ruyi-install marker ->
 #             "installed:" / "skip (up-to-date):" / "updated:"
 #   --uninstall: only removes targets that carry the .ruyi-install marker AND
@@ -37,10 +39,25 @@ SKILLS_DIR="$REPO_ROOT/skills"
 MARKER=".ruyi-install"
 # Top-level (skill-dir root) dev-artifact dirs to strip after copy.
 TOP_EXCLUDES="tests evals debug cursor dist"
-# Any-depth directory name patterns to strip after copy. Quoted array
-# literals: never word-split or glob-expanded (an unquoted "project_study_*"
-# would be pathname-expanded against the cwd before find ever sees it).
-DEPTH_EXCLUDE_PATTERNS=('__pycache__' '.playwright-mcp' 'ruyi_project_study_*' 'project_study_*')
+# Any-depth directory name patterns to strip after copy: dev artifacts plus
+# local tool state / repo metadata (.codegraph holds a LIVE unix socket —
+# GNU cp errors on it under set -e, aborting the install mid-run). Quoted
+# array literals: never word-split or glob-expanded (an unquoted
+# "project_study_*" would be pathname-expanded against the cwd first).
+DEPTH_EXCLUDE_DIRS=(
+    '__pycache__'
+    '.playwright-mcp'
+    'ruyi_project_study_*'
+    'project_study_*'
+    '.pytest_cache'
+    '.codegraph'
+    '.claude'
+    '.opencode'
+    '.windsurf'
+    '.github'
+)
+# Any-depth file name patterns to strip after copy.
+DEPTH_EXCLUDE_FILES=('.DS_Store' '.gitignore')
 
 AGENT="" # empty = auto-detect (all detected agents)
 SKILL="" # empty = all
@@ -51,7 +68,7 @@ STAGING=""
 REFUSED=0
 
 usage() {
-    sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,32p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 die() {
@@ -86,14 +103,21 @@ build_staging() {
     img="$STAGING/$skill"
     [ -d "$img" ] && rm -rf "$img"
     cp -R "$SKILLS_DIR/$skill" "$img"
-    # any-depth patterns (prune: never descend into a match)
-    local find_args=()
     local pat
-    for pat in "${DEPTH_EXCLUDE_PATTERNS[@]}"; do
-        find_args+=(-name "$pat" -o)
+    # any-depth dir patterns (prune: never descend into a match)
+    local dir_args=()
+    for pat in "${DEPTH_EXCLUDE_DIRS[@]}"; do
+        dir_args+=(-name "$pat" -o)
     done
-    unset "find_args[${#find_args[@]}-1]" # drop trailing -o
-    find "$img" -type d \( "${find_args[@]}" \) -prune -exec rm -rf {} +
+    unset "dir_args[${#dir_args[@]}-1]" # drop trailing -o
+    find "$img" -type d \( "${dir_args[@]}" \) -prune -exec rm -rf {} +
+    # any-depth file patterns
+    local file_args=()
+    for pat in "${DEPTH_EXCLUDE_FILES[@]}"; do
+        file_args+=(-name "$pat" -o)
+    done
+    unset "file_args[${#file_args[@]}-1]" # drop trailing -o
+    find "$img" -type f \( "${file_args[@]}" \) -delete
     # top-level patterns
     local d
     for d in $TOP_EXCLUDES; do
@@ -195,14 +219,16 @@ uninstall_one() { # <agent> <skill>
         fi
         return 0
     fi
-    local img
+    local img clean=0
     img="$(build_staging "$skill")"
-    if same_content "$img" "$tgt" || [ "$FORCE" = "1" ]; then
+    # capture the verdict BEFORE rm -rf destroys the evidence
+    same_content "$img" "$tgt" && clean=1
+    if [ "$clean" = "1" ] || [ "$FORCE" = "1" ]; then
         rm -rf "$tgt"
-        if [ "$FORCE" = "1" ] && ! same_content "$img" "$tgt"; then
-            echo "removed (forced, modified): $agent/$skill"
-        else
+        if [ "$clean" = "1" ]; then
             echo "removed: $agent/$skill"
+        else
+            echo "removed (forced, modified): $agent/$skill"
         fi
     else
         echo "refuse: $agent/$skill differs from source (locally modified?); use --uninstall --force to delete" >&2

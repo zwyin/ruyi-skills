@@ -86,9 +86,23 @@ def sandbox(tmp_path):
         ".playwright-mcp",
         "ruyi_project_study_junk",
         "project_study_junk",
+        ".pytest_cache",
+        ".codegraph",
+        ".claude",
+        ".opencode",
+        ".windsurf",
+        ".github",
     ):
         (alpha / junk).mkdir()
         (alpha / junk / "artifact.txt").write_text("dev artifact\n")
+    (alpha / ".claude" / "worktrees").mkdir()
+    (alpha / ".claude" / "worktrees" / "wt.txt").write_text("worktree\n")
+    # local tool files, top level and nested (any-depth file patterns)
+    (alpha / ".DS_Store").write_bytes(b"\x00\x01")
+    (alpha / ".gitignore").write_text("ignored\n")
+    (alpha / "docs").mkdir()
+    (alpha / "docs" / ".DS_Store").write_bytes(b"\x00\x01")
+    (alpha / "docs" / "note.md").write_text("keep me\n")
     (alpha / "scripts" / "__pycache__").mkdir()
     (alpha / "scripts" / "__pycache__" / "t.pyc").write_bytes(b"\x00")
 
@@ -158,6 +172,12 @@ class TestRealRepoInstall:
         assert not list(pw.rglob("project_study_*")), "no project_study_*/ at any depth"
         assert not list(pw.rglob("ruyi_project_study_*"))
         assert not (pw / ".playwright-mcp").exists()
+        # local tool artifacts / repo metadata (round-1 fix): source has these
+        for artifact in (".codegraph", ".github", ".pytest_cache", ".claude",
+                         ".opencode", ".windsurf"):
+            assert not (pw / artifact).exists(), f"{artifact}/ must not ship"
+        assert not list(pw.rglob(".DS_Store")), "no .DS_Store at any depth"
+        assert not list(pw.rglob(".gitignore")), "no .gitignore at any depth"
         # nested inner copy keeps its own tests/ (marketplace layout compat)
         nested_tests = pw / "skills" / "ruyi-project-walkthrough" / "tests"
         if nested_tests.exists():
@@ -216,6 +236,20 @@ class TestSandboxInstallLifecycle:
         assert not list(tgt.rglob("__pycache__")), "__pycache__ leaked at depth"
         # nested inner copy survives (incl. its own tests/)
         assert (tgt / "skills" / "alpha" / "tests" / "inner_test.py").is_file()
+
+    def test_local_tool_artifacts_excluded(self, sandbox):
+        """Dir junk (.codegraph/.github/...) and file junk (.DS_Store/.gitignore)
+        at any depth must not ship into user skill dirs."""
+        r = sandbox["run"]([])
+        assert r.returncode == 0, r.stderr
+        tgt = sandbox["home"] / ".claude" / "skills" / "alpha"
+        for top in (".pytest_cache", ".codegraph", ".claude", ".opencode",
+                    ".windsurf", ".github"):
+            assert not (tgt / top).exists(), f"{top}/ leaked into target"
+        assert not list(tgt.rglob(".DS_Store")), ".DS_Store leaked (any depth)"
+        assert not list(tgt.rglob(".gitignore")), ".gitignore leaked (any depth)"
+        # real content next to the junk survives
+        assert (tgt / "docs" / "note.md").is_file()
 
     def test_source_modified_then_updated(self, sandbox):
         r1 = sandbox["run"](["--skill", "alpha"])
@@ -279,6 +313,15 @@ class TestSandboxUninstall:
         assert r.returncode == 0, r.stderr
         assert "not installed: claude/alpha" in r.stdout, r.stdout
 
+    def test_force_uninstall_clean_target_labels_plain_removed(self, sandbox):
+        """--force on an unmodified managed target must not claim "modified"."""
+        assert sandbox["run"]([]).returncode == 0
+        r = sandbox["run"](["--uninstall", "--force"])
+        assert r.returncode == 0, r.stderr
+        assert "removed: claude/alpha" in r.stdout, r.stdout
+        assert "forced, modified" not in r.stdout, r.stdout
+        assert not (sandbox["home"] / ".claude" / "skills" / "alpha").exists()
+
     def test_uninstall_refuses_user_modified_then_force_deletes(self, sandbox):
         assert sandbox["run"]([]).returncode == 0
         tgt = sandbox["home"] / ".claude" / "skills" / "alpha" / "SKILL.md"
@@ -291,6 +334,7 @@ class TestSandboxUninstall:
         assert tgt.exists(), "refused uninstall must leave target in place"
         r2 = sandbox["run"](["--uninstall", "--force"])
         assert r2.returncode == 0, r2.stderr
+        assert "removed (forced, modified): claude/alpha" in r2.stdout, r2.stdout
         assert not tgt.parent.exists()
 
     def test_uninstall_refuses_target_without_marker_then_force(self, sandbox):
