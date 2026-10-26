@@ -8,8 +8,14 @@
 - **`make check-versions` target**: runs `validate_versions.py --root .` across the collection, so version drift is checkable with one command instead of a manual agent invocation.
 - **`test-version-check` CI job**: rebuilds the eval fixtures to verify determinism, runs the pytest suite, then `evals/validate.py` structural regression.
 
+### Changed
+
+- **`make check-versions` is now CI-blocking** (`make ci` runs it; the `test.yml` workflow invokes `validate_versions.py --root .` directly) with new `--strict` semantics: default mode exits `0` on warnings-only so WARNs never block CI, FAIL still exits `2`; `--strict` (WARN-only → `1`) is for the pre-release consistency gate. Report display and process exit code derive from one `Report.exit_code(strict)` computation.
+- **ruyi-version-check skill 0.1.0 → 0.1.1**: exit-code/`--strict` semantics above; `SKILL_BODY_PATTERNS` coverage extended to the `Project Walkthrough vX.Y.Z` startup print (no `--version` prefix, not the `**Version X**` banner form — previously missed).
+
 ### Fixed
 
+- **`convert.sh` could resolve the wrong SKILL.md** (`find | head -n 1`): `skills/<name>/evals/fixtures/*/SKILL.md` demo files could shadow the real skill, writing `demo-skill` artifacts into `dist/` (opencode/windsurf/cursor) and skipping the real skill's platform copies. `_find_skill_md` now prefers the canonical nested `skills/<name>/skills/<name>/SKILL.md`, falls back to the outer `skills/<name>/SKILL.md`, and never descends into `evals/`, `tests/`, `dist/`. Regression-tested in `tests/test_convert.py`.
 - **Root CHANGELOG backfilled 0.9.1–0.9.4**: `release.sh` had failed to write these version blocks (only 0.9.0 and 0.1.1 existed), leaving shipped fixes — quiz answer-index bug, update-check cache staleness, walkthrough manifest/verify pipeline hardening — unrecorded. Backfilled from commit history.
 - **`test-version-check` CI job working-directory** fixed to the outer skill dir (`skills/ruyi-version-check`): the evals/pytest steps resolve relative to the skill root, not the nested inner skill dir.
 
