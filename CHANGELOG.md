@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **ruyi-version-check skill v0.1.0 入库** (`skills/ruyi-version-check/`, pilot promoted to an in-repo skill): deterministic version-consistency checker — `validate_versions.py` verifies skill frontmatter (canonical), plugin.json, marketplace.json, README badges, Phase 0 banner, per-skill CHANGELOG, dist copies, and hardcoded version literals in tests all agree before a release. PASS/WARN/FAIL report with file:line, expected/actual, remediation hint; exit codes 0 consistent / 1 warnings / 2 failures; `--format json` supported. Registered in the collection marketplace.json.
+- **`make check-versions` target**: runs `validate_versions.py --root .` across the collection, so version drift is checkable with one command instead of a manual agent invocation.
+- **`test-version-check` CI job**: rebuilds the eval fixtures to verify determinism, runs the pytest suite, then `evals/validate.py` structural regression.
+
+### Fixed
+
+- **Root CHANGELOG backfilled 0.9.1–0.9.4**: `release.sh` had failed to write these version blocks (only 0.9.0 and 0.1.1 existed), leaving shipped fixes — quiz answer-index bug, update-check cache staleness, walkthrough manifest/verify pipeline hardening — unrecorded. Backfilled from commit history.
+- **`test-version-check` CI job working-directory** fixed to the outer skill dir (`skills/ruyi-version-check`): the evals/pytest steps resolve relative to the skill root, not the nested inner skill dir.
+
 ## [0.9.4] - 2026-06-29
 
 ### Fixed
