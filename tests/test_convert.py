@@ -4,13 +4,23 @@ tests/test_convert.py — Validate collection-level scripts/convert.sh output
 Tests multi-skill platform conversion (Cursor, Windsurf, OpenCode).
 """
 
+import shutil
 import subprocess
 import re
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 SCRIPT = ROOT / "scripts" / "convert.sh"
 DIST = ROOT / "dist"
+
+
+def find_skill_md(skill_dir):
+    """Source convert.sh (main dispatch guarded) and call _find_skill_md directly."""
+    cmd = f'source "{SCRIPT}" >/dev/null 2>&1 && _find_skill_md "{skill_dir}"'
+    result = subprocess.run(["bash", "-c", cmd], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    return result.stdout.strip()
 
 
 def run_convert(*args):
@@ -124,3 +134,56 @@ class TestInvalidArgs:
     def test_invalid_flag_exits_nonzero(self):
         r = run_convert("--invalid")
         assert r.returncode != 0
+
+
+class TestFindSkillMd:
+    def test_prefers_nested_canonical(self):
+        """skills/<name>/skills/<name>/SKILL.md wins over the outer copy."""
+        for name in _skill_names():
+            nested = ROOT / "skills" / name / "skills" / name / "SKILL.md"
+            if nested.is_file():
+                assert find_skill_md(ROOT / "skills" / name) == str(nested), \
+                    f"{name}: expected canonical nested SKILL.md"
+
+    def test_evals_fixture_trap_resolves_canonical(self):
+        """evals/fixtures demo SKILL.md must never shadow the canonical file."""
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "trap-skill"
+            # Create the trap first so a naive `find | head -n 1` can pick it
+            trap = skill / "evals" / "fixtures" / "fixture-1" / "skills" / "demo-skill" / "skills" / "demo-skill" / "SKILL.md"
+            trap.parent.mkdir(parents=True)
+            trap.write_text('---\nname: demo-skill\nversion: "0.0.1"\n---\ndemo\n')
+            canonical = skill / "skills" / "trap-skill" / "SKILL.md"
+            canonical.parent.mkdir(parents=True)
+            canonical.write_text('---\nname: trap-skill\nversion: "1.0.0"\n---\nbody\n')
+            resolved = find_skill_md(skill)
+            assert resolved == str(canonical)
+            assert "evals" not in resolved
+
+    def test_outer_fallback_when_no_nested(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "flat-skill"
+            trap = skill / "evals" / "fixtures" / "f" / "SKILL.md"
+            trap.parent.mkdir(parents=True)
+            trap.write_text('---\nname: demo-skill\nversion: "0.0.1"\n---\ndemo\n')
+            outer = skill / "SKILL.md"
+            outer.write_text('---\nname: flat-skill\nversion: "1.0.0"\n---\nbody\n')
+            assert find_skill_md(skill) == str(outer)
+
+    def test_only_evals_returns_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "broken-skill"
+            trap = skill / "evals" / "fixtures" / "f" / "SKILL.md"
+            trap.parent.mkdir(parents=True)
+            trap.write_text('---\nname: demo-skill\nversion: "0.0.1"\n---\ndemo\n')
+            assert find_skill_md(skill) == ""
+
+
+class TestConvertAllNoDemoArtifacts:
+    def test_all_after_clean_leaves_no_demo_artifacts(self):
+        """A clean --all rebuild must not emit evals-fixture (demo-skill) artifacts."""
+        shutil.rmtree(DIST, ignore_errors=True)
+        r = run_convert("--all")
+        assert r.returncode == 0, f"--all failed:\n{r.stdout}\n{r.stderr}"
+        leftovers = [str(p.relative_to(DIST)) for p in DIST.rglob("*") if "demo-skill" in p.name]
+        assert leftovers == [], f"demo artifacts leaked into dist/: {leftovers}"
